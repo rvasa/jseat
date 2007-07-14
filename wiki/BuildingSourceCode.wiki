@@ -1,0 +1,34 @@
+#summary One-sentence summary of this page.
+#labels building,sourcecode
+
+= Introduction =
+
+The easiest way to build JSeat is by using ant with the provided buildfile.
+
+The default -all target will create a _dist_ folder containing the contents setup and built by ant. The default all target should create the following.
+
+  * dist
+  * dist/jseat.conf
+  * dist/default.rep
+  * dist/JSeatExplorer-$version.jar
+  * dist/JSeatVisualizer-$version
+  * dist/lib
+  * dist/lib/jseat-core-$version.jar
+  * dist/lib/jseat-gui-core-$version.jar
+
+_$version_ corresponds to the version number. e.g. _JSeatExplorer-0.1.jar_
+The _lib_ folder should also contain the following required libraries by JSeat
+
+  * asm-all-3.0.jar
+  * colt.jar
+  * concurrent.jar
+  * jcommon-1.0.10.jar
+  * jfreechart-1.0.6.jar
+  * jfreechart-1.0.6-swt.jar
+  * junit.jar
+  * swtgraphics2d.jar
+  * xpp3-1.1.4c.jar
+  * xpp3_min-1.1.3.4.jar
+  * xstream-1.2.2.jar
+
+
