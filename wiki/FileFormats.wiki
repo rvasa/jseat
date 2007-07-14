@@ -1,13 +1,10 @@
 #summary A description of the file formats used in JSeat.
 #labels fileformat
 
-= JSeat File Formats =
-
 The following is a list of supported file types in JSeat
   * Version File (.ver)
   * Report Configuration File (.rep)
   * CSV Metric Model Data File (.mmd)
   * XML Metric Model Data File (.xmd)
   * JSeat Configuration File (.conf)
-
 
