@@ -3,7 +3,9 @@
 
 = Introduction =
 
-The easiest way to build JSeat is by using ant with the provided buildfile.
+The easiest way to build JSeat is by using [http://ant.apache.org/ Apache Ant] with the provided buildfile.
+
+{{{ ant -buildfile build.xml }}} // will use the default all target.
 
 The default -all target will create a _dist_ folder containing the contents setup and built by ant. The default all target should create the following.
 
@@ -30,5 +32,9 @@ The _lib_ folder should also contain the following required libraries by JSeat
   * xpp3-1.1.4c.jar
   * xpp3_min-1.1.3.4.jar
   * xstream-1.2.2.jar
+
+
+
+
 
 
