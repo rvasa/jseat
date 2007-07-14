@@ -58,7 +58,7 @@ public class JSeatExplorer implements Observer
 	private Shell shell;
 	private LeftComposite lc;
 	private CenterComposite cc;
-	private static final String TITLE = "Java Software Evolution Analysis Tool (jSEAT)";
+	private static final String TITLE = "JSeat Explorer";
 	private static final String CONFIG_FILE = "jseat.conf";
 	private static final String[] SAVE_EXTS = {
 			SupportedFileType.CSV.getExtension(),

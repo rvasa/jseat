@@ -7,6 +7,7 @@ import metric.core.MetricEngine;
 import metric.core.persistence.CSVConverter;
 import metric.core.persistence.MetricDataConverter;
 import metric.core.persistence.XMLConverter;
+import metric.core.vocabulary.SupportedFileType;
 import metric.gui.swt.core.dialog.OpenDialog;
 import metric.gui.swt.core.dialog.ProgressDialog;
 import metric.gui.swt.core.threading.ThreadedMetricDataConverter;
@@ -41,11 +42,10 @@ import org.eclipse.swt.widgets.Text;
 public class TopComposite extends Composite implements SelectionListener,
 		Observer
 {
-	private static final String[] MODEL_FILTER_EXTENSIONS = { "*.versions",
-			"*.mmd", "*.xmd" };
-	private static final String[] MODEL_FILTER_EXT_NAMES = {
-			"Version Data (*.versions)", "CSV Model Data (*.mmd)",
-			"XML Model Data (*.xmd)" };
+	private static final String[] MODEL_FILTER_EXTENSIONS = { SupportedFileType.VERSION.getExtension(),
+		SupportedFileType.CSV.getExtension(), SupportedFileType.XML.getExtension() };
+	private static final String[] MODEL_FILTER_EXT_NAMES = { SupportedFileType.VERSION.getExtensionName(),
+		SupportedFileType.CSV.getExtensionName(), SupportedFileType.XML.getExtensionName()};
 
 	private Text tDirField;
 	private Button bDirBrowse, bDirUpdate;
@@ -185,7 +185,7 @@ public class TopComposite extends Composite implements SelectionListener,
 	private void processHistoryFromFile(String filename)
 	{
 		MetricDataConverter mc = null;
-		if (filename.indexOf(".versions") != -1)
+		if (filename.indexOf(".ver") != -1)
 		{
 			processHistoryFromVersionsFile(filename);
 			return;

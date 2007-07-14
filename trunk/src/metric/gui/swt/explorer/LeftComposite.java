@@ -15,6 +15,7 @@ import metric.core.model.HistoryMetricData;
 import metric.core.report.Report;
 import metric.core.report.ReportFactory;
 import metric.core.util.StringUtils;
+import metric.core.vocabulary.SupportedFileType;
 import metric.gui.swt.core.dialog.OpenDialog;
 import metric.gui.swt.core.threading.ThreadedDefinitionProcessor;
 import metric.gui.swt.core.util.SWTUtils;
@@ -262,8 +263,8 @@ public class LeftComposite extends Composite implements SelectionListener
 		// Open report configuration
 		if (event.getSource() == bReportBrowse)
 		{
-			String[] filterExt = { "*.reports" };
-			String[] filterNames = { "Report Configuration (*.reports)" };
+			String[] filterExt = { SupportedFileType.REPORT.getExtension() };
+			String[] filterNames = { SupportedFileType.REPORT.getExtensionName() };
 			String filterPath = parent.getProperty(GUI.DEFAULT_REPORT_DIR);
 
 			OpenDialog od = new OpenDialog(shell, filterExt, filterNames,
