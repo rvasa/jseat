@@ -26,12 +26,14 @@ The _lib_ folder should also contain the following required libraries by JSeat
   * concurrent.jar
   * jcommon-1.0.10.jar
   * jfreechart-1.0.6.jar
-  * jfreechart-1.0.6-swt.jar
+  * _jfreechart-1.0.6-swt.jar_
+  * _swtgraphics2d.jar_
   * junit.jar
-  * swtgraphics2d.jar
   * xpp3-1.1.4c.jar
   * xpp3_min-1.1.3.4.jar
   * xstream-1.2.2.jar
+
+*Note:* The two jar files labeled in italics are operating system dependent (because the implementation of SWT is OS specific). As such, you need to replace these two files with the appopriate files for your operating which are provided here; [http://jseat.googlecode.com/files/jfreechart-swt-3.3-win32-x86.zip Windows], [http://jseat.googlecode.com/files/jfreechart-swt-3.3-carbon-macosx.zip Mac OSX] or [http://jseat.googlecode.com/files/jfreechart-swt-3.3-gtk-linux-x86.zip Linux].
 
 
 
