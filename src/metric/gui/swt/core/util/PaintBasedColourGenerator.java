@@ -9,20 +9,28 @@ import org.jfree.chart.renderer.LookupPaintScale;
 
 public class PaintBasedColourGenerator
 {
-	public static LookupPaintScale generatePaintScale(IntensityStyle style)
+	/**
+     * Generates a <code>LookupPaintScale</code> for the specified
+     * IntensityStyle with the specified number of shades
+     * 
+     * @param style The IntensityStyle
+     * @param max The number of shades
+     * @return The LookupPaintScale
+     */
+	public static LookupPaintScale generatePaintScale(IntensityStyle style,
+			int max)
 	{
-		LookupPaintScale ps = new LookupPaintScale(0.0, 1, Color.LIGHT_GRAY); // zero
-                                                                                // modification
-		int max = 50;
+		LookupPaintScale ps = new LookupPaintScale(0.000, 1, Color.WHITE);
+		ps.add(0.0, Color.LIGHT_GRAY);
 		int colorIndex = -1;
 		if (style == IntensityStyle.HeatMap)
-			colorIndex = 235;
+			colorIndex = 255;
 		else if (style == IntensityStyle.CoolMap)
-			colorIndex = 235;
+			colorIndex = 255;
 
 		for (int i = 1; i <= max; i++)
 		{
-			double v = getNewColourValue(0.05, i, max);
+			double v = getNewColourValue(0.10, i, max);
 			colorIndex -= (colorIndex / max);
 			if (style == IntensityStyle.HeatMap)
 			{
@@ -32,7 +40,7 @@ public class PaintBasedColourGenerator
 			{
 				int finalCoolValue = 255 - colorIndex;
 				ps.add(StatUtils.toFixedDecPlaces(v, 3), new Color(
-						finalCoolValue, finalCoolValue, 235));
+						finalCoolValue, finalCoolValue, 255));
 			}
 		}
 		return ps;
