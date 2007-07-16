@@ -14,6 +14,7 @@ import metric.core.util.StatUtils;
 import metric.core.util.StringUtils;
 import metric.core.vocabulary.ClassMetric;
 import metric.core.vocabulary.Evolution;
+import metric.core.vocabulary.Version;
 
 public class ModificationIntensityReportVisitor extends Report
 {
@@ -50,7 +51,7 @@ public class ModificationIntensityReportVisitor extends Report
 	{
 		int versions = hmd.versions.values().size();
 		VersionMetricData prev = hmd.versions.get(1);
-//		int total = hmd.versions.size();
+
 		ArrayList<String[]> rows = new ArrayList<String[]>(versions);
 
 		for (int i = 1; i <= versions; i++)
@@ -63,26 +64,7 @@ public class ModificationIntensityReportVisitor extends Report
 			rows.add(newTmp);
 			prev = hmd.versions.get(i);
 		}
-		
-//		Iterator<VersionMetricData> it = hmd.versions.values().iterator();
-//		prev = it.next(); // set first version.
-//		it = hmd.versions.values().iterator(); // reset iterator.
-//		
-//		while (it.hasNext())
-//		{
-//			VersionMetricData nextVersion = it.next();
-//			double[] tmp = changeFactor(prev, nextVersion, versions);
-//			String[] newTmp = new String[tmp.length];
-//			for (int j = 0; j < tmp.length; j++)
-//				newTmp[j] = String.valueOf(tmp[j]);
-//			
-//			rows.add(newTmp);
-//			prev = nextVersion;
-//		}
-		
-		
-		
-		
+
 		// Create and set table.
 		MetricTable<String, String> et = new MetricTable<String, String>(
 				getHeading(versions), rd.description);
@@ -106,6 +88,11 @@ public class ModificationIntensityReportVisitor extends Report
 	{
 		int numClasses = v1.metricData.size();
 		double[] intensityRange = new double[totalVersions];
+		for (int i = 0; i < intensityRange.length; i++)
+		{
+			if (i >= v2.getSimpleMetric(Version.RSN))
+				intensityRange[i] = -1d; // Does not exist yet.
+		}
 
 		for (ClassMetricData cm : v1.metricData.values())
 		{
@@ -125,21 +112,17 @@ public class ModificationIntensityReportVisitor extends Report
 						.get(cm.get(ClassMetric.NAME)).getSimpleMetric(
 								ClassMetric.BRANCH_COUNT))
 					changeNum++;
-				// Update intensity.
-				if (intensityRange[cm.getSimpleMetric(ClassMetric.BORN_RSN)] == -1.0d)
-					intensityRange[cm.getSimpleMetric(ClassMetric.BORN_RSN)] = 0.0;
-				intensityRange[cm.getSimpleMetric(ClassMetric.BORN_RSN)] += computeIntensity(
-						changeNum,
-						numClasses);
 
-			} else
-			{
-				// Zero modification.
-				intensityRange[cm.getSimpleMetric(ClassMetric.BORN_RSN)] = -1.0d;
+				if (changeNum > 0)
+				{
+					intensityRange[cm.getSimpleMetric(ClassMetric.BORN_RSN) - 1] += computeIntensity(
+							changeNum,
+							numClasses);
+				} else // Very minor change.
+					intensityRange[cm.getSimpleMetric(ClassMetric.BORN_RSN) - 1] += 0.001d;
 			}
 		}
-
-		StringUtils.toCSVString(intensityRange);
+		System.out.println(StringUtils.toCSVString(intensityRange));
 		return intensityRange;
 	}
 
@@ -158,14 +141,14 @@ public class ModificationIntensityReportVisitor extends Report
 			case 2:
 			{
 				tmp = StatUtils.toFixedDecPlaces(
-						((double) (1d / numClasses) * 0.33),
+						((double) (1d / numClasses) * 0.66),
 						3);
 				break;
 			}
 			case 3:
 			{
 				tmp = StatUtils.toFixedDecPlaces(
-						((double) (1d / numClasses) * 0.33),
+						((double) (1d / numClasses) * 0.99),
 						3);
 				break;
 			}
