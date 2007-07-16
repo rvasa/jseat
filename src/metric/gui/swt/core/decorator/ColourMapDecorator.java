@@ -34,6 +34,7 @@ public class ColourMapDecorator extends ReportDecorator
 	private ChartComposite cc;
 	private Composite composite;
 	private IntensityStyle style;
+	private int noColourShades = 10;
 
 	public ColourMapDecorator(ModificationIntensityReportVisitor report,
 			Composite composite, IntensityStyle style)
@@ -120,7 +121,9 @@ public class ColourMapDecorator extends ReportDecorator
 		r.setBlockHeight(0.90f);
 		r.setBlockWidth(0.90f);
 		plot.setRenderer(r);
-
+		plot.setDomainGridlinesVisible(false);
+		plot.setRangeGridlinesVisible(false);
+		
 		xAxis.setRangeWithMargins(1, size);
 		yAxis.setRangeWithMargins(1, size);
 		yAxis.setInverted(true);
@@ -129,11 +132,11 @@ public class ColourMapDecorator extends ReportDecorator
 		JFreeChart chart = new JFreeChart(title, plot);
 		chart.removeLegend();
 		chart.setBackgroundPaint(Color.WHITE);
+
 		SymbolAxis scaleAxis = new SymbolAxis(null, new String[] { "", "OK",
 				"Uncertain", "Bad" });
 		scaleAxis.setRange(0.0, 1.0);
 		scaleAxis.setPlot(new PiePlot());
-		scaleAxis.setGridBandsVisible(true);
 
 		return chart;
 	}
@@ -172,7 +175,7 @@ public class ColourMapDecorator extends ReportDecorator
 	private LookupPaintScale getDefaultHeatScale()
 	{
 		LookupPaintScale ps = PaintBasedColourGenerator
-				.generatePaintScale(IntensityStyle.HeatMap);
+				.generatePaintScale(IntensityStyle.HeatMap, noColourShades);
 		return ps;
 	}
 
@@ -185,7 +188,7 @@ public class ColourMapDecorator extends ReportDecorator
 	private LookupPaintScale getDefaultCoolScale()
 	{
 		LookupPaintScale ps = PaintBasedColourGenerator
-				.generatePaintScale(IntensityStyle.CoolMap);
+				.generatePaintScale(IntensityStyle.CoolMap, noColourShades);
 		
 		return ps;
 	}
