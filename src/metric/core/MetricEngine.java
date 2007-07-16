@@ -23,10 +23,12 @@ public class MetricEngine extends Observable implements Observer
 	private boolean showProcessing;
 	private Logger logger = Logger.getLogger(getClass().getSimpleName());
 	private MetricModelBuilder mmb;
-
 	private int completion;
 	private int numThreads;
 	public boolean interrupt;
+	private long bytesProcessed;
+	private float loadTime, storeTime, processTime, extractTime;
+	
 
 	/**
      * Initialises a MetricEngine.
@@ -97,6 +99,7 @@ public class MetricEngine extends Observable implements Observer
 			}
 		}
 		// Garbage collect.
+		mmb = null; // Finished with MetricModelBuilder;
 		System.gc();
 		return h;
 	}
@@ -115,7 +118,7 @@ public class MetricEngine extends Observable implements Observer
      */
 	public final long getBytesProcessed()
 	{
-		return mmb.getBytesProcessed();
+		return bytesProcessed;
 	}
 
 	/**
@@ -123,7 +126,7 @@ public class MetricEngine extends Observable implements Observer
      */
 	public final float getLoadTime()
 	{
-		return mmb.getLoadTime();
+		return loadTime;
 	}
 
 	/**
@@ -131,7 +134,7 @@ public class MetricEngine extends Observable implements Observer
      */
 	public final float getPreProcessingTime()
 	{
-		return mmb.getProcessTime();
+		return processTime;
 	}
 
 	/**
@@ -139,7 +142,7 @@ public class MetricEngine extends Observable implements Observer
      */
 	public final float getExtractTime()
 	{
-		return mmb.getExtractTime();
+		return extractTime;
 	}
 
 	public void update(Observable observerable, Object o)
@@ -148,6 +151,10 @@ public class MetricEngine extends Observable implements Observer
 		{
 			MetricModelBuilder mmb = (MetricModelBuilder) observerable;
 			this.completion = mmb.getCompletion();
+			this.bytesProcessed = mmb.getBytesProcessed();
+			this.extractTime = mmb.getCompletion();
+			this.loadTime = mmb.getLoadTime();
+			this.processTime = mmb.getProcessTime();
 			System.out.println(this.completion);
 			setChanged();
 			notifyObservers();
