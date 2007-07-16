@@ -277,6 +277,8 @@ public class JSeatVisualizer implements Observer, SelectionListener
 
 				if (selected != null)
 				{
+					// Free data.
+					freeData();
 					processHistoryFromFile(selected);
 				}
 			} else
@@ -294,6 +296,19 @@ public class JSeatVisualizer implements Observer, SelectionListener
 				}
 			}
 		}
+	}
+
+	/**
+     * Frees the currently loaded <code>HistoryMetricData</code> and
+     * <code>ReportDecorator</code>.
+     */
+	private void freeData()
+	{
+		lVersions.setData(null);
+		lVersions.removeAll();
+		currentDecoration = null;
+		if (chartComposite.getChildren().length > 0)
+			chartComposite.getChildren()[0].dispose();
 	}
 
 	/**
@@ -403,6 +418,7 @@ public class JSeatVisualizer implements Observer, SelectionListener
 			{
 				// Have model accept report.
 				hmd.accept(rv);
+				hmd = null;
 
 				Runnable displayChart = new Runnable()
 				{

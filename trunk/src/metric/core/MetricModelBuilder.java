@@ -324,17 +324,15 @@ public class MetricModelBuilder extends Observable
 			scanAndMarkSurvivors(vHashMap);
 		}
 		processTime = System.currentTimeMillis() - finish;
-		dataSetList = null; // Each data set should have already been
 
 		if (interrupted)
-		{
-			dataSetList = null;
-			versions.clear();
-			versions = null;
 			throw new InterruptedException();
-		}
 
-		return new HistoryMetricData(productName, vHashMap);
+		dataSetList.clear();
+		versions.clear();
+		workQueue.clear();
+		HistoryMetricData hmd = new HistoryMetricData(productName, vHashMap);
+		return hmd;
 	}
 
 	public void processMetrics(BlockingQueue<VersionMetricData> versions)

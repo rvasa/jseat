@@ -77,7 +77,7 @@ public class ThreadedMetricEngine extends Thread
 		try
 		{
 			this.hmd = me.process(filename);
-
+			me = null; // Finished with MetricEngine.
 			final Collection<VersionMetricData> c = hmd.getVersionList();
 			o.update(null, hmd);
 
@@ -90,7 +90,6 @@ public class ThreadedMetricEngine extends Thread
 					for (VersionMetricData vmd : c)
 					{
 						versionList.add(vmd.toString());
-						versionList.setData(vmd.toString(), vmd);
 					}
 				}
 			};
