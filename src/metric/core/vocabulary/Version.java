@@ -2,12 +2,14 @@ package metric.core.vocabulary;
 
 public enum Version 
 {
-	ID, /** property **/
-	RSN, /** metric **/
-	NAME,
-	REPORT_PROGRESS(5),
-	GUI_CLASS_COUNT,
 	CLASS_COUNT,
+	RSN,
+	GUI_CLASS_COUNT,
+	
+	//	 Non metrics.
+	ID, /** property **/
+	REPORT_PROGRESS(5),
+	NAME,
 	// Complex Metrics below
 	ALPHA,
 	BETA,
@@ -25,6 +27,13 @@ public enum Version
 	public String toString()
 	{
 		return name().toLowerCase();
+	}
+	
+	public static int getNumberOfMetrics()
+	{
+		// We exclude non metric related enums
+		int size = values().length - 9;
+		return size;
 	}
 	
 	public static Version parse(String toParse)

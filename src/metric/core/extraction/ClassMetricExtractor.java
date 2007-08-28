@@ -1,12 +1,12 @@
-package metric.core;
+package metric.core.extraction;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import metric.core.io.InputData;
 import metric.core.io.InputDataSet;
 import metric.core.model.ClassMetricData;
 import metric.core.model.MethodMetricMap;
@@ -29,18 +29,20 @@ public class ClassMetricExtractor
 	private ClassMetricData cmd;
 
 	private InputDataSet ids;
+	private InputData idata;
 	public static int innerclassesProcessed = 0;
 
 	private Logger logger = Logger.getLogger(getClass().getSimpleName());
 	public static int METHODS_PROCESSED = 0;
 
-	public ClassMetricExtractor(InputStream istream, InputDataSet ids)
+	public ClassMetricExtractor(InputData idata, InputDataSet ids)
 			throws IOException
 	{
-		ClassReader cr = new ClassReader(istream);
+		ClassReader cr = new ClassReader(idata.getInputStream());
 		classNode = new ClassNode();
 		cr.accept(classNode, ClassReader.SKIP_DEBUG);
 		this.ids = ids;
+		this.idata = idata;
 
 		// Log organiser should check whether this logger already exists first
 		// so should be ok to cal here.
@@ -78,7 +80,7 @@ public class ClassMetricExtractor
 			// parent class). Unsure of why this happens.
 			if (!icn.name.equals(classNode.name))
 			{
-				InputStream innerStream = ids.getInputStream(icn.name
+				InputData innerStream = ids.getInputData(icn.name
 						+ ".class");
 				if (innerStream != null)
 				{
@@ -89,7 +91,7 @@ public class ClassMetricExtractor
 						ClassMetricData innerClass = cme.extract();
 
 						// merge inner class metrics with this class.
-						cmd.mergeInnerClass(innerClass);
+//						cmd.mergeInnerClass(innerClass);
 						
 						// Free up class as it is no longer needed.
 						innerClass.methods = null;
@@ -284,6 +286,10 @@ public class ClassMetricExtractor
 		cmd.setProperty(ClassMetric.NAME, classNode.name);
 		cmd.setProperty(ClassMetric.SUPER_CLASS_NAME, classNode.superName
 				.trim());
+		
+		//set creation/modification time.
+		// TODO Fix creation date.
+		cmd.lastModified = idata.getLastModifiedTime();
 
 		updateClassStats();
 	}

@@ -5,26 +5,30 @@ import java.io.Reader;
 import java.util.Observer;
 
 import metric.core.exception.ConversionException;
-import metric.core.model.MetricData;
+import metric.core.model.VersionMetricData;
 
 /**
- * A contract for converting to and from <code>MetricData</code>.
+ * A contract for converting to and from <code>VersionMetricData</code>.
  * 
  * A concrete converter should provide an implementation for both serialization
- * and de-serialization.
+ * and de-serialization. This is the main conversion interface intended to be
+ * used by callers serializing and de-serializing VersionMetricData.
  * 
  * @author Joshua Hayes,Swinburne University (ICT),2007
  */
 public interface MetricDataConverter
 {
-	public void serialize(MetricData component, String path)
+	public void serialize(VersionMetricData component, String path)
 			throws ConversionException;
 
-	public String serialize(MetricData component) throws ConversionException;
+	public String serialize(VersionMetricData component)
+			throws ConversionException;
 
-	public MetricData deSerialize(String data) throws ConversionException;
+	public VersionMetricData deSerialize(String data)
+			throws ConversionException;
 
-	public MetricData deSerialize(Reader data) throws ConversionException;
+	public VersionMetricData deSerialize(Reader data)
+			throws ConversionException;
 
 	public String getFileExtension();
 

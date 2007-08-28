@@ -5,7 +5,8 @@ import java.util.Observer;
 
 import metric.core.util.EnumTable;
 import metric.core.util.logging.LogOrganiser;
-import metric.gui.swt.core.util.SWTUtils;
+import metric.gui.swt.core.JSeatGUI;
+import metric.gui.swt.core.util.SWTFactory;
 import metric.gui.swt.core.util.logging.LogEvent;
 import metric.gui.swt.core.util.logging.SWTGuiHandler;
 import metric.gui.swt.core.vocabulary.GUI;
@@ -38,36 +39,33 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author Joshua Hayes,Swinburne University (ICT),2007
  */
-public class CenterComposite extends Composite implements Observer,
-		SelectionListener
+public class CenterComposite extends Composite implements Observer		
 {
 	private Text tConsole;
 	private Button bClear, bExecute;
-	private JSeatExplorer parent;
 	private Composite consoleComposite, displayComposite, executeComposite;
 	private TabFolder tabFolder;
 
-	public CenterComposite(JSeatExplorer parent, Shell shell, int type)
+	public CenterComposite(Composite composite, int type)
 	{
-		super(shell, type);
-		this.parent = parent;
+		super(composite, type);
 
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.marginTop = 0;
 		gridLayout.marginBottom = 0;
 		setLayout(gridLayout);
 		GridData gd = new GridData(GridData.FILL_BOTH);
-		gd.minimumWidth = shell.getSize().x / 2 + shell.getSize().x / 6;
+		gd.minimumWidth = composite.getSize().x / 2 + composite.getSize().x / 6;
 		setLayoutData(gd);
 		
 		GridData outputGroupGrid = new GridData(GridData.FILL_BOTH);
-		outputGroupGrid.widthHint = shell.getSize().x / 2 + shell.getSize().y
+		outputGroupGrid.widthHint = composite.getSize().x / 2 + composite.getSize().y
 				/ 4;
 		
 		tabFolder = new TabFolder(this, SWT.NONE);
 		tabFolder.setLayoutData(outputGroupGrid);
 		tabFolder.setLayout(new GridLayout());
-		tabFolder.addSelectionListener(this);
+//		tabFolder.addSelectionListener(this);
 		
 		TabItem consoleTabItem = new TabItem(tabFolder, SWT.NONE);
 		consoleTabItem.setText("Console");
@@ -80,10 +78,10 @@ public class CenterComposite extends Composite implements Observer,
 
 		tConsole = new Text(consoleComposite, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.READ_ONLY);
-		tConsole.setLayoutData(new RowData(shell.getSize().x / 2, 20));
+		tConsole.setLayoutData(new RowData(composite.getSize().x / 2, 20));
 		tConsole.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		tConsole.setFont(new Font(shell.getDisplay(), "Courier New", 10,
+		tConsole.setFont(new Font(composite.getDisplay(), "Courier New", 10,
 				SWT.NORMAL));
 
 //		executeComposite = SWTUtils.centerComposite(consoleComposite, SWT.NONE);
@@ -99,8 +97,6 @@ public class CenterComposite extends Composite implements Observer,
 		displayComposite.setLayoutData(outputGroupGrid);
 		displayTabItem.setControl(displayComposite);
 		
-//		bcd.
-		
 		pack();
 
 		// Initialise gui handler.
@@ -113,12 +109,22 @@ public class CenterComposite extends Composite implements Observer,
 	{
 		if (executeComposite != null)
 			executeComposite.dispose();
-		executeComposite = SWTUtils.centerComposite(parent, SWT.NONE);
-		bClear = SWTUtils.createButton(executeComposite, SWT.PUSH, "Clear", this);
-		bExecute = SWTUtils.createButton(executeComposite, SWT.PUSH, "Execute", this);
-		SWTUtils.hookDisposeLisener(executeComposite, bClear);
-		SWTUtils.hookDisposeLisener(executeComposite, bExecute);
+		executeComposite = SWTFactory.centerComposite(parent, SWT.NONE);
+		bClear = SWTFactory.createButton(executeComposite, SWT.PUSH, "Clear", null);
+		bExecute = SWTFactory.createButton(executeComposite, SWT.PUSH, "Execute", null);
+		SWTFactory.hookDisposeLisener(executeComposite, bClear);
+		SWTFactory.hookDisposeLisener(executeComposite, bExecute);
 		executeComposite.redraw();
+	}
+	
+	public void addExecuteListener(SelectionListener listener)
+	{
+		bExecute.addSelectionListener(listener);
+	}
+	
+	public void addClearListener(SelectionListener listener)
+	{
+		bClear.addSelectionListener(listener);
 	}
 
 	public void update(final Observable observable, Object arg1)
@@ -148,33 +154,6 @@ public class CenterComposite extends Composite implements Observer,
 			Display.getDefault().asyncExec(toRun);
 		}
 	}
-
-	public void widgetDefaultSelected(SelectionEvent arg0)
-	{
-	} // Not interested in this.
-
-	public void widgetSelected(SelectionEvent event)
-	{
-		if (event.getSource() == bExecute)
-		{
-			parent.executeReport();
-		} else if (event.getSource() == bClear)
-		{
-			// clear;
-			tConsole.setText("");
-		}
-		else if (event.getSource() == tabFolder){
-//			System.out.println(event.item.toString());
-//			if (event.item.toString().contains("Console"))
-//			{
-//				createExecuteComposite(consoleComposite);
-//			}
-//			else if (event.item.toString().contains("Display"))
-//			{
-//				createExecuteComposite(displayComposite);
-//			}
-		}
-	}
 	
 	/**
 	 * @return The composite used to display charts.
@@ -183,4 +162,33 @@ public class CenterComposite extends Composite implements Observer,
 	{
 		return displayComposite;
 	}
+
+//	public void widgetDefaultSelected(SelectionEvent arg0)
+//	{
+//	} // Not interested in this.
+//
+//	public void widgetSelected(SelectionEvent event)
+//	{
+//		if (event.getSource() == bExecute)
+//		{
+//			parent.execute();
+//		} else if (event.getSource() == bClear)
+//		{
+//			// clear;
+//			tConsole.setText("");
+//		}
+//		else if (event.getSource() == tabFolder){
+////			System.out.println(event.item.toString());
+////			if (event.item.toString().contains("Console"))
+////			{
+////				createExecuteComposite(consoleComposite);
+////			}
+////			else if (event.item.toString().contains("Display"))
+////			{
+////				createExecuteComposite(displayComposite);
+////			}
+//		}
+//	}
+	
+
 }

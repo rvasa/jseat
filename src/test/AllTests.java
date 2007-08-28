@@ -13,7 +13,7 @@ public class AllTests
 		suite.addTestSuite(MetricDataTest.class);
 		suite.addTestSuite(VersionMetricDataTest.class);
 		suite.addTestSuite(EnumTableTest.class);
-		suite.addTestSuite(FileUtilTest.class);
+//		suite.addTestSuite(FileUtilTest.class);
 		suite.addTestSuite(ReportDefinitionRepositoryTest.class);
 		suite.addTestSuite(MetricTableTest.class);
 		suite.addTestSuite(VersionTest.class);

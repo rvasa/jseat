@@ -95,12 +95,12 @@ public class EvolutionReportVisitor extends Report
 
 		for (int i = 1; i <= total; i++)
 		{
-			VersionMetricData vmd = hmd.versions.get(i);
+			VersionMetricData vmd = hmd.getVersion(i);
 			ArrayList<String[]> tmpRows = getClassList(vmd, Evolution
 					.parse(type), fields);
 			for (String[] row : tmpRows)
 				rows.add(row);
-			updateProgress(i, total);
+			updateProgress(i, total, vmd);
 		}
 
 		// Create and set table.
@@ -116,7 +116,7 @@ public class EvolutionReportVisitor extends Report
 
 		ArrayList<String[]> rows = getClassList(vmd, Evolution.parse(type),
 				fields);
-		updateProgress(1, 1);
+		updateProgress(1, 1, vmd);
 
 		// Create and set table.
 		MetricTable<String, String> et = new MetricTable<String, String>(

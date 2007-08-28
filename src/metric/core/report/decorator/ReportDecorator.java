@@ -1,5 +1,7 @@
 package metric.core.report.decorator;
 
+import java.util.Observer;
+
 import metric.core.exception.ReportException;
 import metric.core.model.ClassMetricData;
 import metric.core.model.HistoryMetricData;
@@ -48,6 +50,12 @@ public abstract class ReportDecorator implements ReportVisitor
 	{
 		decoratedReport.visit(mmp);
 		display();
+	}
+	
+	public void addObserver(Observer observer)
+	{
+		// TODO Auto-generated method stub
+		decoratedReport.addObserver(observer);	
 	}
 
 	public abstract void display();

@@ -9,6 +9,7 @@ import metric.core.model.ClassMetricData;
 import metric.core.model.HistoryMetricData;
 import metric.core.model.VersionMetricData;
 import metric.core.report.Report;
+import metric.core.util.CSVUtil;
 import metric.core.util.MetricTable;
 import metric.core.util.StatUtils;
 import metric.core.util.StringUtils;
@@ -50,19 +51,22 @@ public class ModificationIntensityReportVisitor extends Report
 	public void visit(HistoryMetricData hmd) throws ReportException
 	{
 		int versions = hmd.versions.values().size();
-		VersionMetricData prev = hmd.versions.get(1);
+		VersionMetricData prev = hmd.getVersion(1);
 
 		ArrayList<String[]> rows = new ArrayList<String[]>(versions);
 
 		for (int i = 1; i <= versions; i++)
 		{
-			double[] tmp = changeFactor(prev, hmd.versions.get(i), versions);
+			VersionMetricData next = hmd.getVersion(i);
+//			System.out.println(prev + " " + next);
+			double[] tmp = changeFactor(prev, next, versions);
 			String[] newTmp = new String[tmp.length];
 			for (int j = 0; j < tmp.length; j++)
 				newTmp[j] = String.valueOf(tmp[j]);
 
+			updateProgress(i, versions, prev);
 			rows.add(newTmp);
-			prev = hmd.versions.get(i);
+			prev = next;
 		}
 
 		// Create and set table.
@@ -112,17 +116,17 @@ public class ModificationIntensityReportVisitor extends Report
 						.get(cm.get(ClassMetric.NAME)).getSimpleMetric(
 								ClassMetric.BRANCH_COUNT))
 					changeNum++;
-
 				if (changeNum > 0)
 				{
 					intensityRange[cm.getSimpleMetric(ClassMetric.BORN_RSN) - 1] += computeIntensity(
 							changeNum,
 							numClasses);
-				} else // Very minor change.
+				} else
+					// Very minor change.
 					intensityRange[cm.getSimpleMetric(ClassMetric.BORN_RSN) - 1] += 0.001d;
 			}
 		}
-		System.out.println(StringUtils.toCSVString(intensityRange));
+		// System.out.println(CSVUtil.toCSVString(intensityRange));
 		return intensityRange;
 	}
 

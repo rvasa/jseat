@@ -57,8 +57,9 @@ public class CloneReportVisitor extends Report
 
 		for (int i = 1; i < total; i++)
 		{
-			rows.add(getCloneClusters(hmd.versions.get(i)));
-			updateProgress(i, total);
+			VersionMetricData vmd = hmd.getVersion(i);
+			rows.add(getCloneClusters(vmd));
+			updateProgress(i, total, vmd);
 		}
 
 		// Create and set table.

@@ -1,48 +1,108 @@
 package metric.core.model;
 
-import java.util.Collection;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
+import metric.core.exception.ConversionException;
 import metric.core.exception.ReportException;
+import metric.core.persistence.CSVConverter;
+import metric.core.persistence.DataLoaderFactory;
+import metric.core.persistence.DataLoadingStrategy;
+import metric.core.persistence.MetricDataConverter;
 import metric.core.report.visitor.ReportVisitor;
 import metric.core.vocabulary.History;
+import metric.core.vocabulary.LoadType;
+import metric.core.vocabulary.SerializeType;
 import metric.core.vocabulary.Version;
 
 /**
- * History - The set of versions that make up a systems evolution history
- * @author rvasa
+ * History - The set of versions that make up a systems evolution history.<b/>
+ * By default, when a version is loaded (or requested if it has not already been
+ * loaded), it is loaded minimally. That is, only with ClassMetric metrics as
+ * this is where most processing occurs. So class dependencies and method
+ * related data are not loaded and hence not available.<br/> This behavour can
+ * be changed by specifying the loading type in the appropriate constructor.
+ * 
+ * Currently, the two supported types are:<br />
+ * LoadType.MINIMAL - Same as default behaviour.<br />
+ * LoadType.MAXIMAL - Same as MINIMAL with the addition of class dependences and
+ * class method data.
+ * 
+ * @author Joshua Hayes,Swinburne University (ICT),2007
  */
 public class HistoryMetricData extends MetricData<History>
 {
-    public Map<Integer, VersionMetricData> versions = new HashMap<Integer, VersionMetricData>();
+	// Position 0 = VersionName, position 1 = FileLocaiton.
+	public Map<Integer, String[]> versions; // = new HashMap<Integer, String[]>();
+	private DataLoadingStrategy dataLoader;
+	
+	public HistoryMetricData(String productName, Map<Integer, String[]> versions)
+	{
+		properties.put(History.NAME, productName);
+		properties.put(History.SHORTNAME, productName);
+		setSimpleMetric(History.VERSIONS, versions.size());
+		this.versions = versions;
+		
+		// Minimal by default
+		DataLoaderFactory factory = DataLoaderFactory.getInstance();
+		dataLoader = factory.getDataLoader(versions, LoadType.MINIMAL);
+	}
 
-    public HistoryMetricData(String productName, Map<Integer, VersionMetricData> versions)
-    {
-    	properties.put(History.NAME, productName);
-    	metrics.put(History.VERSIONS, versions.size());
-        this.versions = versions;
-    }
-    
-    public HistoryMetricData (String productName)
-    {
-    	properties.put(History.NAME, productName);
-    }
-      
-    public Collection<VersionMetricData> getVersionList()
-    {
-        return versions.values();
-    }
-        
-    public void addVersion(VersionMetricData v)
-    {
-        versions.put(v.getSimpleMetric(Version.RSN), v); // new version
-    }
-    
-    public VersionMetricData getVersion(int rsn)
-    {
-        return versions.get(rsn);
-    }
+	public HistoryMetricData(String productName,
+			Map<Integer, String[]> versions, LoadType loadType)
+	{
+		this(productName, versions);
+		
+		DataLoaderFactory factory = DataLoaderFactory.getInstance();
+		dataLoader = factory.getDataLoader(versions, loadType);
+	}
+
+	public int size()
+	{
+		return versions.size();
+	}
+
+	public HistoryMetricData(String productName)
+	{
+		properties.put(History.NAME, productName);
+	}
+
+	public String getPathOf(int rsn)
+	{
+		// Position 1 is the path to file.
+		return versions.get(rsn)[1];
+	}
+
+	public String getNameOf(int rsn)
+	{
+		// Position 0 is the path to file.
+		return versions.get(rsn)[0];
+	}
+
+	public Set<Map.Entry<Integer, String>> getVersionList()
+	{
+		Map<Integer, String> ret = new HashMap<Integer, String>();
+		Iterator<Entry<Integer, String[]>> it = versions.entrySet().iterator();
+		while (it.hasNext())
+		{
+			Entry<Integer, String[]> entry = it.next();
+			// Position 0 stores the name.
+			ret.put(entry.getKey(), entry.getValue()[0]);
+		}
+		return ret.entrySet();
+	}
+
+	// TODO Provide some form of caching strategy on the loader side.
+	public VersionMetricData getVersion(int rsn)
+	{
+		return dataLoader.getVersion(rsn);
+	}
 
 	public void accept(ReportVisitor visitor) throws ReportException
 	{

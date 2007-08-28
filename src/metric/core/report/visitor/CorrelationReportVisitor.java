@@ -126,7 +126,7 @@ public class CorrelationReportVisitor extends Report
 		ArrayList<String[]> rows = new ArrayList<String[]>();
 		for (int i = 2; i < hmd.versions.size(); i++)
 		{
-			VersionMetricData v = hmd.versions.get(i);
+			VersionMetricData v = hmd.getVersion(i);
 			ArrayList<String> row = new ArrayList<String>();
 			try
 			{
@@ -146,7 +146,7 @@ public class CorrelationReportVisitor extends Report
 			}
 
 			rows.add(StringUtils.asStrings(row));
-			updateProgress(i, hmd.versions.size());
+			updateProgress(i, hmd.versions.size(), v);
 		}
 		return rows;
 	}

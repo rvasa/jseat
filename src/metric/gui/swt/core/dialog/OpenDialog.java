@@ -1,6 +1,7 @@
 package metric.gui.swt.core.dialog;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
@@ -25,9 +26,17 @@ public class OpenDialog
 			String[] filterNames, String filterPath)
 	{
 		this(shell);
-		fd.setFilterExtensions(filterExtensions);
-		fd.setFilterNames(filterNames);
-		fd.setFilterPath(filterPath);
+		if (filterExtensions != null)
+			fd.setFilterExtensions(filterExtensions);
+		if (filterNames != null)
+			fd.setFilterNames(filterNames);
+		if (filterPath != null)
+			fd.setFilterPath(filterPath);
+	}
+	
+	public void setTitle(String title)
+	{
+		fd.setText(title);
 	}
 
 	public void setFilerExtensions(String[] filters)
@@ -54,5 +63,10 @@ public class OpenDialog
 	public String getPath()
 	{
 		return fileToOpen;
+	}
+
+	public void setFileName(String filename)
+	{
+		fd.setFileName(filename);
 	}
 }
