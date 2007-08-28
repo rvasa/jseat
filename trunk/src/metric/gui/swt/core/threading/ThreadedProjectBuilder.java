@@ -1,49 +1,55 @@
 package metric.gui.swt.core.threading;
 
-import java.io.IOException;
-import java.util.Collection;
 import java.util.Observer;
+import java.util.Set;
+import java.util.Map.Entry;
 
-import metric.core.MetricEngine;
+import metric.core.Project;
 import metric.core.model.HistoryMetricData;
 import metric.core.model.MetricData;
-import metric.core.model.VersionMetricData;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
 
 /**
- * Creates a <code>MetricEngine</code> on its own Thread and updates the
- * specified list with the data returned from the MetricEngine.
+ * Creates a <code>Project</code> on its own Thread and updates the specified
+ * list with the data returned from the MetricEngine.
  * 
- * Can be interrupted to cancel the MetricEngine from building <code>MetricData</code>.
+ * Can be interrupted to cancel the MetricEngine from building
+ * <code>MetricData</code>.
  * 
  * @author Joshua Hayes,Swinburne University (ICT),2007
  */
-public class ThreadedMetricEngine extends Thread
+public class ThreadedProjectBuilder extends Thread
 {
-	private final String filename;
 	private HistoryMetricData hmd;
 	private List versionList;
-	private MetricEngine me;
-	private Observer o;
-
+	private Project project;
 	/**
      * 
-     * @param o The Observer that should be notified on the update status of the
-     *            MetricEngine.
      * @param versionList The List where all <code>VersionMetricData</code>
      *            should be added once the <code>MetricEngine</code> has
      *            created the appropriate <code>MetricData</code>.
-     * @param filename The filename of the *.versions file the MetricEngine
-     *            should process.
+     * @param filename The filename of the project file.
      */
-	public ThreadedMetricEngine(Observer o, List versionList, String filename)
+	public ThreadedProjectBuilder(List versionList, String projectInput)
 	{
-		this.filename = filename;
-		this.o = o;
 		this.versionList = versionList;
-		setName("MetricEngineThread");
+		setName("ProjectBuilderThread");
+		
+		project = new Project(projectInput);
+	}
+
+	public ThreadedProjectBuilder(List versions, String projectInput,
+			String projectOutput, int concurrentVerThreads)
+	{
+		this.versionList = versions;
+		project = new Project(projectInput, projectOutput, concurrentVerThreads);
+	}
+	
+	public void addObserver(Observer observer)
+	{
+		project.addObserver(observer);
 	}
 
 	/**
@@ -71,15 +77,12 @@ public class ThreadedMetricEngine extends Thread
 	@Override
 	public void run()
 	{
-		me = new MetricEngine(true, 3);
-		me.addObserver(o);
+		this.hmd = project.build();
 
-		try
+		// Only do this if we have a version list to populate.
+		if (versionList != null && hmd != null)
 		{
-			this.hmd = me.process(filename);
-			me = null; // Finished with MetricEngine.
-			final Collection<VersionMetricData> c = hmd.getVersionList();
-			o.update(null, hmd);
+			final Set<Entry<Integer, String>> c = hmd.getVersionList();
 
 			Runnable toRun = new Runnable()
 			{
@@ -87,21 +90,22 @@ public class ThreadedMetricEngine extends Thread
 				{
 					versionList.removeAll();
 					versionList.setData(hmd);
-					for (VersionMetricData vmd : c)
+
+					for (Entry<Integer, String> version : c)
 					{
-						versionList.add(vmd.toString());
+						versionList.add(version.getValue());
+						versionList.setData(version.getValue(), version
+								.getKey());
 					}
 				}
 			};
 			if (!isInterrupted())
 				Display.getDefault().asyncExec(toRun);
-		} catch (IOException e)
+		} else
 		{
-			e.printStackTrace();
-		} catch (InterruptedException e)
-		{
-		} // handle. We have overriden interrupt() to notify the MetricEngine
-		// ourselves.
+			System.out.println("Version list null? " + versionList);
+			System.out.println("History null? " + hmd);
+		}
 	}
 
 	@Override
@@ -112,6 +116,5 @@ public class ThreadedMetricEngine extends Thread
 	public void interrupt()
 	{
 		super.interrupt();
-		me.interruptModelBuilder(true);
 	}
 }

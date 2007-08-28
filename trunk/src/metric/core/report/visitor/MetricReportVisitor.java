@@ -72,8 +72,8 @@ public class MetricReportVisitor extends Report
 				Version.CLASS_COUNT.toString(), "class_stats" };
 		for (int i = 1; i <= total; i++)
 		{
-			updateProgress(i, total);
 			VersionMetricData vmd = hmd.getVersion(i);
+			updateProgress(i, total, vmd);
 			if (type.equals("metric"))
 				for (String[] row : getRowsOfMetrics(vmd))
 					rows.add(row);
@@ -153,7 +153,7 @@ public class MetricReportVisitor extends Report
 		Map<String, Integer[]> historyMap = new HashMap<String, Integer[]>();
 		for (int i = 1; i <= hmd.versions.size(); i++)
 		{
-			VersionMetricData v = hmd.versions.get(i);
+			VersionMetricData v = hmd.getVersion(i);
 			Map<String, Integer> versionMetricMap = getMetricMap(v, fieldName); // ,
 			// constraintField,
 			// constraintMin,

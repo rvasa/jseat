@@ -13,13 +13,32 @@ import metric.core.report.visitor.ReportVisitor;
  */
 public class ThreadedReporter extends Thread
 {
-	HistoryMetricData hmd;
-	ReportVisitor visitor;
+	private HistoryMetricData hmd;
+	private ReportVisitor visitor;
+	private Object lock;
+	private boolean running;
 
 	public ThreadedReporter(HistoryMetricData hmd, ReportVisitor visitor)
 	{
 		this.hmd = hmd;
 		this.visitor = visitor;
+		running = true;
+		lock = new Object();
+	}
+	
+	public boolean isRunning() throws InterruptedException
+	{
+		synchronized (lock) {
+			while (running)
+			{
+				yield();
+				Thread.sleep(100);
+			}
+		}
+		
+		
+		return true;
+		
 	}
 
 	@Override
@@ -27,7 +46,14 @@ public class ThreadedReporter extends Thread
 	{
 		try
 		{
+			System.out.println(Thread.currentThread().getName() + "running report...");
 			hmd.accept(visitor);
+			System.out.println(Thread.currentThread().getName() + "finished report...");
+			synchronized (lock)
+			{
+				running = false;
+			}
+			notifyAll();
 		} catch (ReportException e)
 		{
 			// FIXME This should be logged instead.

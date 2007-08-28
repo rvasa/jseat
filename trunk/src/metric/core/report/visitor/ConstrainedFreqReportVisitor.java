@@ -95,12 +95,12 @@ public class ConstrainedFreqReportVisitor extends Report
 
 		for (int i = 1; i <= hmd.versions.size(); i++)
 		{
-			VersionMetricData vmd = hmd.versions.get(i);
+			VersionMetricData vmd = hmd.getVersion(i);
 
 			String[] row = getConstrainedFreq(vmd, metric, maxValue, relative,
 					cMetric, cMin, cMax);
 			rows.add(row);
-			updateProgress(i, total);
+			updateProgress(i, total, vmd);
 		}
 
 		// Create and set table.

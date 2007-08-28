@@ -1,6 +1,6 @@
 package intentions;
 
-import metric.core.MetricEngine;
+import metric.core.extraction.MetricEngine;
 import metric.core.model.HistoryMetricData;
 import metric.core.report.ReportFactory;
 import metric.core.report.decorator.CompositeReportDecorator;
@@ -9,7 +9,7 @@ import metric.core.report.decorator.TextDecorator;
 import metric.core.report.visitor.ModificationIntensityReportVisitor;
 import metric.core.util.logging.ConsoleHandler;
 import metric.core.util.logging.LogOrganiser;
-import metric.core.vocabulary.SupportedFileType;
+import metric.core.vocabulary.JSeatFileType;
 import metric.gui.swt.core.decorator.ColourMapDecorator;
 import metric.gui.swt.core.decorator.ColourMapDecorator.IntensityStyle;
 
@@ -44,9 +44,9 @@ public class IntensityVisualizer
 		try
 		{
 			// Create a new MetricEngine.
-			MetricEngine me = new MetricEngine(true, 3);
+			MetricEngine me = new MetricEngine(OUTPUT_LOCATION + JSeatFileType.VERSION.toString(), "testProjecT", 3, true);
 			// Process model data.
-			HistoryMetricData hmd = me.process(OUTPUT_LOCATION + SupportedFileType.VERSION.toString());
+			HistoryMetricData hmd = me.process();
 
 			// Get a ModificationIntensityReport
 			String report = "1,ModificationIntensityReportVisitor,Modification Intensity Report";

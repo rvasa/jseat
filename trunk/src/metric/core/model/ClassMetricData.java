@@ -25,6 +25,8 @@ public class ClassMetricData extends MetricData<ClassMetric> implements
 	public Set<String> internalDeps = new HashSet<String>();
 	public MethodMetricMap methods;
 
+	public long lastModified;
+
 	/**
      * Initialise metrics, properties etc. This is private because it is only
      * intended to be called internally
@@ -33,92 +35,95 @@ public class ClassMetricData extends MetricData<ClassMetric> implements
 	{
 		// Dependency related
 		properties.put(ClassMetric.SUPER_CLASS_NAME, "java/lang/Object");
-		setSimpleMetric(ClassMetric.SUPER_CLASS_COUNT, 0);
-		setSimpleMetric(ClassMetric.INTERFACE_COUNT, 0);
-		setSimpleMetric(ClassMetric.FAN_OUT_COUNT, 0);
-		setSimpleMetric(ClassMetric.FAN_IN_COUNT, 0);
-		setSimpleMetric(ClassMetric.INTERNAL_FAN_OUT_COUNT, 0);
-		setSimpleMetric(ClassMetric.BRANCH_COUNT, 0);
-		setSimpleMetric(ClassMetric.NORMALIZED_BRANCH_COUNT, 0);
+		 setSimpleMetric(ClassMetric.SUPER_CLASS_COUNT, 0);
+		 setSimpleMetric(ClassMetric.INTERFACE_COUNT, 0);
+		 setSimpleMetric(ClassMetric.FAN_OUT_COUNT, 0);
+		 setSimpleMetric(ClassMetric.FAN_IN_COUNT, 0);
+		 setSimpleMetric(ClassMetric.INTERNAL_FAN_OUT_COUNT, 0);
+		 setSimpleMetric(ClassMetric.BRANCH_COUNT, 0);
+		 setSimpleMetric(ClassMetric.NORMALIZED_BRANCH_COUNT, 0);
+		 setSimpleMetric(ClassMetric.DATE, 999);
 
 		// Fields
-		setSimpleMetric(ClassMetric.FIELD_COUNT, 0);
-		setSimpleMetric(ClassMetric.PUBLIC_FIELD_COUNT, 0);
-		setSimpleMetric(ClassMetric.PRIVATE_FIELD_COUNT, 0);
-		setSimpleMetric(ClassMetric.PROTECTED_FIELD_COUNT, 0);
-		setSimpleMetric(ClassMetric.STATIC_FIELD_COUNT, 0);
-		setSimpleMetric(ClassMetric.FINAL_FIELD_COUNT, 0);
-		setSimpleMetric(ClassMetric.INNER_CLASS_COUNT, 0);
+		 setSimpleMetric(ClassMetric.FIELD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.PUBLIC_FIELD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.PRIVATE_FIELD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.PROTECTED_FIELD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.STATIC_FIELD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.FINAL_FIELD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.INNER_CLASS_COUNT, 0);
 
 		// Type
-		setSimpleMetric(ClassMetric.IS_IO_CLASS, 0);
-		setSimpleMetric(ClassMetric.IS_INTERFACE, 0);
-		setSimpleMetric(ClassMetric.IS_ABSTRACT, 0);
+		 setSimpleMetric(ClassMetric.IS_IO_CLASS, 0);
+		 setSimpleMetric(ClassMetric.IS_INTERFACE, 0);
+		 setSimpleMetric(ClassMetric.IS_ABSTRACT, 0);
+		// Public by default.
 		setSimpleMetric(ClassMetric.IS_PUBLIC, 1);
-		setSimpleMetric(ClassMetric.IS_EXCEPTION, 0);
+		 setSimpleMetric(ClassMetric.IS_PRIVATE, 1);
+		 setSimpleMetric(ClassMetric.IS_PROTECTED, 0);
+		 setSimpleMetric(ClassMetric.IS_EXCEPTION, 0);
 
 		// Methods
-		setSimpleMetric(ClassMetric.EX_METHOD_CALL_COUNT, 0);
-		setSimpleMetric(ClassMetric.IN_METHOD_CALL_COUNT, 0);
-		setSimpleMetric(ClassMetric.METHOD_CALL_COUNT, 0);
-		setSimpleMetric(ClassMetric.METHOD_COUNT, 0);
-		setSimpleMetric(ClassMetric.PUBLIC_METHOD_COUNT, 0);
-		setSimpleMetric(ClassMetric.PRIVATE_METHOD_COUNT, 0);
-		setSimpleMetric(ClassMetric.PROTECTED_METHOD_COUNT, 0);
-		setSimpleMetric(ClassMetric.FINAL_METHOD_COUNT, 0);
-		setSimpleMetric(ClassMetric.ABSTRACT_METHOD_COUNT, 0);
-		setSimpleMetric(ClassMetric.STATIC_METHOD_COUNT, 0);
-		setSimpleMetric(ClassMetric.SYNCHRONIZED_METHOD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.EX_METHOD_CALL_COUNT, 0);
+		 setSimpleMetric(ClassMetric.IN_METHOD_CALL_COUNT, 0);
+		 setSimpleMetric(ClassMetric.METHOD_CALL_COUNT, 0);
+		 setSimpleMetric(ClassMetric.METHOD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.PUBLIC_METHOD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.PRIVATE_METHOD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.PROTECTED_METHOD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.FINAL_METHOD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.ABSTRACT_METHOD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.STATIC_METHOD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.SYNCHRONIZED_METHOD_COUNT, 0);
 
-		setSimpleMetric(ClassMetric.THROW_COUNT, 0);
-		setSimpleMetric(ClassMetric.REF_LOAD_OP_COUNT, 0);
-		setSimpleMetric(ClassMetric.REF_STORE_OP_COUNT, 0);
-		setSimpleMetric(ClassMetric.LOAD_FIELD_COUNT, 0);
-		setSimpleMetric(ClassMetric.STORE_FIELD_COUNT, 0);
-
-		setSimpleMetric(ClassMetric.TRY_CATCH_BLOCK_COUNT, 0);
-		setSimpleMetric(ClassMetric.LOCAL_VAR_COUNT, 0);
+		 setSimpleMetric(ClassMetric.THROW_COUNT, 0);
+		 setSimpleMetric(ClassMetric.REF_LOAD_OP_COUNT, 0);
+		 setSimpleMetric(ClassMetric.REF_STORE_OP_COUNT, 0);
+		 setSimpleMetric(ClassMetric.LOAD_FIELD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.STORE_FIELD_COUNT, 0);
+		
+		 setSimpleMetric(ClassMetric.TRY_CATCH_BLOCK_COUNT, 0);
+		 setSimpleMetric(ClassMetric.LOCAL_VAR_COUNT, 0);
 
 		// Instruction counts
-		setSimpleMetric(ClassMetric.CONSTANT_LOAD_COUNT, 0);
-		setSimpleMetric(ClassMetric.INCREMENT_OP_COUNT, 0);
-		setSimpleMetric(ClassMetric.LOAD_COUNT, 0);
-		setSimpleMetric(ClassMetric.STORE_COUNT, 0);
-		setSimpleMetric(ClassMetric.ILOAD_COUNT, 0);
-		setSimpleMetric(ClassMetric.ISTORE_COUNT, 0);
-		setSimpleMetric(ClassMetric.TYPE_INSN_COUNT, 0);
-		setSimpleMetric(ClassMetric.ZERO_OP_INSN_COUNT, 0);
+		 setSimpleMetric(ClassMetric.CONSTANT_LOAD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.INCREMENT_OP_COUNT, 0);
+		 setSimpleMetric(ClassMetric.LOAD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.STORE_COUNT, 0);
+		 setSimpleMetric(ClassMetric.ILOAD_COUNT, 0);
+		 setSimpleMetric(ClassMetric.ISTORE_COUNT, 0);
+		 setSimpleMetric(ClassMetric.TYPE_INSN_COUNT, 0);
+		 setSimpleMetric(ClassMetric.ZERO_OP_INSN_COUNT, 0);
 
 		// Evolution
-		setSimpleMetric(ClassMetric.IS_DELETED, 0);
-		setSimpleMetric(ClassMetric.IS_MODIFIED, 0);
-		setSimpleMetric(ClassMetric.EVOLUTION_STATUS, Evolution.UNCHANGED
-				.getValue());
-		setSimpleMetric(ClassMetric.EVOLUTION_DISTANCE, Evolution.UNCHANGED
-				.getValue());
-		setSimpleMetric(ClassMetric.NEXT_VERSION_STATUS, Evolution.UNCHANGED
-				.getValue());
+		 setSimpleMetric(ClassMetric.IS_DELETED, 0);
+		 setSimpleMetric(ClassMetric.IS_MODIFIED, 0);
+		 setSimpleMetric(ClassMetric.EVOLUTION_STATUS, Evolution.UNCHANGED
+		 .getValue());
+		 setSimpleMetric(ClassMetric.EVOLUTION_DISTANCE, Evolution.UNCHANGED
+		 .getValue());
+		 setSimpleMetric(ClassMetric.NEXT_VERSION_STATUS, Evolution.UNCHANGED
+		 .getValue());
 
 		// Distance related.
-		setSimpleMetric(ClassMetric.GUI_DISTANCE, 0);
+		 setSimpleMetric(ClassMetric.GUI_DISTANCE, 0);
 		setSimpleMetric(ClassMetric.COMPUTED_DISTANCE, -1);
-
-		setSimpleMetric(ClassMetric.INSTABILITY, 0);
-		setSimpleMetric(ClassMetric.LAYER, 0);
 
 		// Start off young
 		setSimpleMetric(ClassMetric.AGE, 1);
 		// lets assume it was born in first version.
 		setSimpleMetric(ClassMetric.BORN_RSN, 1);
-
-		setSimpleMetric(ClassMetric.RAW_SIZE_COUNT, 0);
 	}
 
 	public ClassMetricData(String productName)
 	{
-		// Do preliminary initialisation.
-		this();
 		properties.put(ClassMetric.PRODUCT_NAME, productName);
+	}
+
+	public ClassMetricData(String productName, int[] metrics)
+	{
+		properties.put(ClassMetric.PRODUCT_NAME, productName);
+		this.metrics = metrics;
 	}
 
 	/**
@@ -161,16 +166,20 @@ public class ClassMetricData extends MetricData<ClassMetric> implements
 	/** Checks if it is a clone, i.e. similar to another CM */
 	public boolean isExactMatch(ClassMetricData c)
 	{
-		if (!c.get(ClassMetric.NAME).equals(get(ClassMetric.NAME)))
+		if (!c.get(ClassMetric.NAME).equals(this.get(ClassMetric.NAME)))
 			return false;
 		if (!c.get(ClassMetric.SUPER_CLASS_NAME).equals(
-				get(ClassMetric.SUPER_CLASS_NAME)))
+				this.get(ClassMetric.SUPER_CLASS_NAME)))
 			return false;
 
 		// Check if dependencies have changed
 		for (String dep : this.dependencies)
+		{
 			if (!c.dependencies.contains(dep))
+			{
 				return false;
+			}
+		}
 
 		// TODO Should check fields here
 		// TODO Should check methods here.
@@ -186,9 +195,6 @@ public class ClassMetricData extends MetricData<ClassMetric> implements
      */
 	public void mergeInnerClass(ClassMetricData innerClass)
 	{
-		// System.out.println("Merging: " + innerClass.get(ClassMetric.NAME) + "
-		// -> " + get(ClassMetric.NAME));
-		// Increment inner_class_count, interface_count, method_count
 		incrementMetric(ClassMetric.INNER_CLASS_COUNT, innerClass
 				.getSimpleMetric(ClassMetric.INNER_CLASS_COUNT));
 		incrementMetric(ClassMetric.INTERFACE_COUNT, innerClass
@@ -239,18 +245,15 @@ public class ClassMetricData extends MetricData<ClassMetric> implements
 			return false;
 
 		ClassMetricData other = (ClassMetricData) o;
-		// Compare properties between other and this class.
-		for (ClassMetric metric : other.properties.keySet())
-		{
-			if (other.get(metric) != this.get(metric))
-				return false;
-		}
+	
 		// Compare metrics between other and this class.
-		for (ClassMetric metric : other.metrics.keySet())
-		{
-			if (other.getSimpleMetric(metric) != this.getSimpleMetric(metric))
+
+		int[] otherMetrics = other.getMetrics();
+		for (int i = 0; i < ClassMetric.getNumberOfComparativeMetrics(); i++)
+			if (otherMetrics[i] != getMetrics()[i])
+			{
 				return false;
-		}
+			}
 
 		// TODO Should check fields here
 		// TODO Should check methods here.
@@ -258,7 +261,7 @@ public class ClassMetricData extends MetricData<ClassMetric> implements
 	}
 
 	// TODO Could probably give a better textual representation of a
-    // ClassMetricData here.
+	// ClassMetricData here.
 	public String toString()
 	{
 		String classType = getClassType();

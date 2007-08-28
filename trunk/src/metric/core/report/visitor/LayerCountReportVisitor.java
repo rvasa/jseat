@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import metric.core.ReportDefinition;
 import metric.core.exception.ReportException;
 import metric.core.model.VersionMetricData;
+import metric.core.util.CSVUtil;
 import metric.core.util.StatUtils;
 import metric.core.util.StringUtils;
 import metric.core.vocabulary.ClassMetric;
@@ -27,7 +28,7 @@ public class LayerCountReportVisitor extends CountReportVisitor
 		row.add(vmd.get(Version.ID));
 		row.add(vmd.get(Version.CLASS_COUNT));
 		// Limited to 4 layers for now.
-		row.add(StringUtils.toCSVString(StatUtils.createRelFreqTable(vmd
+		row.add(CSVUtil.toCSVString(StatUtils.createRelFreqTable(vmd
 				.getMetricRange(ClassMetric.LAYER), 4)));
 
 		for (String field : fields)

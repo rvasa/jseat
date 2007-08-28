@@ -1,6 +1,6 @@
 package intentions;
 
-import metric.core.MetricEngine;
+import metric.core.extraction.MetricEngine;
 import metric.core.model.HistoryMetricData;
 import metric.core.report.ReportFactory;
 import metric.core.report.decorator.CompositeReportDecorator;
@@ -94,9 +94,9 @@ public class ReportDecoratorDemo
 			crd2.add(lineDecorator2);
 
 			// Setup a new MetricEngine to process our versions file.
-			MetricEngine me = new MetricEngine(true);
+			MetricEngine me = new MetricEngine(PATH_TO_VERSIONS_FILE, "testProject", true);
 			// Create metric model.
-			HistoryMetricData hmd = me.process(PATH_TO_VERSIONS_FILE);
+			HistoryMetricData hmd = me.process();
 
 			// Finally, have the model accept the composite decorator (which is
 			// actually three decorators; the TextDecorator,

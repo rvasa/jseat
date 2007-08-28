@@ -11,6 +11,7 @@ import metric.core.exception.ReportException;
 import metric.core.model.HistoryMetricData;
 import metric.core.model.VersionMetricData;
 import metric.core.report.Report;
+import metric.core.util.CSVUtil;
 import metric.core.util.MetricTable;
 import metric.core.util.StatUtils;
 import metric.core.util.StringUtils;
@@ -74,10 +75,10 @@ public class CumFreqReportVisitor extends Report
 
 		for (int i = 1; i <= hmd.versions.size(); i++)
 		{
-			VersionMetricData vmd = hmd.versions.get(i);
+			VersionMetricData vmd = hmd.getVersion(i);
 			String[] row = getCumFreqRow(vmd, maxValue, metric);
 			rows.add(row);
-			updateProgress(i, total);
+			updateProgress(i, total, vmd);
 		}
 
 		// Create and set table.
@@ -110,7 +111,7 @@ public class CumFreqReportVisitor extends Report
 
 		String[] row = { vmd.get(Version.NAME), vmd.get(Version.RSN),
 				vmd.get(Version.ID), vmd.get(Version.CLASS_COUNT),
-				StringUtils.toCSVString(cumlTable) };
+				CSVUtil.toCSVString(cumlTable) };
 		return row;
 	}
 }

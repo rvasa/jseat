@@ -1,5 +1,7 @@
 package metric.core.report.visitor;
 
+import java.util.Observer;
+
 import metric.core.exception.ReportException;
 import metric.core.model.ClassMetricData;
 import metric.core.model.HistoryMetricData;
@@ -16,6 +18,8 @@ public interface ReportVisitor
 	public void visit(ClassMetricData cmd) throws ReportException;
 	
 	public void visit(MethodMetricMap mmp) throws ReportException;
+	
+	public void addObserver(Observer observer);
 	
 	public MetricTable getTable();
 }

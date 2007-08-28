@@ -1,18 +1,10 @@
 package intentions;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
-import metric.core.MetricEngine;
-import metric.core.model.HistoryMetricData;
-import metric.core.model.MetricData;
-import metric.core.persistence.CSVConverter;
-import metric.core.persistence.MetricDataConverter;
 import metric.core.report.ReportFactory;
 import metric.core.report.visitor.ReportVisitor;
 import metric.core.util.logging.ConsoleHandler;
 import metric.core.util.logging.LogOrganiser;
-import metric.core.vocabulary.SupportedFileType;
+import metric.core.vocabulary.JSeatFileType;
 
 /**
  * The CSVPersistenceDemo shows how csv persistence is used to store metric model
@@ -41,7 +33,7 @@ public class CSVPersistenceDemo
 
 	// Path from baseDir to locate versions file.
 	private static final String PATH_TO_VERSIONS_FILE = PROJECT_NAME + "/"
-			+ PROJECT_NAME + SupportedFileType.VERSION.toString();
+			+ PROJECT_NAME + JSeatFileType.VERSION.toString();
 
 	// Path to output metric model data to.
 	private static final String OUTPUT_LOCATION = "B:/workspace/builds/"
@@ -53,13 +45,13 @@ public class CSVPersistenceDemo
 		LogOrganiser.addHandler(new ConsoleHandler());
 
 		// Create a new CSV MetricConverter.
-		MetricDataConverter mc = new CSVConverter();
+//		MetricDataConverter mc = new CSVConverter();
 
 		// Do processing and serialization.
-		doExampleSerialization(mc);
+//		doExampleSerialization(mc);
 
 		// Do extraction/de-serialization.
-		HistoryMetricData hmd = doDeSerialization(mc);
+//		HistoryMetricData hmd = doDeSerialization(mc);
 
 		// We are going to create an a report that lists modified classes
 		// for each version from a String. The ReportFactory will return us
@@ -71,35 +63,35 @@ public class CSVPersistenceDemo
 		ReportVisitor modifiedClassesReport = ReportFactory.getReport(report);
 
 		// Finally, have the model accept the report.
-		hmd.accept(modifiedClassesReport);
-
-		System.out.println("Time spent storing to file: "
-				+ (float) mc.getStoreTime() / 1000 + "s");
-		System.out.println("Time spent loading from file: "
-				+ (float) mc.getLoadTime() / 1000 + "s");
+//		hmd.accept(modifiedClassesReport);
+//
+//		System.out.println("Time spent storing to file: "
+//				+ (float) mc.getStoreTime() / 1000 + "s");
+//		System.out.println("Time spent loading from file: "
+//				+ (float) mc.getLoadTime() / 1000 + "s");
 	}
 
-	private static void doExampleSerialization(MetricDataConverter mc)
-			throws Exception
-	{
-		// Create a new metric engine.
-		MetricEngine me = new MetricEngine(true, 3);
-		// Process a versions file to create model.
-		MetricData md = me.process(BASE_DIR + PATH_TO_VERSIONS_FILE);
+//	private static void doExampleSerialization(MetricDataConverter mc)
+//			throws Exception
+//	{
+//		// Create a new metric engine.
+//		MetricEngine me = new MetricEngine(BASE_DIR + PATH_TO_VERSIONS_FILE, "testProject", 3, true);
+//		// Process a versions file to create model.
+//		MetricData md = me.process();
+//
+//		// Serialize metric model data to file.
+////		mc.serialize(md, OUTPUT_LOCATION);
+////		mc.close();
+//		// System.out.println(mc.serialize(md));
+//		// mc.close();
+//	}
 
-		// Serialize metric model data to file.
-		mc.serialize(md, OUTPUT_LOCATION);
-		mc.close();
-		// System.out.println(mc.serialize(md));
-		// mc.close();
-	}
-
-	private static HistoryMetricData doDeSerialization(MetricDataConverter mc)
-			throws FileNotFoundException, Exception
-	{
+//	private static HistoryMetricData doDeSerialization(MetricDataConverter mc)
+//			throws FileNotFoundException, Exception
+//	{
 		// Deserialize the *.mmd file at the outputLocation to a
 		// HistoryMetricData object and return it.
-		return (HistoryMetricData) mc.deSerialize(new FileReader(
-				OUTPUT_LOCATION + mc.getFileExtension()));
-	}
+//		return (HistoryMetricData) mc.deSerialize(new FileReader(
+//				OUTPUT_LOCATION + mc.getFileExtension()));
+//	}
 }

@@ -5,8 +5,8 @@ import java.util.HashMap;
 
 import metric.core.exception.ReportException;
 import metric.core.report.visitor.ReportVisitor;
+import metric.core.util.CSVUtil;
 import metric.core.util.StatUtils;
-import metric.core.util.StringUtils;
 import metric.core.vocabulary.ClassMetric;
 import metric.core.vocabulary.Version;
 
@@ -22,6 +22,9 @@ public class VersionMetricData extends MetricData<Version> implements
 
 	public static boolean showProcessing = true;
 	public HashMap<String, ClassMetricData> metricData;
+	
+	public long lowModifiedTime, hiModifiedTime;
+	
 
 	public VersionMetricData()
 	{
@@ -158,7 +161,7 @@ public class VersionMetricData extends MetricData<Version> implements
      */
 	public String getRange(ClassMetric prop)
 	{
-		return StringUtils.toCSVString(getMetricRange(prop), true);
+		return CSVUtil.toCSVString(getMetricRange(prop), true);
 	}
 
 	public int compareTo(VersionMetricData o)
@@ -316,6 +319,14 @@ public class VersionMetricData extends MetricData<Version> implements
 			return StatUtils.getRelativeChange(
 					(int) vsu.getISum(metric),
 					(int) getPred(metric, prev));
+		}
+		
+		public double getChronology(Object metric, VersionMetricData prev)
+		{
+			if (metric == Version.RSN)
+			{
+			} 
+			return getSimpleMetric(Version.RSN);
 		}
 	}
 }

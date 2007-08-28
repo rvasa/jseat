@@ -1,7 +1,8 @@
 package metric;
 
-import metric.core.MetricEngine;
+import metric.core.Project;
 import metric.core.ReportDefinitionRepository;
+import metric.core.extraction.MetricEngine;
 import metric.core.model.HistoryMetricData;
 import metric.core.report.ReportFactory;
 import metric.core.report.decorator.TextDecorator;
@@ -22,8 +23,9 @@ public class JSeatExtractor
      */
 	public static void main(String[] args)
 	{
-		String filename = "";
-		String report = "";
+		String output = "", filename;
+		String report = filename = output;
+		
 		int reportNumber = 1;
 		
 		//TODO Rewrite this.
@@ -56,6 +58,15 @@ public class JSeatExtractor
 					System.err
 							.println("You must specify a number after the -p command.");
 			}
+			else if (args[i].equals("-o"))
+			{
+				if (args.length >= i + 2)
+				{
+					output = args[++i];
+				} else
+					System.err
+							.println("You must specify a path after the -o command.");
+			}
 		}
 
 		try
@@ -64,9 +75,11 @@ public class JSeatExtractor
 			LogOrganiser.addHandler(new ConsoleHandler());
 
 			// Create a new metric engine.
-			MetricEngine me = new MetricEngine(true, 3);
+//			MetricEngine me = new MetricEngine(filename, output, 3, true);
 			// Process a versions file.
-			HistoryMetricData hmd = me.process(filename);
+//			HistoryMetricData hmd = me.process();
+			Project project = new Project("D:\\MyGroovyProject\\SampleGroovyProjectName.jpf");
+			HistoryMetricData hmd = project.build();
 
 			// Setup the ReportDefinitionRepository
 			ReportDefinitionRepository mdr = new ReportDefinitionRepository(

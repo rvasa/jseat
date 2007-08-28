@@ -1,13 +1,11 @@
 package metric.gui.swt.core.threading;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.Observer;
+import java.util.Map.Entry;
 
-import metric.core.model.HistoryMetricData;
 import metric.core.model.MetricData;
-import metric.core.model.VersionMetricData;
+import metric.core.model.HistoryMetricData;
 import metric.core.persistence.MetricDataConverter;
 
 import org.eclipse.swt.widgets.Display;
@@ -68,28 +66,28 @@ public class ThreadedMetricDataConverter extends Thread
 	@Override
 	public void run()
 	{
-		try
-		{
-			// Serialising
-			if (md != null)
-				mc.serialize(md, path);
-			else
-			{
-				FileReader fr = new FileReader(path);
-				md = mc.deSerialize(fr);
-				fr.close();
-
-				updateVersionList();
-			}
-			mc.close();
-		} catch (IOException e)
-		{ // FIXME errors are suppressed here. Nee to send back some other
-			// indication of error.
-			e.printStackTrace();
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+//		try
+//		{
+//			// Serialising
+////			if (md != null)
+////				mc.serialize(md, path);
+////			else
+////			{
+////				FileReader fr = new FileReader(path);
+////				md = mc.deSerialize(fr);
+////				fr.close();
+////
+////				updateVersionList();
+////			}
+////			mc.close();
+//		} catch (IOException e)
+//		{ // FIXME errors are suppressed here. Nee to send back some other
+//			// indication of error.
+//			e.printStackTrace();
+//		} catch (Exception e)
+//		{
+//			e.printStackTrace();
+//		}
 	}
 
 	private void updateVersionList()
@@ -99,15 +97,26 @@ public class ThreadedMetricDataConverter extends Thread
 		{
 			public void run()
 			{
-				Collection<VersionMetricData> c = hmd.getVersionList();
+//				Collection<VersionMetricData> c = hmd.getVersionList();
+//				Collection<String> c = hmd.getVersionList();
+				Iterator<Entry<Integer, String>> iterator = hmd.getVersionList().iterator();
 
 				lVersions.removeAll();
 				lVersions.setData(hmd);
-				for (VersionMetricData vmd : c)
+//				Iterator<String> it = c.iterator();
+				while (iterator.hasNext())
 				{
-					lVersions.add(vmd.toString());
-					lVersions.setData(vmd.toString(), vmd);
+//					String version = it.next();
+//					String vers
+					Entry<Integer, String> entry = iterator.next();
+					lVersions.add(entry.getValue());
+					lVersions.setData(entry.getValue(), entry.getKey());
 				}
+//				for (VersionMetricData vmd : c)
+//				{
+//					lVersions.add(vmd.toString());
+//					lVersions.setData(vmd.toString(), vmd);
+//				}
 			}
 		};
 		Display.getDefault().asyncExec(toRun);

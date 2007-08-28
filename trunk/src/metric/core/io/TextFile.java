@@ -29,17 +29,22 @@ import java.io.IOException;
 public class TextFile implements Iterable<String>
 {
     // Used by the TextFileIterator class below
-    final String filename;
-    BufferedReader in; // The stream we're reading from
+    private String filename;
+    private BufferedReader in; // The stream we're reading from
 
-    public TextFile(String fname)
+    public TextFile(String filename)
     {
-        filename = fname;
+        this.filename = filename;
     }
     
-    public TextFile(File f)
+    public TextFile(File file)
     {
-        filename = f.toString();
+        filename = file.toString();
+    }
+    
+    public TextFile(BufferedReader br)
+    {
+    	in = br;
     }
 
     // This is the one method of the Iterable interface
@@ -73,7 +78,8 @@ public class TextFile implements Iterable<String>
             // We peek ahead like this for the benefit of hasNext().
             try
             {
-                in = new BufferedReader(new FileReader(filename));
+                if (in == null)
+                	in = new BufferedReader(new FileReader(filename));
                 nextline = in.readLine();
             }
             catch (IOException e)

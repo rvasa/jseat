@@ -101,8 +101,8 @@ public class SurvivorReportVisitor extends Report
 		ArrayList<String[]> rows = new ArrayList<String[]>(numRows);
 		for (int i = 2; i <= hmd.versions.size(); i++)
 		{
-			VersionMetricData v1 = hmd.versions.get(i - 1);
-			VersionMetricData v2 = hmd.versions.get(i);
+			VersionMetricData v1 = hmd.getVersion(i-1);
+			VersionMetricData v2 = hmd.getVersion(i);
 
 			int count = ((Set<String>) getSurvivorClassNames(v2, true, 1))
 					.size();
@@ -149,7 +149,7 @@ public class SurvivorReportVisitor extends Report
 		for (int i = 1; i <= hmd.versions.size(); i++)
 		{
 			// VersionMetricData v1 = hmd.versions.get(i - 1);
-			VersionMetricData v2 = hmd.versions.get(i);
+			VersionMetricData v2 = hmd.getVersion(i);
 
 			int count = ((Set<String>) getSurvivorClassNames(v2, true,
 					survivorThreshold)).size();

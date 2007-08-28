@@ -95,8 +95,8 @@ public class CountReportVisitor extends Report
 
 		for (int i = 1; i <= total; i++)
 		{
-			updateProgress(i, total);
-			VersionMetricData vmd = hmd.versions.get(i);
+			VersionMetricData vmd = hmd.getVersion(i);
+			updateProgress(i, total, vmd);
 			rows.add(getRowCounts(vmd, doIsum, doBeta, fields));
 		}
 		// Create and set table.

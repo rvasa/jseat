@@ -2,16 +2,16 @@ package metric.gui.swt.core.vocabulary;
 
 public enum GUI
 {
-	REQ_OAREA_UPDATE(1), // Request output area be updated.
-	REQ_VLIST_UPDATE(2), // Request version list be updated.
-	REQ_SBAR_UPDATE(3),  // Request status bar be updated.
-	HISTORY_PROGRESS(4), // Indicates a progress update from history processing.
-	REPORT_PROGRESS(5),  // Indicates a progress update from report processing.
-	DEFAULT_VERSION_DIR, // Default directory to open when browsing for versions.
-	DEFAULT_REPORT_DIR,  // Default directory to open when browsing for reports.
-	DEFAULT_REPORTSET,   // Default report file to load.
-	AUTO_PROCESS;        // Whether or not to auto-process after browsing for a
-						 // versions file.
+	REQ_OAREA_UPDATE(1),    // Request output area be updated.
+	// REQ_VLIST_UPDATE(2), // Request version list be updated.
+	//REQ_SBAR_UPDATE(3),   // Request status bar be updated.
+	//HISTORY_PROGRESS(4),  // Indicates a progress update from history processing.
+	//REPORT_PROGRESS(5),   // Indicates a progress update from report processing.
+	DEFAULT_VERSION_DIR,    // Default directory to open when browsing for versions.
+	DEFAULT_REPORT_DIR,     // Default directory to open when browsing for reports.
+	DEFAULT_REPORTSET,      // Default report file to load.
+	CONCURRENT_VER_THREADS; // The number of versions that should be processed
+							// concurrently when creating a new project.
 	
 	private int value;
 	

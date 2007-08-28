@@ -92,8 +92,9 @@ public class GiniCoeffReportVisitor extends Report
 		int total = hmd.versions.size();
 		for (int i = 1; i <= total; i++)
 		{
-			updateProgress(i, total);
-			rows.add(getGiniCoeffRow(hmd.getVersion(i), maxValue, fields));
+			VersionMetricData vmd = hmd.getVersion(i);
+			updateProgress(i, total, vmd);
+			rows.add(getGiniCoeffRow(vmd, maxValue, fields));
 		}
 
 		// Create and set table.
@@ -104,6 +105,8 @@ public class GiniCoeffReportVisitor extends Report
 		et.setDisplayTitle(true);
 		setTable(et);
 	}
+	
+	
 
 	@Override
 	public void visit(VersionMetricData vmd) throws ReportException

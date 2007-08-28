@@ -2,10 +2,11 @@ package metric.core.model;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
 
 import metric.core.report.visitor.VisitableReport;
+import metric.core.vocabulary.ClassMetric;
+import metric.core.vocabulary.History;
+import metric.core.vocabulary.Version;
 
 public abstract class MetricData<T extends Enum<T>> implements VisitableReport
 {
@@ -19,20 +20,32 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
 	protected HashMap<T, String> properties;
 
 	// Should be used to store all class related int based metrics
-	protected HashMap<T, Integer> metrics;
+	protected int[] metrics;
 
 	// Should be used to store all class related double based metrics
 	protected HashMap<T, Method> complexMetrics;
 
 	// Should be used to store all class related dependencies
-	protected HashMap<T, List<String>> dependencies;
+//	protected HashMap<T, List<String>> dependencies;
 
 	public MetricData()
 	{
 		properties = new HashMap<T, String>();
-		metrics = new HashMap<T, Integer>();
+		
 		complexMetrics = new HashMap<T, Method>();
-		dependencies = new HashMap<T, List<String>>();
+
+		if (getClass() == HistoryMetricData.class)
+		{
+			metrics = new int[History.getNumberOfMetrics()];
+		}
+		else if (getClass() == VersionMetricData.class)
+		{
+			metrics = new int[Version.getNumberOfMetrics()];
+		}
+		else if (getClass() == ClassMetricData.class)
+		{
+			metrics = new int[ClassMetric.getNumberOfMetrics()];
+		}
 	}
 
 	/**
@@ -41,15 +54,30 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
      */
 	public String get(T prop)
 	{
-		// check metrics first
-		if (metrics.containsKey(prop))
-			return metrics.get(prop).toString();
-		// if not found, check complex metrics
-//		else if (complexMetrics.containsKey(prop))
-//			return complexMetrics.get(prop).toString();
-		// if not found, check properties
+		int metricPos = -1;
+		if (prop.getDeclaringClass() == History.class)
+		{
+			metricPos = History.getNumberOfMetrics();
+		}
+		else if (prop.getDeclaringClass() == Version.class)
+		{
+			metricPos = Version.getNumberOfMetrics();
+		}
+		else if (prop.getDeclaringClass() == ClassMetric.class)
+		{
+			metricPos = ClassMetric.getNumberOfMetrics();
+		}
+
+		if (prop.ordinal() < metricPos)
+		{
+			return String.valueOf(metrics[prop.ordinal()]);
+		}
+//		if (simpleMetrics.containsKey(prop))
+//			return String.valueOf(simpleMetrics.get(prop));
 		else if (properties.containsKey(prop))
+		{
 			return properties.get(prop);
+		}
 
 		// Didn't find it.
 		return null;
@@ -60,7 +88,7 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
      */
 	public int getSimpleMetric(T prop)
 	{
-		return metrics.get(prop);
+		return metrics[prop.ordinal()];
 	}
 	
 	/**
@@ -80,7 +108,7 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
      */
 	public void setSimpleMetric(T prop, int value)
 	{
-		metrics.put(prop, value);
+		metrics[prop.ordinal()] = value;
 	}
 
 	/**
@@ -89,8 +117,7 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
      */
 	public void incrementMetric(T metric)
 	{
-		int value = metrics.get(metric);
-		metrics.put(metric, ++value);
+		metrics[metric.ordinal()]++;
 	}
 
 	/**
@@ -100,8 +127,7 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
      */
 	public void incrementMetric(T metric, int toAdd)
 	{
-		int value = metrics.get(metric);
-		metrics.put(metric, value += toAdd);
+		metrics[metric.ordinal()] += toAdd;
 	}
 
 	/**
@@ -110,13 +136,11 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
      */
 	public void decrementMetric(T metric)
 	{
-		int value = metrics.get(metric);
-		metrics.put(metric, --value);
+		metrics[metric.ordinal()]--;
 	}
 	
-	public Set simpleMetricSet() { return metrics.entrySet(); }
+	public final int[] getMetrics() { return metrics; };
 	
-	public Set complexMetricSet() { return complexMetrics.entrySet(); }
+	public final HashMap<T, String> getProperties() { return properties; }; 
 	
-	public Set propertySet() { return properties.entrySet(); }
 }

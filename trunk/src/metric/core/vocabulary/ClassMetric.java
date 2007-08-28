@@ -2,19 +2,14 @@ package metric.core.vocabulary;
 
 public enum ClassMetric{
 	// Class related.
-	NAME,
-	PRODUCT_NAME,
+
 	INNER_CLASS_COUNT,
-	SUPER_CLASS_NAME,
 	SUPER_CLASS_COUNT, // will be set to 1, if it is not java/lang/Object
 	INTERFACE_COUNT, // Number of implemented interfaces
 	LOCAL_VAR_COUNT,
-	GUI_DISTANCE,
-	BORN_RSN,
-	COMPUTED_DISTANCE, // used to store distance once computed
+	
 	INSTABILITY,
 	LAYER, // Currenly only 4 layers are extracted [top/Mid/bottom and free]
-	AGE, // Start off young
 	RAW_SIZE_COUNT,
 	
 	// Dependency related.
@@ -66,8 +61,8 @@ public enum ClassMetric{
 	ZERO_OP_INSN_COUNT,
 	
 	// Inner class related.
-	INNER_LOAD_COUNT,
-	INNER_STORE_COUNT,
+//	INNER_LOAD_COUNT,
+//	INNER_STORE_COUNT,
 	INTERNAL_FAN_OUT_COUNT,
 	
 	// Brachning related.
@@ -76,17 +71,40 @@ public enum ClassMetric{
 	NORMALIZED_BRANCH_COUNT,
 	BRANCH_COUNT,     // Total number of branch instructions
 	
-	// Evolution related.
-	EVOLUTION, 
+	// These are not comparive measures for class equality checks.
+	GUI_DISTANCE,
+	COMPUTED_DISTANCE, // used to store distance once computed
 	NEXT_VERSION_STATUS,
 	EVOLUTION_DISTANCE,
 	EVOLUTION_STATUS,
 	IS_DELETED,
-	IS_MODIFIED; // records if this class will be modified in the next version
+	IS_MODIFIED, // records if this class will be modified in the next version
+	DATE,
+	BORN_RSN,
+	AGE, // Start off young
+
+	// Non metrics.
+	NAME,
+	PRODUCT_NAME,
+	SUPER_CLASS_NAME,
+	EVOLUTION; 
 	
 	public String toString()
 	{
 		return name().toLowerCase();
+	}
+	
+	public static int getNumberOfMetrics()
+	{
+		// We exclude non metric related enums
+		return values().length - 4;
+	}
+	
+	public static int getNumberOfComparativeMetrics()
+	{
+		// We exclude non metric related enums
+		// as well as non comparitive measures.
+		return values().length - 14;
 	}
 	
 	/**

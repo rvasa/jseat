@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.logging.ConsoleHandler;
 
 import junit.framework.TestCase;
-import metric.core.MetricEngine;
+import metric.core.extraction.MetricEngine;
 import metric.core.model.HistoryMetricData;
 import metric.core.model.VersionMetricData;
 import metric.core.util.logging.LogOrganiser;
@@ -19,11 +19,11 @@ public class VersionMetricDataTest extends TestCase
 	public void setUp()
 	{
 		LogOrganiser.addHandler(new ConsoleHandler());
-		MetricEngine me = new MetricEngine(true);
 		String baseDir = "b:/workspace/builds/";
+		MetricEngine me = new MetricEngine(baseDir+"asm/asm.versions", "testProject", true);
 		try
 		{
-			hmd = me.process(baseDir+"asm/asm.versions");
+			hmd = me.process();
 		} catch (IOException e)
 		{
 			e.printStackTrace();

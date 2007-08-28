@@ -94,9 +94,9 @@ public class GreekReportVisitor extends Report
 
 		for (int i = 1; i <= numRows; i++)
 		{
-			VersionMetricData vmd = hmd.versions.get(i);
+			VersionMetricData vmd = hmd.getVersion(i);
 			rows.add(getRow(vmd, vType, fields));
-			updateProgress(i, numRows);
+			updateProgress(i, numRows, vmd);
 		}
 
 		// Create and set table.
@@ -114,7 +114,7 @@ public class GreekReportVisitor extends Report
 		Version vType = Version.parse(type);
 		rows.add(getRow(vmd, vType, fields));
 
-		updateProgress(1, 1);
+		updateProgress(1, 1, vmd);
 		// Create and set table.
 		MetricTable<String, String> et = new MetricTable<String, String>(
 				getHeading(fields), rd.description);

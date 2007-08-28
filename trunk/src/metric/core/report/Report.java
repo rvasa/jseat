@@ -2,6 +2,7 @@ package metric.core.report;
 
 import java.util.HashMap;
 import java.util.Observable;
+import java.util.Observer;
 
 import metric.core.ReportDefinition;
 import metric.core.exception.ReportException;
@@ -24,11 +25,11 @@ public abstract class Report extends Observable implements ReportVisitor
 {
 	protected static final String INVALID = "This report and provided report" +
 			" definition does not support repoty generation for ";
-
+	private static final String UPDATE_MSG = "Analyzing ";
 	protected ReportDefinition rd;
 	private MetricTable table;
 
-	protected int completion;
+	private int completion;
 
 	public Report(ReportDefinition rd) throws ReportException
 	{
@@ -55,6 +56,12 @@ public abstract class Report extends Observable implements ReportVisitor
 	{
 		throw new ReportException(INVALID + mmd.getClass().getSimpleName());
 	};
+	
+	@Override
+	public synchronized void addObserver(Observer o)
+	{
+		super.addObserver(o);
+	}
 
 	/**
      * @return The underlying table used to collate this reports information.
@@ -71,11 +78,11 @@ public abstract class Report extends Observable implements ReportVisitor
      * @param at How much work has been done processing this report.
      * @param total How much work in total there is.
      */
-	protected void updateProgress(int at, int total)
+	protected void updateProgress(int at, int total, VersionMetricData vmd)
 	{
 		completion = (int) (((double) at / (double) total) * 100);
 		setChanged();
-		notifyObservers();
+		notifyObservers(UPDATE_MSG + vmd);
 	}
 
 	/**

@@ -118,8 +118,8 @@ public class PredictionReportVisitor extends Report
 		ArrayList<String[]> rows = new ArrayList<String[]>();
 		for (int i = 2; i <= hmd.versions.size(); i++)
 		{
-			VersionMetricData v1 = hmd.versions.get(i - 1);
-			VersionMetricData v2 = hmd.versions.get(i);
+			VersionMetricData v1 = hmd.getVersion(i-1);
+			VersionMetricData v2 = hmd.getVersion(i);
 
 			// Get isum, pred and pred_error for user specified fields.
 			ArrayList<String> tmpRow = new ArrayList<String>();
