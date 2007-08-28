@@ -1,6 +1,7 @@
 package metric.core.io;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.zip.ZipEntry;
@@ -11,12 +12,12 @@ import java.util.zip.ZipFile;
  * inputstream of the entires in the archive via an iterator
  * @author rvasa
  */
-public class ZipFileIterator implements Iterator<InputStream>
+public class ZipFileIterator implements Iterator<ZipEntry>
 {
 	Enumeration<? extends ZipEntry> zipIter = null;
-	InputStream entry = null;
     ZipFile zipFile;
-
+    ZipEntry entry;
+    
 	public ZipFileIterator(ZipFile zf)
 	{
         zipFile = zf;
@@ -28,29 +29,23 @@ public class ZipFileIterator implements Iterator<InputStream>
 	{
 		return (entry != null); // there is one viable class file
 	}
-
-	private InputStream findNext()
+	
+	private ZipEntry findNext()
 	{
 		while (zipIter.hasMoreElements())
 		{
-            try
-            {
-                ZipEntry ze = zipIter.nextElement();
-    			if (FileUtil.isClassFile(ze.getName(), true))
-                    return zipFile.getInputStream(ze);
-            } catch (IOException ioex)
-            {
-                continue; // go to the next element if there is an exception
-            }
+            ZipEntry ze = zipIter.nextElement();
+			if (FileUtil.isClassFile(ze.getName()))
+			    return ze;
 		}
 		return null;
 	}
 
-	public InputStream next()
+	public ZipEntry next()
 	{
-		InputStream retEntry = entry;
+		ZipEntry current = entry;
 		entry = findNext(); // prepare the next entry for future calls
-		return retEntry;
+		return current;
 	}
 
 	public void remove()
