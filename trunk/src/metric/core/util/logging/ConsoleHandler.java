@@ -21,23 +21,20 @@ public class ConsoleHandler extends Handler
 
 	@Override
 	public void flush() {
-		System.out.println(sb.toString());
+		System.out.print(sb.toString());
 		sb.delete(0, sb.length());
 	}
 
 	@Override
 	public void publish(LogRecord log) {
-		if (log.getLevel() == Level.FINER)
-		{
-//			if (log.getMessage().indexOf(GUI.HISTORY_PROGRESS.toString()) != -1) // history progress.
-//				sb.append("."); // standard console progress dot.
-//			if (log.getMessage().indexOf(Version.REPORT_PROGRESS.toString()) != -1) // report progress.
-//				sb.append("."); // standard console progress dot.
-			return;
-		}
-		else
-			sb.append(log.getMessage()+"\n");
-		flush(); // autoflush for now.
+		synchronizedPublish(log);
+	}
+	
+	// This is to synchronize multiple threads logging messages.
+	private synchronized void synchronizedPublish(LogRecord log)
+	{
+		sb.append(log.getMessage()+"\n");
+		flush(); // autoflush for now.		
 	}
 
 }
