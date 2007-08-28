@@ -31,7 +31,7 @@ public class ProgressDialog
 	private ProgressBar pb;
 	private Button cancelButton;
 
-	private Label msg, lineLabel, statusLabel;
+	private Label message, lineLabel, statusLabel, waitMsg;
 	private int max;
 
 	public ProgressDialog(String title, String waitMsg, int max)
@@ -44,9 +44,9 @@ public class ProgressDialog
 		GridLayout layout = new GridLayout();
 		shell.setLayout(layout);
 
-		msg = new Label(shell, SWT.NONE);
-		msg.setText(waitMsg);
-		msg.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true,
+		message = new Label(shell, SWT.NONE);
+		message.setText("Padding to keep some space before packing composite");
+		message.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true,
 				false));
 
 		pb = new ProgressBar(shell, SWT.NONE);
@@ -60,14 +60,22 @@ public class ProgressDialog
 				false, false));
 
 		Composite bottomComposite = new Composite(shell, SWT.NONE);
-		bottomComposite.setLayout(new GridLayout(3, true));
+		bottomComposite.setLayout(new GridLayout(4, false));
 		bottomComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		statusLabel = new Label(bottomComposite, SWT.NONE);
-		statusLabel.setText("0%      ");
+		statusLabel.setText("0%  ");
 		GridData gd = new GridData();
-		gd.horizontalSpan = 2;
-		statusLabel.setLayoutData(gd);
+		gd.horizontalAlignment = GridData.BEGINNING;
+		statusLabel.setLayoutData(new GridData());
+		
+		this.waitMsg = new Label(bottomComposite, SWT.NONE);
+		this.waitMsg.setText(waitMsg);
+		GridData extraGridData = new GridData();
+		extraGridData.horizontalSpan = 2;
+		extraGridData.horizontalAlignment = GridData.BEGINNING;
+		extraGridData.grabExcessHorizontalSpace = true;
+		this.waitMsg.setLayoutData(extraGridData);
 
 		cancelButton = new Button(bottomComposite, SWT.PUSH);
 		cancelButton.setText("Cancel");
@@ -77,6 +85,7 @@ public class ProgressDialog
 
 		shell.setMinimumSize(250, SWT.DEFAULT);
 		shell.pack();
+		message.setText("");
 	}
 
 	public Shell getShell()
@@ -120,6 +129,35 @@ public class ProgressDialog
 					pb.setSelection(value);
 					statusLabel.setText(value + "%");
 
+					// We are done. Dispose dialog.
+					if (value == max)
+						shell.dispose();
+				}
+			}
+		};
+		Display.getDefault().syncExec(updateProgress);
+	}
+	
+	/**
+     * This should be run if the calling thread is not the event dispatcher (GUI
+     * Thread). This allows another worker thread to ask the progress panel to
+     * update itself safely. The dialog will automatically be closed when
+     * progress has reached maximum (whatever that is).
+     * 
+     * @param value The value the progress bar should be set to.
+     * @param msg The msg that should be displayed.
+     */
+	public void updateForMe(final int value, final String msg)
+	{
+		Runnable updateProgress = new Runnable()
+		{
+			public void run()
+			{
+				if (!shell.isDisposed())
+				{
+					pb.setSelection(value);
+					statusLabel.setText(value + "%");
+					message.setText(msg);
 					// We are done. Dispose dialog.
 					if (value == max)
 						shell.dispose();
