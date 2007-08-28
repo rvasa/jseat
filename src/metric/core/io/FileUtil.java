@@ -19,15 +19,12 @@ public class FileUtil
 
 	/** Checks if the input is a class file
 	 * @param cf the input to check.
-	 * @param includeInner whether or not to ignore innerclasses.
 	 * @return
 	 */
-	public static boolean isClassFile(String cf, boolean ignoreInner)
+	public static boolean isClassFile(String cf)
 	{
 		if (cf == null)
 			return false;
-//		else if (ignoreInner)
-//			return ((cf.endsWith(".class") && (cf.indexOf("$") == -1)));
 		else
 			return (cf.endsWith(".class"));
 	}

@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,10 +15,10 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class InputDataSet implements Iterable<InputStream>
+public class InputDataSet implements Iterable<InputData>
 {
 	private HashSet<File> files = new HashSet<File>();
-	private HashMap<String, InputStream> streams;
+	private HashMap<String, InputData> idata;
 
 	private boolean processingArchive = false;
 	private long fileSize = 0;
@@ -46,12 +47,13 @@ public class InputDataSet implements Iterable<InputStream>
 	/**
      * Returns the InputStream corresponding to the name specified if it exists
      * in this <code>InputDataSet</code>.
+     * 
      * @param name the name of the stream to retrieve.
      * @return the corresponding input data stream.
      */
-	public InputStream getInputStream(String name)
+	public InputData getInputData(String name)
 	{
-		return streams.get(name);
+		return idata.get(name);
 	}
 
 	public long sizeInBytes()
@@ -61,7 +63,7 @@ public class InputDataSet implements Iterable<InputStream>
 
 	public void addInputFile(File f)
 	{
-		if (FileUtil.isClassFile(f.toString(), true)
+		if (FileUtil.isClassFile(f.toString())
 				|| FileUtil.isArchive(f.toString()))
 		{
 			files.add(f);
@@ -73,10 +75,10 @@ public class InputDataSet implements Iterable<InputStream>
      * Inflates all inner class files as these will need to be referenced later.
      * Only inner classes are inflated to keep memory requirements minimal.
      */
-	public void inflate()
+	public void inflate(boolean onlyInnerClasses)
 	{
-		if (streams == null)
-			streams = new HashMap<String, InputStream>();
+		if (idata == null)
+			idata = new HashMap<String, InputData>();
 
 		Iterator it = files.iterator();
 		while (it.hasNext())
@@ -89,13 +91,22 @@ public class InputDataSet implements Iterable<InputStream>
 				while (e.hasMoreElements())
 				{
 					ZipEntry ze = (ZipEntry) e.nextElement();
-					if (FileUtil.isInnerClassFile(ze.getName()))
+					if (onlyInnerClasses
+							&& FileUtil.isInnerClassFile(ze.getName()))
 					{
-						streams.put(ze.getName(), zipFile.getInputStream(ze));
+						InputData id = new InputData(ze, zipFile
+								.getInputStream(ze));
+						idata.put(ze.getName(), id);
+						haveOpenStreams = true;
+					} else
+					{
+						InputData id = new InputData(ze, zipFile
+								.getInputStream(ze));
+						idata.put(ze.getName(), id);
 						haveOpenStreams = true;
 					}
+
 				}
-//				zipFile.close();
 			} catch (IOException e) // shouldn't happen.
 			{
 				e.printStackTrace();
@@ -105,26 +116,28 @@ public class InputDataSet implements Iterable<InputStream>
 
 	/**
      * This closes any files streams that were opened earlier during inflation.
+     * 
      * @throws IOException
      */
 	public void deflate() throws IOException
 	{
-		if (streams != null)
+		if (idata != null)
 		{
-			Iterator it = streams.values().iterator();
+			Iterator<InputData> it = idata.values().iterator();
 			while (it.hasNext())
 			{
-				InputStream is = (InputStream) it.next();
+				InputStream is = it.next().getInputStream();
 				is.close();
 				is = null;
 			}
-			streams = null;
+			idata = null;
 		}
 	}
 
 	/**
      * Closes any file streams that may still be open.
-	 * @throws IOException 
+     * 
+     * @throws IOException
      */
 	public void close() throws IOException
 	{
@@ -135,6 +148,7 @@ public class InputDataSet implements Iterable<InputStream>
 	/**
      * Accepts valid JAR, .class and .ZIP files. Will throw exception if the
      * input data is not found or is not of the correct format
+     * 
      * @throws FileNotFoundException
      */
 	public void addInputFile(String fileName) throws IOException
@@ -155,12 +169,12 @@ public class InputDataSet implements Iterable<InputStream>
 		return files.size();
 	}
 
-	public Iterator<InputStream> iterator()
+	public Iterator<InputData> iterator()
 	{
 		return new DataSetIterator();
 	}
 
-	class DataSetIterator implements Iterator<InputStream>
+	class DataSetIterator implements Iterator<InputData>
 	{
 		File nextFile;
 		ZipFile zipFile = null;
@@ -172,7 +186,6 @@ public class InputDataSet implements Iterable<InputStream>
 			setIter = files.iterator();
 			if (!setIter.hasNext())
 				throw new IllegalArgumentException();
-			// nextFile = setIter.next();
 		}
 
 		public boolean hasNext()
@@ -184,31 +197,36 @@ public class InputDataSet implements Iterable<InputStream>
 		}
 
 		/** Return the next file in the input data set */
-		public InputStream next()
+		public InputData next()
 		{
-			if (processingArchive)
-				return zipIter.next();
+			InputData ret = null;
 
-			InputStream ret = null;
 			try
 			{
-				nextFile = setIter.next();
-				if (FileUtil.isArchive(nextFile.toString()))
+				if (processingArchive)
 				{
-					zipFile = new ZipFile(nextFile);
-					zipIter = new ZipFileIterator(zipFile);
-
-					ret = zipIter.next();
-					processingArchive = true;
+					ZipEntry ze = zipIter.next();
+					ret = new InputData(ze, zipFile.getInputStream(ze));
 				} else
 				{
-					ret = new BufferedInputStream(new FileInputStream(nextFile));
-					// nextFile.toString();
-					processingArchive = false;
+					nextFile = setIter.next();
+					if (FileUtil.isArchive(nextFile.toString()))
+					{
+						zipFile = new ZipFile(nextFile);
+						zipIter = new ZipFileIterator(zipFile);
+						ZipEntry ze = zipIter.next();
+						ret = new InputData(ze, zipFile.getInputStream(ze));
+						processingArchive = true;
+					} else
+					{
+						ret = new InputData(nextFile);
+						processingArchive = false;
+					}
 				}
 			} catch (Exception e)
 			{
 				System.err.println("Unexpected exception: " + e);
+				e.printStackTrace();
 			}
 
 			return ret;
@@ -221,6 +239,7 @@ public class InputDataSet implements Iterable<InputStream>
 
 	/**
      * Test harness
+     * 
      * @throws FileNotFoundException
      */
 	public static void main(String[] args) throws IOException
@@ -231,16 +250,19 @@ public class InputDataSet implements Iterable<InputStream>
 		int items = 0;
 
 		// Iterate over streams
-		for (InputStream s : input)
+		for (InputData id : input)
 		{
-			System.out.println(s);
+			System.out.println(id);
 			items++;
 		}
+		System.out.println("Files iterated over: " + items+"\n");
 
 		// Selectively pick stream.
+		input.inflate(false); // Must inflate data set into memory.
 		System.out.println(input
-				.getInputStream("org/objectweb/asm/ClassReader.class"));
+				.getInputData("org/objectweb/asm/ClassReader.class"));
+		
 		System.out.println(input
-				.getInputStream("org/objectweb/asm/Constants.class"));
+				.getInputData("org/objectweb/asm/Constants.class"));
 	}
 }
