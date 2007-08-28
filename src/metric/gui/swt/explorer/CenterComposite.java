@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author Joshua Hayes,Swinburne University (ICT),2007
  */
-public class CenterComposite extends Composite implements Observer		
+public class CenterComposite extends Composite implements Observer, SelectionListener		
 {
 	private Text tConsole;
 	private Button bClear, bExecute;
@@ -110,7 +110,7 @@ public class CenterComposite extends Composite implements Observer
 		if (executeComposite != null)
 			executeComposite.dispose();
 		executeComposite = SWTFactory.centerComposite(parent, SWT.NONE);
-		bClear = SWTFactory.createButton(executeComposite, SWT.PUSH, "Clear", null);
+		bClear = SWTFactory.createButton(executeComposite, SWT.PUSH, "Clear", this);
 		bExecute = SWTFactory.createButton(executeComposite, SWT.PUSH, "Execute", null);
 		SWTFactory.hookDisposeLisener(executeComposite, bClear);
 		SWTFactory.hookDisposeLisener(executeComposite, bExecute);
@@ -163,32 +163,18 @@ public class CenterComposite extends Composite implements Observer
 		return displayComposite;
 	}
 
-//	public void widgetDefaultSelected(SelectionEvent arg0)
-//	{
-//	} // Not interested in this.
-//
-//	public void widgetSelected(SelectionEvent event)
-//	{
-//		if (event.getSource() == bExecute)
-//		{
-//			parent.execute();
-//		} else if (event.getSource() == bClear)
-//		{
-//			// clear;
-//			tConsole.setText("");
-//		}
-//		else if (event.getSource() == tabFolder){
-////			System.out.println(event.item.toString());
-////			if (event.item.toString().contains("Console"))
-////			{
-////				createExecuteComposite(consoleComposite);
-////			}
-////			else if (event.item.toString().contains("Display"))
-////			{
-////				createExecuteComposite(displayComposite);
-////			}
-//		}
-//	}
+	public void widgetDefaultSelected(SelectionEvent arg0)
+	{
+	} // Not interested in this.
+
+	public void widgetSelected(SelectionEvent event)
+	{
+		if (event.getSource() == bClear)
+		{
+			// clears the main text area.;
+			tConsole.setText("");
+		}
+	}
 	
 
 }
