@@ -16,23 +16,27 @@ public class SWTGuiHandler extends Handler
 
 	LinkedList<LogEvent> events;
 	LinkedList<Observer> observers;
-	
+
 	public SWTGuiHandler()
 	{
 		events = new LinkedList<LogEvent>();
 		observers = new LinkedList<Observer>();
 	}
-	
+
 	@Override
-	public void close() throws SecurityException {
+	public void close() throws SecurityException
+	{
 	}
 
 	@Override
-	public void flush() {
+	public void flush()
+	{
 		// For each listener we have listening.
-		for (Observer observer : observers) {
+		for (Observer observer : observers)
+		{
 			// Send all currently queued events.
-			for (LogEvent event : events) {
+			for (LogEvent event : events)
+			{
 				GuiSafeEventPoster(observer, event);
 			}
 		}
@@ -40,30 +44,31 @@ public class SWTGuiHandler extends Handler
 	}
 
 	@Override
-	public void publish(LogRecord log) {
-		String s;
+	public void publish(LogRecord log)
+	{
+		synchronizedPublish(log);
+	}
+
+	// This is to synchronize multiple threads logging messages.
+	private synchronized void synchronizedPublish(LogRecord log)
+	{
+		String s = log.getMessage() + "\n";
+		// Default status code for now.
 		int statusCode = GUI.REQ_OAREA_UPDATE.getValue(); // default
-		if (log.getLevel() == Level.FINER)
-		{
-			if (log.getMessage().indexOf(GUI.HISTORY_PROGRESS.toString()) != -1) // history progress.
-				statusCode = GUI.HISTORY_PROGRESS.getValue();
-			if (log.getMessage().indexOf(Version.REPORT_PROGRESS.toString()) != -1) // report progress.
-				statusCode = Version.REPORT_PROGRESS.getValue();
-		}
 
-		s = log.getMessage()+"\n";
-
-		LogEvent le = new LogEvent(log.getLoggerName(), s, log.getParameters(), statusCode);
+		LogEvent le = new LogEvent(log.getLoggerName(), s, log.getParameters(),
+				statusCode);
 		events.add(le);
 		flush(); // default autoflush for now.
 	}
 
 	/**
-	 * This is a GUI SAFE method for notifing the specified listener with the
-	 *  specified event.
-	 * @param listener The listener to be notified
-	 * @param event The event to be sent
-	 */
+     * This is a GUI SAFE method for notifing the specified listener with the
+     * specified event.
+     * 
+     * @param listener The listener to be notified
+     * @param event The event to be sent
+     */
 	private void GuiSafeEventPoster(Observer observer, LogEvent event)
 	{
 		final Observer o = observer;
@@ -71,13 +76,13 @@ public class SWTGuiHandler extends Handler
 		Runnable runnable = new Runnable()
 		{
 			public void run()
-			{						
+			{
 				o.update(e, e);
 			}
 		};
 		Display.getDefault().asyncExec(runnable);
 	}
-	
+
 	public void addObserver(Observer observer)
 	{
 		observers.add(observer);
