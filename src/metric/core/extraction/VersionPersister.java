@@ -38,9 +38,10 @@ public class VersionPersister extends ActiveObject<VersionMetricData> implements
 
 	// private HashMap<Integer, String> processed
 
-	public VersionPersister(BlockingQueue<VersionMetricData> versions,
+	public VersionPersister(String name, BlockingQueue<VersionMetricData> versions,
 			String path)
 	{
+		super(name);
 		this.versions = versions;
 		this.path = path;
 
@@ -140,6 +141,12 @@ public class VersionPersister extends ActiveObject<VersionMetricData> implements
 			return null;
 		}
 	}
+	
+	@Override
+	protected void cleanup()
+	{
+		logger.log(Level.ALL, getName() + " stopped.");
+	}
 
 	public int getProcessingDone()
 	{
@@ -160,5 +167,10 @@ public class VersionPersister extends ActiveObject<VersionMetricData> implements
 	public synchronized void reset()
 	{
 		persistedVersionNames.clear();
+	}
+
+	public void interrupt()
+	{
+		Thread.currentThread().interrupt();
 	}
 }

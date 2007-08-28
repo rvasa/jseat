@@ -93,7 +93,8 @@ public class Project
 				writeNewProjectFile();
 			} catch (Exception e)
 			{
-				logger.log(Level.SEVERE, e.toString());
+				if (!me.interrupted)
+					logger.log(Level.SEVERE, e.toString());
 			}
 		} else
 		{
@@ -295,6 +296,14 @@ public class Project
 		} catch (ConversionException e)
 		{
 			e.printStackTrace();
+		}
+	}
+
+	public void interrupt()
+	{
+		if (me != null)
+		{
+			me.interrupt();
 		}
 	}
 }

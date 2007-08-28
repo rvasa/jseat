@@ -39,6 +39,7 @@ public class NewProjectDialog implements SelectionListener, Observer
 	private LinkedList<Observer> observers = new LinkedList<Observer>();
 	private ProgressDialog progressDialog;
 	private int concurrentVerThreads;
+	private ThreadedProjectBuilder tpb;
 
 	/**
      * Displays a dialog for inputting the required information to create a
@@ -264,7 +265,7 @@ public class NewProjectDialog implements SelectionListener, Observer
 		} else if (event.getSource() == okButton)
 		{
 			// Begin creating new project.
-			ThreadedProjectBuilder tpb = new ThreadedProjectBuilder(versions,
+			tpb = new ThreadedProjectBuilder(versions,
 					projectInputText.getText(), projectOutputText.getText(),
 					concurrentVerThreads);
 			tpb.addObserver(this);
@@ -273,10 +274,16 @@ public class NewProjectDialog implements SelectionListener, Observer
 			progressDialog = new ProgressDialog("Creating new project",
 					"Please Wait...", 100);
 			SWTFactory.centerDialog(shell, progressDialog.getShell());
+			progressDialog.getCancelButton().addSelectionListener(this);
 			progressDialog.open();
 			// Start processing to create project.
 			tpb.start();
 			shell.dispose();
+		} else if (event.getSource() == progressDialog.getCancelButton())
+		{
+			tpb.interrupt();
+			progressDialog.dispose();
+			tpb = null;
 		}
 	}
 

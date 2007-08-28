@@ -7,13 +7,21 @@ public abstract class ActiveObject<T> extends Observable implements Runnable
 	Thread thread;
 	private boolean stopRequested;
 	private Object lock;
-	
+	private String name;
+
 	public ActiveObject()
 	{
 		lock = new Object();
 		stopRequested = false;
 	}
-	
+
+	public ActiveObject(String name)
+	{
+		lock = new Object();
+		stopRequested = false;
+		this.name = name;
+	}
+
 	public void start()
 	{
 		synchronized (lock)
@@ -21,14 +29,16 @@ public abstract class ActiveObject<T> extends Observable implements Runnable
 			if (thread == null)
 			{
 				thread = new Thread(this);
+				if (name != null)
+					thread.setName(name);
 				thread.setDaemon(true);
 				thread.start();
-			}	
-//			else // Do nothing
-//				throw new Exception("Thread already started...");
+			}
+			// else // Do nothing
+			// throw new Exception("Thread already started...");
 		}
 	}
-	
+
 	public void stop() throws InterruptedException
 	{
 		Thread t;
@@ -36,49 +46,70 @@ public abstract class ActiveObject<T> extends Observable implements Runnable
 		{
 			t = thread;
 			stopRequested = true;
-			thread.interrupt();
+			Interrupt(); // Interrupt the current thread.
 		}
-		
-		if (Thread.currentThread() != t)
-			t.join();
+
+		// This should be here to join the main thread who owns this object.
+		// if (Thread.currentThread() != t)
+		// t.join();
 	}
-	
+
+	// this allows the interrupt to be overriden.
+	protected void Interrupt()
+	{
+		thread.interrupt();
+	}
+
 	public void run()
 	{
 		synchronized (lock)
 		{
 			stopRequested = false;
 		}
-		
+
 		try
 		{
 			boolean running;
-			
+			initialise(); // Initialize before thread starts.
 			synchronized (lock)
 			{
 				running = !stopRequested;
 			}
-			
+
 			while (running)
 			{
 				doWork(getWork());
-				//Check if we have been requested to stop
+				// Check if we have been requested to stop
 				synchronized (lock)
 				{
 					running = !stopRequested;
 				}
 			}
-		}
-		finally
+		} finally
 		{
 			synchronized (lock)
 			{
+				cleanup(); // Cleanup before thread dies.
 				thread = null;
-//				notifyAll();
 			}
 		}
 	}
-	
+
+	public String getName()
+	{
+		return thread.getName();
+	}
+
 	public abstract void doWork(T toDo);
+
 	public abstract T getWork();
+
+	// Can override if subclass wants to.
+	protected void initialise()
+	{
+	};
+
+	protected void cleanup()
+	{
+	};
 }
