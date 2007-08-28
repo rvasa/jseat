@@ -3,10 +3,12 @@ package metric.core.extraction;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
@@ -33,10 +35,13 @@ public class MetricEngine extends Observable implements Observer
 	private boolean showProcessing;
 	private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
-	private LinkedList<InputDataSet> dataSetList;
 	private BlockingQueue<String> inputQueue;
 	private BlockingQueue<VersionMetricData> outputQueue;
 	private Map<Integer, String[]> history;
+
+	private Set<VersionExtractor> versionExtractors;
+	private VersionPersister versionPersister;
+	private VersionPostProcessor versionPostProcessor;
 
 	private String productName, shortName;
 	private String inputFileName, outputFilename, dataFolder;
@@ -68,7 +73,7 @@ public class MetricEngine extends Observable implements Observer
 		inputQueue = new LinkedBlockingQueue<String>();
 		outputQueue = new LinkedBlockingQueue<VersionMetricData>();
 		history = new HashMap<Integer, String[]>();
-		dataSetList = new LinkedList<InputDataSet>();
+		versionExtractors = new HashSet<VersionExtractor>();
 		bytesProcessed = 0l;
 		workToProcess = workDone = 0;
 		workLock = new Object();
@@ -203,58 +208,44 @@ public class MetricEngine extends Observable implements Observer
 		File versionFile = new File(inputFileName);
 		for (int i = 0; i < numThreads; i++)
 		{
-			VersionExtractor extractor = new VersionExtractor(inputQueue,
-					outputQueue, versionFile.getParent());
+			VersionExtractor extractor = new VersionExtractor(
+					"VersionExtractor-" + (i + 1), inputQueue, outputQueue,
+					versionFile.getParent());
 			extractor.addObserver(this);
 			extractor.start();
+			versionExtractors.add(extractor);
 		}
 	}
 
-	private VersionPersister startPersister() throws InterruptedException
+	private void startPersister() throws InterruptedException
 	{
 		// Persist to disk as we process.
-		VersionPersister persister = new VersionPersister(outputQueue,
-				dataFolder);
-		// persister.addObserver(this);
-		persister.start();
+		versionPersister = new VersionPersister("VersionPersister",
+				outputQueue, dataFolder);
+		versionPersister.start();
 
 		// Wait for persister to finish...
 		// int persisted = 0, checkPersisted;
-		while (persister.getProcessingDone() != numVersions)
+		while (versionPersister != null && versionPersister.getProcessingDone() != numVersions)
 		{
 			Thread.sleep(100);
-			// // if (checkPersisted > persisted)
-			// // {
-			// // synchronized (workLock)
-			// // {
-			// // workDone++;
-			// // System.out.println("Initial persisting workDone: "
-			// // + workDone);
-			// // this.completion = (int) (((double) workDone / (double)
-			// // workToProcess) * 100);
-			// // }
-			// // persisted = checkPersisted;
-			// // }
 		}
-		return persister;
 	}
 
 	public void performPostProcessing(HistoryMetricData hmd,
 			VersionPersister persister) throws InterruptedException
 	{
-		VersionPostProcessor postProcessor = new VersionPostProcessor(hmd,
-				outputQueue);
-		postProcessor.addObserver(this);
-		postProcessor.process();
+		versionPostProcessor = new VersionPostProcessor(hmd, outputQueue);
+		versionPostProcessor.addObserver(this);
+		versionPostProcessor.process();
 
-		// int persisted = 0, checkPersisted = 0;
 		// At the moment this will not be executed concurrently because the
 		// thread performing the post processing is this thead. So it it not
 		// really needed, but left in here in case post-processing is shifted to
 		// another thread.
 
 		// Wait for persister to finish...
-		while (persister.getProcessingDone() != numVersions)
+		while (persister != null && persister.getProcessingDone() != numVersions)
 		{
 			Thread.sleep(100);
 			System.out.println("Waiting for post to finish.");
@@ -281,8 +272,8 @@ public class MetricEngine extends Observable implements Observer
 		// Start the extractors.
 		startExtractors();
 
-		// Start the VersionPersister and get a reference to it.
-		VersionPersister persister = startPersister();
+		// Start the VersionPersister
+		startPersister();
 
 		// Need to use maximal data loading for post procesing.
 		HistoryMetricData hmd = new HistoryMetricData(productName, history,
@@ -292,12 +283,12 @@ public class MetricEngine extends Observable implements Observer
 		// Don't stop persister, but reset it so we can use it again to
 		// re-persist after post processing.
 
-		persister.reset();
-//		persister.stop();
+		versionPersister.reset();
+
 		// Start the post-processing. The post-processing will put processed
 		// work back onto the same queue the persister takes work from, so it
 		// will be automatically re-persisted to file.
-		performPostProcessing(hmd, persister);
+		performPostProcessing(hmd, versionPersister);
 
 		return hmd;
 	}
@@ -353,18 +344,13 @@ public class MetricEngine extends Observable implements Observer
 			return completion;
 		}
 	}
-	
+
 	// This is only intended to receive updates from the VersionExtractor and
 	// VersionPostProcessor. The work calculations are based on this. If extra
 	// objects are sending update messages then this should be updated to
 	// reflect the extra work so the user knows :)
 	public void update(Observable o, Object data)
 	{
-		// if (o instanceof ProcessingReport)
-		// {
-		// ProcessingReport pr = (ProcessingReport) o;
-		// System.err.println("processing: " + pr.getProcessingDone());
-		// }
 		synchronized (workLock)
 		{
 			workDone++;
@@ -372,5 +358,55 @@ public class MetricEngine extends Observable implements Observer
 		}
 		setChanged();
 		notifyObservers(data);
+	}
+
+	/**
+     * @return the interrupted
+     */
+	public final boolean isInterrupted()
+	{
+		return interrupted;
+	}
+
+	/**
+     * Interrupts the MetricEngine and all its currently running threads.
+     */
+	public final void interrupt()
+	{
+		interrupted = true;
+		inputQueue.clear();
+		outputQueue.clear();
+		// Stop and cleanup extractors.
+		for (VersionExtractor extractor : versionExtractors)
+		{
+			try
+			{
+				extractor.stop();
+			} catch (InterruptedException e)
+			{
+			} // Handle.
+		}
+
+		// Stop and cleanup Version Persister.
+		if (versionPersister != null)
+		{
+			try
+			{
+				versionPersister.stop();
+
+			} catch (InterruptedException e)
+			{
+			} // Handle.
+		}
+
+		// Stop and cleanup post-processor.
+		if (versionPostProcessor != null)
+			versionPersister.interrupt();
+		
+		
+		versionPersister = null;
+		versionPostProcessor = null;
+		versionExtractors.clear();
+
 	}
 }

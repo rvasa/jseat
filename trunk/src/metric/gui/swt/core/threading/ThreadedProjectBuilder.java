@@ -103,8 +103,7 @@ public class ThreadedProjectBuilder extends Thread
 				Display.getDefault().asyncExec(toRun);
 		} else
 		{
-			System.out.println("Version list null? " + versionList);
-			System.out.println("History null? " + hmd);
+			// Handle.....might have been aborted.
 		}
 	}
 
@@ -115,6 +114,6 @@ public class ThreadedProjectBuilder extends Thread
      */
 	public void interrupt()
 	{
-		super.interrupt();
+		project.interrupt();
 	}
 }

@@ -15,7 +15,8 @@ import metric.core.util.logging.LogOrganiser;
 import metric.core.vocabulary.ClassMetric;
 import metric.gui.swt.core.threading.ProcessingReport;
 
-public class VersionExtractor extends ActiveObject<String> implements ProcessingReport
+public class VersionExtractor extends ActiveObject<String> implements
+		ProcessingReport
 {
 	private Logger logger = Logger.getLogger(getClass().getSimpleName());
 	private BlockingQueue<String> versionNames;
@@ -26,9 +27,10 @@ public class VersionExtractor extends ActiveObject<String> implements Processing
 	private static int totalProcessed;
 	private static int uniqueProcessed;
 
-	public VersionExtractor(BlockingQueue<String> versionNames,
+	public VersionExtractor(String name, BlockingQueue<String> versionNames,
 			BlockingQueue<VersionMetricData> versions, String versionPath)
 	{
+		super(name);
 		this.versionNames = versionNames;
 		this.versions = versions;
 		this.versionPath = versionPath;
@@ -39,41 +41,46 @@ public class VersionExtractor extends ActiveObject<String> implements Processing
 	@Override
 	public void doWork(String toDo)
 	{
-		String msg = "Extracting - " + toDo;
-		synchronized (processingLock)
+		if (toDo != null)
 		{
-			totalProcessed++;
-			uniqueProcessed++;
+			String msg = "Extracting - " + toDo;
+			synchronized (processingLock)
+			{
+				totalProcessed++;
+				uniqueProcessed++;
+			}
+			logger.log(Level.ALL, msg);
+			setChanged();
+			notifyObservers(msg);
+
+			String[] cols = toDo.split(",");
+
+			int rsn = Integer.parseInt(cols[0].trim());
+			String versionId = cols[1];
+			String jarFileName = new File(versionPath, cols[2].trim())
+					.toString();
+
+			InputDataSet input = new InputDataSet(jarFileName, versionId, rsn,
+					productName, cols[3]);
+
+			try
+			{
+				/** Add input data from either a JAR file or a directory */
+				if ((new File(jarFileName)).isDirectory())
+					input.addInputDir(jarFileName, false); // no recursive
+                                                            // support
+				else
+					input.addInputFile(jarFileName);
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
+			VersionMetricData vmd = createVersion(input);
+
+			// Put onto completed channel.
+			versions.offer(vmd);
 		}
-		logger.log(Level.ALL, msg);
-		setChanged();
-		notifyObservers(msg);
-		
-		String[] cols = toDo.split(",");
-
-		int rsn = Integer.parseInt(cols[0].trim());
-		String versionId = cols[1];
-		String jarFileName = new File(versionPath, cols[2].trim()).toString();
-
-		InputDataSet input = new InputDataSet(jarFileName, versionId, rsn,
-				productName, cols[3]);
-
-		try
-		{
-			/** Add input data from either a JAR file or a directory */
-			if ((new File(jarFileName)).isDirectory())
-				input.addInputDir(jarFileName, false); // no recursive support
-			else
-				input.addInputFile(jarFileName);
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-
-		VersionMetricData vmd = createVersion(input);
-
-		// Put onto completed channel.
-		versions.offer(vmd);
 	}
 
 	private VersionMetricData createVersion(InputDataSet input)
@@ -138,6 +145,12 @@ public class VersionExtractor extends ActiveObject<String> implements Processing
 					"Interrupted. Getting ready to finish up.");
 			return null;
 		}
+	}
+
+	@Override
+	protected void cleanup()
+	{
+		logger.log(Level.ALL, getName() + " stopped.");
 	}
 
 	public int getProcessingDone()

@@ -230,7 +230,6 @@ public abstract class JSeatGUI implements Observer
 					// TODO This is a hack to force a redraw that doesn't
 					// otherwise occur.
 					shell.setSize(shell.getSize().x - 1, shell.getSize().y - 1);
-					// currentDecoration = rd;
 				}
 			};
 			Display.getDefault().asyncExec(displayChart);
