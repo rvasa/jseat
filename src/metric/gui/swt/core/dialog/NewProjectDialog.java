@@ -112,9 +112,9 @@ public class NewProjectDialog implements SelectionListener, Observer
 		projectInputText.setText("");
 		projectOutputText.setText("");
 		projectNameText.setText("");
-		 projectInputText.setText("B:\\workspace\\builds\\groovy\\groovy.ver");
-		 projectOutputText.setText("D:\\MyGroovyProject\\TestGroovy.jpf");
-		 projectNameText.setText("TestGroovy");
+//		 projectInputText.setText("B:\\workspace\\builds\\groovy\\groovy.ver");
+//		 projectOutputText.setText("D:\\MyGroovyProject\\TestGroovy.jpf");
+//		 projectNameText.setText("TestGroovy");
 
 		// Setup verification and modification rules for the project name and
         // project output. This keeps them synchronized.
