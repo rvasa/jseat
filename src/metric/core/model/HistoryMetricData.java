@@ -39,28 +39,56 @@ import metric.core.vocabulary.Version;
 public class HistoryMetricData extends MetricData<History>
 {
 	// Position 0 = VersionName, position 1 = FileLocaiton.
-	public Map<Integer, String[]> versions; // = new HashMap<Integer, String[]>();
+	public Map<Integer, String[]> versions; // = new HashMap<Integer,
+	// String[]>();
 	private DataLoadingStrategy dataLoader;
-	
+
+	/**
+     * Creates a new HistoryMetricData for a set of version mappings. Uses the
+     * default <code>LoadType.MINIMAL</code> data loading strategy.
+     * 
+     * @param productName The name of the product.
+     * @param versions A mapping of RSN's to their respective data files.
+     */
 	public HistoryMetricData(String productName, Map<Integer, String[]> versions)
 	{
 		properties.put(History.NAME, productName);
 		properties.put(History.SHORTNAME, productName);
 		setSimpleMetric(History.VERSIONS, versions.size());
 		this.versions = versions;
-		
+
 		// Minimal by default
 		DataLoaderFactory factory = DataLoaderFactory.getInstance();
 		dataLoader = factory.getDataLoader(versions, LoadType.MINIMAL);
 	}
 
+	/**
+     * Creates a new HistoryMetricData for a set of version mappings with the
+     * specified data loading stategy.
+     * 
+     * @param productName The name of the product.
+     * @param versions A mapping of RSN's to their respective data files.
+     * @param loadType The data loading strategy this class should use when
+     *            loading VersionMetricData.
+     */
 	public HistoryMetricData(String productName,
 			Map<Integer, String[]> versions, LoadType loadType)
 	{
 		this(productName, versions);
-		
+
 		DataLoaderFactory factory = DataLoaderFactory.getInstance();
 		dataLoader = factory.getDataLoader(versions, loadType);
+	}
+
+	/**
+     * Configures how this class loads VersionMetricData.
+     * 
+     * @param type Sets the data loading strategy to the type specified.
+     */
+	public void setLoadType(LoadType type)
+	{
+		DataLoaderFactory factory = DataLoaderFactory.getInstance();
+		dataLoader = factory.getDataLoader(versions, type);
 	}
 
 	public int size()
