@@ -161,7 +161,7 @@ public class StatUtils
 		{
 			sum += f;
 		}
-		return sum + ", \t" + StringUtils.toCSVString(freq, true);
+		return sum + ", \t" + CSVUtil.toCSVString(freq, true);
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class StatUtils
 		{
 			sum += f;
 		}
-		return sum + ", \t" + StringUtils.toCSVString(freq);
+		return sum + ", \t" + CSVUtil.toCSVString(freq);
 	}
 
 	public static int scaleDoubleMetric(double metricValue, int scaleMax,
