@@ -100,7 +100,9 @@ public class DistanceReportVisitor extends Report
 		for (int i = 2; i <= hmd.versions.size(); i++)
 		{
 			VersionMetricData v1 = hmd.getVersion(i-1);
+			updateProgress(i-1, hmd.getVersionList().size(), v1);
 			VersionMetricData v2 = hmd.getVersion(i);
+			updateProgress(i, hmd.getVersionList().size(), v2);
 			// int deltaSize = v2.getClassCount() - v1.getClassCount();
 			double relDelta = ((double) v2.getSimpleMetric(Version.CLASS_COUNT) - v1
 					.getSimpleMetric(Version.CLASS_COUNT))

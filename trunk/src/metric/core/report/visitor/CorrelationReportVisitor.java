@@ -111,8 +111,6 @@ public class CorrelationReportVisitor extends Report
 			heading.add(str);
 
 		// Setup final heading array to add to table.
-//		Object[] headings = new String[heading.size()];
-//		heading.toArray(headings);
 		return StringUtils.asStrings(heading);
 	}
 
@@ -122,16 +120,15 @@ public class CorrelationReportVisitor extends Report
 		if (hmd.versions.size() < 2)
 			throw new ReportException(
 					"Insufficient number of versions for correlation.");
-
+		updateProgress(1, hmd.versions.size(), hmd.getVersion(1));
 		ArrayList<String[]> rows = new ArrayList<String[]>();
-		for (int i = 2; i < hmd.versions.size(); i++)
+		for (int i = 2; i <= hmd.versions.size(); i++)
 		{
 			VersionMetricData v = hmd.getVersion(i);
+			updateProgress(i, hmd.versions.size(), v);
 			ArrayList<String> row = new ArrayList<String>();
 			try
 			{
-				// double[] correls = v.getComplexMetric(Version.CORRELATION,
-				// ClassMetric.parse(baseMetric), otherMetrics);
 				double[] correls = correlation(v,
 						ClassMetric.parse(baseMetric), otherMetrics);
 				row.add(v.get(Version.NAME));
@@ -146,7 +143,6 @@ public class CorrelationReportVisitor extends Report
 			}
 
 			rows.add(StringUtils.asStrings(row));
-			updateProgress(i, hmd.versions.size(), v);
 		}
 		return rows;
 	}
