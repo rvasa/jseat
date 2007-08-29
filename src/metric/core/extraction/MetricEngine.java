@@ -109,7 +109,7 @@ public class MetricEngine extends Observable implements Observer
 		HistoryMetricData h = null;
 		VersionMetricData.showProcessing = showProcessing;
 		if (showProcessing)
-			logger.fine("Processing: " + inputFileName);
+			logger.log(Level.ALL, "Processing: " + inputFileName);
 		long startTime = System.currentTimeMillis();
 
 		h = build();
@@ -131,7 +131,7 @@ public class MetricEngine extends Observable implements Observer
 						+ mbProcessed);
 				buffer.append("MB in " + (endTime - startTime) / 1000.0);
 				buffer.append("s");
-				logger.fine(buffer.toString());
+				logger.log(Level.ALL, buffer.toString());
 			}
 		}
 		// Garbage collect.
