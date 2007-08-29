@@ -44,14 +44,13 @@ public class VersionExtractor extends ActiveObject<String> implements
 		if (toDo != null)
 		{
 			String msg = "Extracting - " + toDo;
+			
 			synchronized (processingLock)
 			{
 				totalProcessed++;
 				uniqueProcessed++;
 			}
-			logger.log(Level.ALL, msg);
-			setChanged();
-			notifyObservers(msg);
+			
 
 			String[] cols = toDo.split(",");
 
@@ -75,7 +74,9 @@ public class VersionExtractor extends ActiveObject<String> implements
 			{
 				e.printStackTrace();
 			}
-
+			logger.log(Level.ALL, msg);
+			setChanged();
+			notifyObservers(msg);
 			VersionMetricData vmd = createVersion(input);
 
 			// Put onto completed channel.
@@ -92,15 +93,16 @@ public class VersionExtractor extends ActiveObject<String> implements
 			return null; // nothing to extract from
 
 		vmd.metricData.clear();
-		try
-		{
-			// Inflate inner class files in this input set.
-			// Inner class files need to be available in memory whilst
-			// processing class files.
-			input.inflate(true);
 
-			// Create ClassMetricData set for the given input data set.
-			for (InputData idata : input)
+		// Inflate inner class files in this input set.
+		// Inner class files need to be available in memory whilst
+		// processing class files.
+		input.inflate(true);
+
+		// Create ClassMetricData set for the given input data set.
+		for (InputData idata : input)
+		{
+			try
 			{
 				// For each InputData (class file), create ClassMetricData.
 				ClassMetricExtractor cme = new ClassMetricExtractor(idata,
@@ -115,20 +117,27 @@ public class VersionExtractor extends ActiveObject<String> implements
 
 				// Add this class metric data to its version.
 				vmd.metricData.put(cmd.get(ClassMetric.NAME), cmd);
+			} catch (Exception e)
+			{
+				logger.log(Level.WARNING, "Skipping bad input file during. Could not get data stream. ");
 			}
-			// bytesProcessed += input.sizeInBytes();
+		}
+		// bytesProcessed += input.sizeInBytes();
 
-			// Drop all streams we opened during processing this DataInputSet
-			// (Version/jar)
-			// This is important to free up memory.
+		// Drop all streams we opened during processing this DataInputSet
+		// (Version/jar)
+		// This is important to free up memory.
+		try
+		{
 			input.deflate();
 			input.close();
-			input = null;
-
-		} catch (IOException iox)
+		} catch (IOException e)
 		{
-			logger.log(Level.SEVERE, iox.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		input = null;
+
 		return vmd;
 	}
 
