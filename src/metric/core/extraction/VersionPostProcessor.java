@@ -37,7 +37,14 @@ public class VersionPostProcessor extends Observable
 	{
 		// De-serialize from file.
 		
-		
+		if (hmd.size() == 1)
+		{
+			VersionMetricData vmd = hmd.getVersion(1);
+			firstPassProcessing(vmd);
+			versions.offer(vmd);
+			updateObservers(vmd);
+			return;
+		}
 		for (int i = 2; i <= hmd.size(); i++)
 		{
 			VersionMetricData vmd = hmd.getVersion(i - 1);
