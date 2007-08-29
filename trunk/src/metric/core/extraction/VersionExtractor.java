@@ -66,8 +66,7 @@ public class VersionExtractor extends ActiveObject<String> implements
 			{
 				/** Add input data from either a JAR file or a directory */
 				if ((new File(jarFileName)).isDirectory())
-					input.addInputDir(jarFileName, false); // no recursive
-                                                            // support
+					input.addInputDir(jarFileName, true); // recursive 
 				else
 					input.addInputFile(jarFileName);
 			} catch (IOException e)
