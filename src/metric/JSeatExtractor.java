@@ -23,7 +23,7 @@ public class JSeatExtractor
 		// Add a console handler so we can listen to output.
 		LogOrganiser.addHandler(new ConsoleHandler());
 
-		if (args.length < 4 || args.length > 6)
+		if (args.length < 4 || args.length > 6 || args.length == 5)
 			System.err.println("Invalid arguments provided.");
 
 		try
