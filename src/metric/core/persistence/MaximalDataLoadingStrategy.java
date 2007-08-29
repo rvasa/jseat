@@ -27,10 +27,10 @@ public class MaximalDataLoadingStrategy implements DataLoadingStrategy
 	public VersionMetricData getVersion(int rsn)
 	{
 		// Position 1 stores the filename.
-		String file = versions.get(rsn)[1];
 		VersionMetricData vmd = null, vmdDependencies = null;
 		try
 		{
+			String file = versions.get(rsn)[1];
 			// Load up classes.
 			FileReader reader = new FileReader(file + SerializeType.CLASSES.getExt());
 			MetricDataConverter classConverter = new CSVConverter(
@@ -45,9 +45,6 @@ public class MaximalDataLoadingStrategy implements DataLoadingStrategy
 					SerializeType.DEPENDENCIES);
 			vmdDependencies = dependencyConverter.deSerialize(reader);
 			dependencyConverter.close();
-			
-			if (vmdDependencies == null)
-				logger.log(Level.SEVERE, "DEPENDENCIES NULL....SOMETHIGN WENT WRONG");
 
 			// Merge dependencies with classes.
 			for (ClassMetricData clazz : vmd.metricData.values())
@@ -58,11 +55,7 @@ public class MaximalDataLoadingStrategy implements DataLoadingStrategy
 						.get(ClassMetric.NAME)).dependencies;
 				} catch (NullPointerException e)
 				{
-					e.printStackTrace();
-					System.out.println("depSize: " + vmdDependencies.metricData.size());
-					System.out.println("clazz" + clazz.get(ClassMetric.NAME));
-					System.out.println("dep: " + vmdDependencies.metricData.get(clazz
-							.get(ClassMetric.NAME)).dependencies);
+					logger.log(Level.SEVERE, "A series error has occured when trying to de-serialize dependency data");
 					System.exit(1);
 				}
 			}
