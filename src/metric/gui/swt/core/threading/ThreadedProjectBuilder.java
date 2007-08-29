@@ -82,7 +82,7 @@ public class ThreadedProjectBuilder extends Thread
 		// Only do this if we have a version list to populate.
 		if (versionList != null && hmd != null)
 		{
-			final Set<Entry<Integer, String>> c = hmd.getVersionList();
+			final Set<Entry<Integer, String>> c = hmd.getVersions();
 
 			Runnable toRun = new Runnable()
 			{

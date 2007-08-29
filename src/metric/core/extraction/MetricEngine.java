@@ -126,7 +126,7 @@ public class MetricEngine extends Observable implements Observer
 						+ "s) ");
 				// buffer.append("(Pre-Processing time: " + getProcessTime()
 				// / 1000 + "s)\n ");
-				buffer.append("Processing: " + h.getVersionList().size() + " ");
+				buffer.append("Processing: " + h.getVersions().size() + " ");
 				buffer.append(h.get(History.NAME) + " version(s), "
 						+ mbProcessed);
 				buffer.append("MB in " + (endTime - startTime) / 1000.0);
