@@ -99,7 +99,7 @@ public class ThreadedMetricDataConverter extends Thread
 			{
 //				Collection<VersionMetricData> c = hmd.getVersionList();
 //				Collection<String> c = hmd.getVersionList();
-				Iterator<Entry<Integer, String>> iterator = hmd.getVersionList().iterator();
+				Iterator<Entry<Integer, String>> iterator = hmd.getVersions().iterator();
 
 				lVersions.removeAll();
 				lVersions.setData(hmd);
