@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------
-#  		Jave Evolution Analysis Tool Configuration File
+#  		Java Software Evolution Analysis Tool Report File
 #-------------------------------------------------------------------
 #			Wed Jun 06 21:55:19 EST 2007
 #	ID,ClassName,Description,Comma separated list of args
@@ -15,10 +15,9 @@
 10,GreekReportVisitor,Alpha Analysis (Fan-In/Out),alpha,[fan_in_count,fan_out_count]
 11,GreekReportVisitor,Alpha Analysis (Method),alpha,[load_count,store_count,branch_count,method_count]
 12,GreekReportVisitor,Alpha Analysis (Type),alpha,[super_class_count,interface_count,inner_class_count]
-13,GreekReportVisitor,Alpha Analysis (Test),alpha,super_class_count
-10,GreekReportVisitor,Beta Analysis (Fan-In/Out),beta,[fan_in_count,fan_out_count]
-11,GreekReportVisitor,Beta Analysis (Method),beta,[load_count,store_count,branch_count,method_count]
-12,GreekReportVisitor,Beta Analysis (Type),beta,[super_class_count,interface_count,inner_class_count]
+14,GreekReportVisitor,Beta Analysis (Fan-In/Out),beta,[fan_in_count,fan_out_count]
+15,GreekReportVisitor,Beta Analysis (Method),beta,[load_count,store_count,branch_count,method_count]
+16,GreekReportVisitor,Beta Analysis (Type),beta,[super_class_count,interface_count,inner_class_count]
 #-------------------------------------------------------------------
 #			Frequency Reports
 #-------------------------------------------------------------------
