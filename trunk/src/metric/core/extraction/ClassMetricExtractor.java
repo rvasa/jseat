@@ -91,7 +91,7 @@ public class ClassMetricExtractor
 						ClassMetricData innerClass = cme.extract();
 
 						// merge inner class metrics with this class.
-//						cmd.mergeInnerClass(innerClass);
+						cmd.mergeInnerClass(innerClass);
 						
 						// Free up class as it is no longer needed.
 						innerClass.methods = null;
