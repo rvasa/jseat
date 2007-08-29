@@ -1,22 +1,22 @@
 package metric.core.io;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class InputDataSet implements Iterable<InputData>
 {
+	private Logger logger = Logger.getLogger(getClass().getSimpleName());
 	private HashSet<File> files = new HashSet<File>();
 	private HashMap<String, InputData> idata;
 
@@ -201,32 +201,38 @@ public class InputDataSet implements Iterable<InputData>
 		{
 			InputData ret = null;
 
-			try
+			while (ret == null)
 			{
-				if (processingArchive)
+				ZipEntry ze = null;
+				try
 				{
-					ZipEntry ze = zipIter.next();
-					ret = new InputData(ze, zipFile.getInputStream(ze));
-				} else
-				{
-					nextFile = setIter.next();
-					if (FileUtil.isArchive(nextFile.toString()))
+					if (processingArchive)
 					{
-						zipFile = new ZipFile(nextFile);
-						zipIter = new ZipFileIterator(zipFile);
-						ZipEntry ze = zipIter.next();
+						ze = zipIter.next();
 						ret = new InputData(ze, zipFile.getInputStream(ze));
-						processingArchive = true;
 					} else
 					{
-						ret = new InputData(nextFile);
-						processingArchive = false;
+						nextFile = setIter.next();
+						if (FileUtil.isArchive(nextFile.toString()))
+						{
+							zipFile = new ZipFile(nextFile);
+							zipIter = new ZipFileIterator(zipFile);
+							ze = zipIter.next();
+							ret = new InputData(ze, zipFile.getInputStream(ze));
+							processingArchive = true;
+						} else
+						{
+							ret = new InputData(nextFile);
+							processingArchive = false;
+						}
 					}
+				} catch (Exception e)
+				{
+					if (ze != null) // Print the name of the bad file if we can.
+						logger.log(Level.WARNING, "Skipping " + ze.getName() +": Could not retrieve file from input data set.");
+					else // Just report there was a bad file that could not be retrieved.
+						logger.log(Level.WARNING, "Skipping bad file. Could not retrieve file from input data set.");
 				}
-			} catch (Exception e)
-			{
-				System.err.println("Unexpected exception: " + e);
-				e.printStackTrace();
 			}
 
 			return ret;
@@ -255,13 +261,13 @@ public class InputDataSet implements Iterable<InputData>
 			System.out.println(id);
 			items++;
 		}
-		System.out.println("Files iterated over: " + items+"\n");
+		System.out.println("Files iterated over: " + items + "\n");
 
 		// Selectively pick stream.
 		input.inflate(false); // Must inflate data set into memory.
 		System.out.println(input
 				.getInputData("org/objectweb/asm/ClassReader.class"));
-		
+
 		System.out.println(input
 				.getInputData("org/objectweb/asm/Constants.class"));
 	}
