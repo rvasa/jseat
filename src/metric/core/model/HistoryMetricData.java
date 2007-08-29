@@ -71,8 +71,7 @@ public class HistoryMetricData extends MetricData<History>
      * @param loadType The data loading strategy this class should use when
      *            loading VersionMetricData.
      */
-	public HistoryMetricData(String productName,
-			Map<Integer, String[]> versions, LoadType loadType)
+	public HistoryMetricData(String productName, Map<Integer, String[]> versions, LoadType loadType)
 	{
 		this(productName, versions);
 
@@ -101,19 +100,45 @@ public class HistoryMetricData extends MetricData<History>
 		properties.put(History.NAME, productName);
 	}
 
-	public String getPathOf(int rsn)
+	/**
+     * The path of the version matching the specified version. It first assumes an
+     * absolute version number, if this is not found it will try to retrieve
+     * the relative position of the requested version in the history data set.
+     * 
+     * @param version The version to retrieve (absolute or relative)
+     * @return The VersionMetricData
+     */
+	public String getPathOf(int version)
 	{
 		// Position 1 is the path to file.
-		return versions.get(rsn)[1];
+		if (versions.containsKey(version))
+			return versions.get(version)[1];
+		return versions.get(findActualRSN(version))[1];
 	}
 
-	public String getNameOf(int rsn)
+	/**
+     * The name of the version matching the specified version. It first assumes an
+     * absolute version number, if this is not found it will try to retrieve
+     * the relative position of the requested version in the history data set.
+     * 
+     * @param version The version to retrieve (absolute or relative)
+     * @return The VersionMetricData
+     */
+	public String getNameOf(int version)
 	{
-		// Position 0 is the path to file.
-		return versions.get(rsn)[0];
+		// Position 0 is the name of file.
+		if (versions.containsKey(version))
+			return versions.get(version)[0];
+		return versions.get(findActualRSN(version))[0];
 	}
 
-	public Set<Map.Entry<Integer, String>> getVersionList()
+	/**
+     * A map of all the version release numbers and respective version names in
+     * this histories data set.
+     * 
+     * @return The Map<Integer, String>
+     */
+	public Set<Map.Entry<Integer, String>> getVersions()
 	{
 		Map<Integer, String> ret = new HashMap<Integer, String>();
 		Iterator<Entry<Integer, String[]>> it = versions.entrySet().iterator();
@@ -126,10 +151,39 @@ public class HistoryMetricData extends MetricData<History>
 		return ret.entrySet();
 	}
 
-	// TODO Provide some form of caching strategy on the loader side.
-	public VersionMetricData getVersion(int rsn)
+	/**
+     * Returns the version matching the specified version. It first assumes an
+     * absolute version number, if this is not found it will try to retrieve
+     * the relative position of the requested version in the history data set.
+     * 
+     * @param version The version to retrieve (absolute or relative)
+     * @return The VersionMetricData
+     */
+	public VersionMetricData getVersion(int version)
 	{
-		return dataLoader.getVersion(rsn);
+		if (versions.containsKey(version))
+			return dataLoader.getVersion(version);
+		return dataLoader.getVersion(findActualRSN(version));
+	}
+
+	/**
+     * Finds the actual RSN of the VersionMetricData
+     * 
+     * @param version Which version to retrieve.
+     * @return The RSN of the version.
+     */
+	public int findActualRSN(int version)
+	{
+		Iterator<Entry<Integer, String[]>> it = versions.entrySet().iterator();
+		int index = 1;
+		while (it.hasNext())
+		{
+			Entry<Integer, String[]> entry = it.next();
+			if (index == version)
+				return entry.getKey();
+			index++;
+		}
+		return -1; // Not found
 	}
 
 	public void accept(ReportVisitor visitor) throws ReportException
