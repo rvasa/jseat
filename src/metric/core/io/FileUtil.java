@@ -14,7 +14,7 @@ public class FileUtil
 	{
 		if (fileName == null)
 			return false;
-		return ((fileName.endsWith(".jar") || fileName.endsWith(".zip")));
+		return fileName.endsWith(".jar"); // || fileName.endsWith(".zip")));
 	}
 
 	/** Checks if the input is a class file
