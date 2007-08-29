@@ -91,22 +91,23 @@ public class VersionPersister extends ActiveObject<VersionMetricData> implements
 								.getSimpleMetric(Version.RSN));
 				}
 
-				// toDo = null; // Null reference.
+				 toDo = null; // Null reference.
+				 System.gc();
 
 				// load back up and check
 //				System.out.println("Performing check on persisted entity...");
-				HashMap<Integer, String[]> toLoad = new HashMap<Integer, String[]>();
-				toLoad.put(toDo.getSimpleMetric(Version.RSN), new String[] {
-						"", file });
-				toDo = DataLoaderFactory.getInstance().getDataLoader(
-						toLoad,
-						LoadType.MAXIMAL).getVersion(
-						toDo.getSimpleMetric(Version.RSN));
-				
-				if (toDo.metricData.size() != beforePersist)
-				{
-					System.err.println("Data changed after persisting....");
-				}
+//				HashMap<Integer, String[]> toLoad = new HashMap<Integer, String[]>();
+//				toLoad.put(toDo.getSimpleMetric(Version.RSN), new String[] {
+//						"", file });
+//				toDo = DataLoaderFactory.getInstance().getDataLoader(
+//						toLoad,
+//						LoadType.MAXIMAL).getVersion(
+//						toDo.getSimpleMetric(Version.RSN));
+//				
+//				if (toDo.metricData.size() != beforePersist)
+//				{
+//					System.err.println("Data changed after persisting....");
+//				}
 
 			} catch (ConversionException e)
 			{
