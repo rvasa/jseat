@@ -1,101 +1,53 @@
 package metric;
 
 import metric.core.Project;
-import metric.core.ReportDefinitionRepository;
-import metric.core.extraction.MetricEngine;
-import metric.core.model.HistoryMetricData;
-import metric.core.report.ReportFactory;
-import metric.core.report.decorator.TextDecorator;
-import metric.core.report.visitor.ReportVisitor;
 import metric.core.util.logging.ConsoleHandler;
 import metric.core.util.logging.LogOrganiser;
 
 /**
- * Basic Console program for running, extracting and printing metrics.
+ * Basic Console program for extracting data and creating a JSeat Project.
  * 
  * @author Joshua Hayes,Swinburne University (ICT),2007
  */
 public class JSeatExtractor
 {
 	/**
-     * -f: Filename -v: Verbose output -p: Property file.
-     * Example: JSeatExtractor -f b:/workspace/builds/groovy/groovy.ver -r default.rep -p 5
+     * -i Input file -o Output file -t number_of_concurrent_threads Example:
+     * JSeatExtractor -i b:/workspace/builds/groovy/groovy.ver -o
+     * b:/groovy/groovy.jpf -t 2
      */
 	public static void main(String[] args)
 	{
-		String output = "", filename;
-		String report = filename = output;
-		
-		int reportNumber = 1;
-		
-		//TODO Rewrite this.
-		for (int i = 0; i < args.length; i++)
-		{
-			if (args[i].equals("-f"))
-			{
-				if (args.length >= i + 2)
-				{
-					filename = args[++i];
-				} else
-					System.err
-							.println("You must specify a filename after the -f command.");
-			}
-			else if (args[i].equals("-r"))
-			{
-				if (args.length >= i + 2)
-				{
-					report = args[++i];
-				} else
-					System.err
-							.println("You must specify a filename after the -r command.");
-			}
-			else if (args[i].equals("-p"))
-			{
-				if (args.length >= i + 2)
-				{
-					reportNumber = Integer.parseInt(args[++i]);
-				} else
-					System.err
-							.println("You must specify a number after the -p command.");
-			}
-			else if (args[i].equals("-o"))
-			{
-				if (args.length >= i + 2)
-				{
-					output = args[++i];
-				} else
-					System.err
-							.println("You must specify a path after the -o command.");
-			}
-		}
+		String input = null, output = null;
+		int threads = 1;
+		// Add a console handler so we can listen to output.
+		LogOrganiser.addHandler(new ConsoleHandler());
+
+		if (args.length < 4 || args.length > 6)
+			System.err.println("Invalid arguments provided.");
 
 		try
 		{
-			// Add a console handler so we can listen to output
-			LogOrganiser.addHandler(new ConsoleHandler());
+			if (args[0].equals("-i"))
+				input = args[1];
+			else
+				System.err.println("Invalid argument specified. Expected [-i]");
+			if (args[2].equals("-o"))
+				output = args[3];
+			else
+				System.err.println("Invalid argument specified. Expected [-o]");
 
-			// Create a new metric engine.
-//			MetricEngine me = new MetricEngine(filename, output, 3, true);
-			// Process a versions file.
-//			HistoryMetricData hmd = me.process();
-			Project project = new Project("D:\\MyGroovyProject\\SampleGroovyProjectName.jpf");
-			HistoryMetricData hmd = project.build();
-
-			// Setup the ReportDefinitionRepository
-			ReportDefinitionRepository mdr = new ReportDefinitionRepository(
-					report);
-
-			// Create report from number 16.
-			// TODO Should be user specified def.
-			ReportVisitor rv = ReportFactory.getReport(mdr.getDefinition(reportNumber));
-			// Decorate report with a basic TextDecorator.
-			TextDecorator td = new TextDecorator(rv);
-			hmd.accept(td);
-
+			if (args.length == 6 && args[4].equals("-t"))
+				threads = Integer.parseInt(args[5]);
 		} catch (Exception e)
 		{
-			//TODO Handle exceptions, print appropriate messages etc.
-			e.printStackTrace();
+			System.err.println("One or more invalid arguments specified.");
+		}
+
+		if (input != null && output != null)
+		{
+			Project p = new Project(input, output, threads);
+			p.build();
 		}
 	}
 }
