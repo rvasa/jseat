@@ -15,12 +15,12 @@ public class VersionMetricDataTest extends TestCase
 {
 	VersionMetricData vmd;
 	HistoryMetricData hmd;
-	
+
 	public void setUp()
 	{
 		LogOrganiser.addHandler(new ConsoleHandler());
 		String baseDir = "b:/workspace/builds/";
-		MetricEngine me = new MetricEngine(baseDir+"asm/asm.versions", "testProject", true);
+		MetricEngine me = new MetricEngine(baseDir + "asm/asm.versions", "testProject", true);
 		try
 		{
 			hmd = me.process();
@@ -28,18 +28,20 @@ public class VersionMetricDataTest extends TestCase
 		{
 			e.printStackTrace();
 		} catch (InterruptedException e)
-		{} // handle
-	}	
+		{
+		} // handle
+	}
+
 	public void testGetComplexMetric()
 	{
 		vmd = hmd.getVersion(1);
-//		System.out.println(vmd.shortName);
+		// System.out.println(vmd.shortName);
 		System.out.println(vmd.getComplexMetric(Version.ALPHA, ClassMetric.FAN_IN_COUNT));
 		System.out.println(vmd.getComplexMetric(Version.BETA, ClassMetric.FIELD_COUNT));
 		System.out.println(vmd.getComplexMetric(Version.RELATIVE_SIZE_CHANGE, hmd.getVersion(14)));
-//		fail("Not yet implemented");
+		// fail("Not yet implemented");
 	}
-	
+
 	public void testGetRange()
 	{
 		vmd = hmd.getVersion(1);

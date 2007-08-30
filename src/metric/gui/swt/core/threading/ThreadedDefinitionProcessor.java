@@ -38,8 +38,7 @@ public class ThreadedDefinitionProcessor extends Thread
 	public void run()
 	{
 		// Create repository
-		final ReportDefinitionRepository mdr = new ReportDefinitionRepository(
-				filename);
+		final ReportDefinitionRepository mdr = new ReportDefinitionRepository(filename);
 
 		// Send information safely to the gui and have it update itself.
 		Runnable r = new Runnable()
@@ -52,7 +51,7 @@ public class ThreadedDefinitionProcessor extends Thread
 				// Set report config just added to the currently selected one.
 				reportConfigs.select(reportConfigs.indexOf(mdr.toString()));
 				// Fake selection event to force report selection combo to
-                // update.
+				// update.
 				reportConfigs.notifyListeners(SWT.Selection, new Event());
 			}
 		};

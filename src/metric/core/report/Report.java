@@ -23,8 +23,8 @@ import metric.core.util.MetricTable;
  */
 public abstract class Report extends Observable implements ReportVisitor
 {
-	protected static final String INVALID = "This report and provided report" +
-			" definition does not support repoty generation for ";
+	protected static final String INVALID = "This report and provided report"
+			+ " definition does not support repoty generation for ";
 	private static final String UPDATE_MSG = "Analyzing ";
 	protected ReportDefinition rd;
 	private MetricTable table;
@@ -56,7 +56,7 @@ public abstract class Report extends Observable implements ReportVisitor
 	{
 		throw new ReportException(INVALID + mmd.getClass().getSimpleName());
 	};
-	
+
 	@Override
 	public synchronized void addObserver(Observer o)
 	{

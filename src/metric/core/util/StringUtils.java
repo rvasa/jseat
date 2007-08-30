@@ -118,8 +118,7 @@ public class StringUtils
      *            any values that are in the fields array)
      * @return An ArrayList of sorted constrainedValues for each field.
      */
-	public static ArrayList<String[]> sortAndExpand(String[] fields,
-			String[] constrainedValues)
+	public static ArrayList<String[]> sortAndExpand(String[] fields, String[] constrainedValues)
 	{
 		ArrayList<String[]> ret = new ArrayList<String[]>();
 		for (String metric : fields)

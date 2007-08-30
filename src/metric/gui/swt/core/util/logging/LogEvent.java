@@ -8,7 +8,7 @@ public class LogEvent extends Observable
 	public Object[] params;
 	public String source;
 	public int status;
-	
+
 	public LogEvent(String source, String message, Object[] params, int status)
 	{
 		this.source = source;
@@ -16,6 +16,5 @@ public class LogEvent extends Observable
 		this.status = status;
 		this.params = params;
 	}
-	
-	
+
 }

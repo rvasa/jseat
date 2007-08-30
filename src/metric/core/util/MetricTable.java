@@ -251,8 +251,7 @@ public class MetricTable<H, R> implements Iterable<ArrayList<R>>
 					try
 					{
 						// int currentWidth = table[r][c].length();
-						int currentWidth = rows.get(r).get(c).toString()
-								.length();
+						int currentWidth = rows.get(r).get(c).toString().length();
 						try
 						{
 							if (currentWidth > maxWidth[c])
@@ -297,8 +296,7 @@ public class MetricTable<H, R> implements Iterable<ArrayList<R>>
 			{
 				String element = h.toString();
 				if (element.length() < maxElementWidth[colIndex])
-					element = pad(element, maxElementWidth[colIndex]
-							- element.length());
+					element = pad(element, maxElementWidth[colIndex] - element.length());
 
 				if (upperCaseHeadings)
 					buffer.append(element.toUpperCase());
@@ -323,8 +321,7 @@ public class MetricTable<H, R> implements Iterable<ArrayList<R>>
 					} // handle
 
 					if (element.length() < maxElementWidth[c])
-						buffer.append(pad(element, maxElementWidth[c]
-								- element.length()));
+						buffer.append(pad(element, maxElementWidth[c] - element.length()));
 					else
 						buffer.append(element);
 				}

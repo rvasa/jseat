@@ -7,8 +7,7 @@ import metric.core.report.visitor.ReportVisitor;
 import metric.core.report.visitor.VisitableReport;
 import metric.core.vocabulary.MethodMetric;
 
-public class MethodMetricMap implements
-		Comparable<MethodMetricMap>, VisitableReport
+public class MethodMetricMap implements Comparable<MethodMetricMap>, VisitableReport
 {
 	private HashMap<String, int[]> methods;
 
@@ -16,17 +15,18 @@ public class MethodMetricMap implements
 	{
 		this.methods = methods;
 	}
-	
+
 	public final HashMap<String, int[]> methods()
 	{
 		return this.methods;
 	}
-	
+
 	/**
-	 * Returns the specified simple metric for the specified method
-	 * @param method The name and description of the method
-	 * @param metric The metric to return.
-	 */
+     * Returns the specified simple metric for the specified method
+     * 
+     * @param method The name and description of the method
+     * @param metric The metric to return.
+     */
 	public int getSimpleMetric(String method, MethodMetric metric)
 	{
 		int[] metrics = methods.get(method);
@@ -38,10 +38,10 @@ public class MethodMetricMap implements
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
 	/**
-	 * @return The number of methods.
-	 */
+     * @return The number of methods.
+     */
 	public int size()
 	{
 		return methods.size();

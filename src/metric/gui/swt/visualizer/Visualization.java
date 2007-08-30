@@ -30,8 +30,8 @@ public class Visualization
      * @param parent The parent of this visualization.
      * @param name The name.
      * @param type The type of menu.<br />
-     * Use SWT.DROP_DOWN if using a drop down menu.<br />
-     * For a leaf item use SWT.NONE
+     *            Use SWT.DROP_DOWN if using a drop down menu.<br />
+     *            For a leaf item use SWT.NONE
      */
 	public Visualization(Menu parent, String name, int type)
 	{
@@ -45,8 +45,7 @@ public class Visualization
 			visMenuHeader = addMenuItem(parent, name);
 	}
 
-	public void addSubVisualization(String name, ReportVisitor rv, ReportDecorator rd,
-			SelectionListener listener)
+	public void addSubVisualization(String name, ReportVisitor rv, ReportDecorator rd, SelectionListener listener)
 	{
 		MenuItem menuItem = addMenuItem(visMenu, name);
 		menuItem.setData("report", rv);

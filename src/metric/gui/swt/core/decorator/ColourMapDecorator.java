@@ -36,8 +36,7 @@ public class ColourMapDecorator extends ReportDecorator
 	private IntensityStyle style;
 	private int noColourShades = 10;
 
-	public ColourMapDecorator(ModificationIntensityReportVisitor report,
-			Composite composite, IntensityStyle style)
+	public ColourMapDecorator(ModificationIntensityReportVisitor report, Composite composite, IntensityStyle style)
 	{
 		super(report);
 		this.composite = composite;
@@ -64,7 +63,7 @@ public class ColourMapDecorator extends ReportDecorator
 		{
 		} // Haven't been disposed so don't need to do anything.
 	}
-	
+
 	/**
      * Create Dataset from MetricTable.
      * 
@@ -91,8 +90,7 @@ public class ColourMapDecorator extends ReportDecorator
 		return dataset;
 	}
 
-	private JFreeChart createChart(XYDataset dataset, int size,
-			IntensityStyle style, String title)
+	private JFreeChart createChart(XYDataset dataset, int size, IntensityStyle style, String title)
 	{
 		NumberAxis xAxis = new NumberAxis("RSN Born");
 		NumberAxis yAxis = new NumberAxis("RSN");
@@ -123,7 +121,7 @@ public class ColourMapDecorator extends ReportDecorator
 		plot.setRenderer(r);
 		plot.setDomainGridlinesVisible(false);
 		plot.setRangeGridlinesVisible(false);
-		
+
 		xAxis.setRangeWithMargins(1, size);
 		yAxis.setRangeWithMargins(1, size);
 		yAxis.setInverted(true);
@@ -133,8 +131,7 @@ public class ColourMapDecorator extends ReportDecorator
 		chart.removeLegend();
 		chart.setBackgroundPaint(Color.WHITE);
 
-		SymbolAxis scaleAxis = new SymbolAxis(null, new String[] { "", "OK",
-				"Uncertain", "Bad" });
+		SymbolAxis scaleAxis = new SymbolAxis(null, new String[] { "", "OK", "Uncertain", "Bad" });
 		scaleAxis.setRange(0.0, 1.0);
 		scaleAxis.setPlot(new PiePlot());
 
@@ -149,8 +146,7 @@ public class ColourMapDecorator extends ReportDecorator
      */
 	private LookupPaintScale getDefaultHybridScale()
 	{
-		LookupPaintScale ps = new LookupPaintScale(0.0, 1.0, new Color(79, 129,
-				189));
+		LookupPaintScale ps = new LookupPaintScale(0.0, 1.0, new Color(79, 129, 189));
 		ps.add(0.0, new Color(140, 173, 212)); // modified but not enough to
 		// trigger metrics from
 		// ReportVisitor.
@@ -174,8 +170,7 @@ public class ColourMapDecorator extends ReportDecorator
      */
 	private LookupPaintScale getDefaultHeatScale()
 	{
-		LookupPaintScale ps = PaintBasedColourGenerator
-				.generatePaintScale(IntensityStyle.HeatMap, noColourShades);
+		LookupPaintScale ps = PaintBasedColourGenerator.generatePaintScale(IntensityStyle.HeatMap, noColourShades);
 		return ps;
 	}
 
@@ -187,9 +182,8 @@ public class ColourMapDecorator extends ReportDecorator
      */
 	private LookupPaintScale getDefaultCoolScale()
 	{
-		LookupPaintScale ps = PaintBasedColourGenerator
-				.generatePaintScale(IntensityStyle.CoolMap, noColourShades);
-		
+		LookupPaintScale ps = PaintBasedColourGenerator.generatePaintScale(IntensityStyle.CoolMap, noColourShades);
+
 		return ps;
 	}
 

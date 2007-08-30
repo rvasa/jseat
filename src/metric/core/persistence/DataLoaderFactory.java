@@ -7,7 +7,7 @@ import metric.core.vocabulary.LoadType;
 public class DataLoaderFactory
 {
 	private static DataLoaderFactory loader;
-	
+
 	public static DataLoaderFactory getInstance()
 	{
 		if (loader == null)
@@ -20,12 +20,11 @@ public class DataLoaderFactory
 		if (type == LoadType.MINIMAL)
 		{
 			return new MinimalDataLoadingStrategy(versions);
-		}
-		else if (type == LoadType.MAXIMAL)
+		} else if (type == LoadType.MAXIMAL)
 		{
 			return new MaximalDataLoadingStrategy(versions);
 		}
 		return null;
 	}
-	
+
 }

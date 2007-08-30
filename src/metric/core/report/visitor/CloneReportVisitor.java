@@ -25,8 +25,7 @@ import metric.core.vocabulary.Version;
 public class CloneReportVisitor extends Report
 {
 	// Setup headings.
-	private String[] headings = { Version.NAME.toString(),
-			Version.RSN.toString(), Version.ID.toString(), "Clusters" };
+	private String[] headings = { Version.NAME.toString(), Version.RSN.toString(), Version.ID.toString(), "Clusters" };
 
 	public CloneReportVisitor(ReportDefinition m) throws ReportException
 	{
@@ -63,8 +62,7 @@ public class CloneReportVisitor extends Report
 		}
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				headings, rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(headings, rd.description);
 		et.setColumnPadding(2);
 		et.addRows(rows);
 		et.setDisplayTitle(true);
@@ -77,8 +75,7 @@ public class CloneReportVisitor extends Report
 		String[] row = getCloneClusters(vmd);
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				headings, rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(headings, rd.description);
 		et.setColumnPadding(2);
 		et.setDisplayTitle(true);
 		et.addRow(row);
@@ -89,8 +86,7 @@ public class CloneReportVisitor extends Report
 	/** Print the clusters in the data, i.e. those that are clones */
 	public String[] getCloneClusters(VersionMetricData vmd)
 	{
-		List<ClassMetricData> data = new LinkedList<ClassMetricData>(
-				vmd.metricData.values());
+		List<ClassMetricData> data = new LinkedList<ClassMetricData>(vmd.metricData.values());
 		Collections.sort(data);
 		int clusters = 0;
 		LinkedList<ClassMetricData> list = new LinkedList<ClassMetricData>();
@@ -121,8 +117,7 @@ public class CloneReportVisitor extends Report
 			}
 		}
 		clusters = list.size();
-		String[] row = { vmd.get(Version.NAME), vmd.get(Version.RSN),
-				vmd.get(Version.ID), clusters + "" };
+		String[] row = { vmd.get(Version.NAME), vmd.get(Version.RSN), vmd.get(Version.ID), clusters + "" };
 		return row;
 	}
 

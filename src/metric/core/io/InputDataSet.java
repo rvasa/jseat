@@ -33,8 +33,7 @@ public class InputDataSet implements Iterable<InputData>
 	{
 	}
 
-	public InputDataSet(String jarFileName, String versionId, int RSN,
-			String productName, String shortName)
+	public InputDataSet(String jarFileName, String versionId, int RSN, String productName, String shortName)
 	{
 		this.jarFileName = jarFileName;
 		this.versionId = versionId.trim();
@@ -63,8 +62,7 @@ public class InputDataSet implements Iterable<InputData>
 
 	public void addInputFile(File f)
 	{
-		if (FileUtil.isClassFile(f.toString())
-				|| FileUtil.isArchive(f.toString()))
+		if (FileUtil.isClassFile(f.toString()) || FileUtil.isArchive(f.toString()))
 		{
 			files.add(f);
 			fileSize += f.length();
@@ -91,17 +89,14 @@ public class InputDataSet implements Iterable<InputData>
 				while (e.hasMoreElements())
 				{
 					ZipEntry ze = (ZipEntry) e.nextElement();
-					if (onlyInnerClasses
-							&& FileUtil.isInnerClassFile(ze.getName()))
+					if (onlyInnerClasses && FileUtil.isInnerClassFile(ze.getName()))
 					{
-						InputData id = new InputData(ze, zipFile
-								.getInputStream(ze));
+						InputData id = new InputData(ze, zipFile.getInputStream(ze));
 						idata.put(ze.getName(), id);
 						haveOpenStreams = true;
 					} else
 					{
-						InputData id = new InputData(ze, zipFile
-								.getInputStream(ze));
+						InputData id = new InputData(ze, zipFile.getInputStream(ze));
 						idata.put(ze.getName(), id);
 						haveOpenStreams = true;
 					}
@@ -156,8 +151,7 @@ public class InputDataSet implements Iterable<InputData>
 		addInputFile(FileUtil.getFileHandle(fileName));
 	}
 
-	public void addInputDir(String dirName, boolean recursive)
-			throws IOException
+	public void addInputDir(String dirName, boolean recursive) throws IOException
 	{
 		Set<File> dirFiles = FileUtil.getFiles(dirName, recursive);
 		for (File f : dirFiles)
@@ -229,8 +223,11 @@ public class InputDataSet implements Iterable<InputData>
 				} catch (Exception e)
 				{
 					if (ze != null) // Print the name of the bad file if we can.
-						logger.log(Level.WARNING, "Skipping " + ze.getName() +": Could not retrieve file from input data set.");
-					else // Just report there was a bad file that could not be retrieved.
+						logger.log(Level.WARNING, "Skipping " + ze.getName()
+								+ ": Could not retrieve file from input data set.");
+					else
+						// Just report there was a bad file that could not be
+                        // retrieved.
 						logger.log(Level.WARNING, "Skipping bad file. Could not retrieve file from input data set.");
 				}
 			}
@@ -265,10 +262,8 @@ public class InputDataSet implements Iterable<InputData>
 
 		// Selectively pick stream.
 		input.inflate(false); // Must inflate data set into memory.
-		System.out.println(input
-				.getInputData("org/objectweb/asm/ClassReader.class"));
+		System.out.println(input.getInputData("org/objectweb/asm/ClassReader.class"));
 
-		System.out.println(input
-				.getInputData("org/objectweb/asm/Constants.class"));
+		System.out.println(input.getInputData("org/objectweb/asm/Constants.class"));
 	}
 }

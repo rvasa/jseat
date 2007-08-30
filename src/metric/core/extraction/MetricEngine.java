@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -14,16 +13,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import metric.core.WorkStatus;
-import metric.core.io.InputDataSet;
 import metric.core.io.TextFile;
 import metric.core.model.HistoryMetricData;
 import metric.core.model.VersionMetricData;
-import metric.core.util.SimpleWorkTimer;
 import metric.core.util.logging.LogOrganiser;
 import metric.core.vocabulary.History;
 import metric.core.vocabulary.LoadType;
-import metric.gui.swt.core.threading.ProcessingReport;
 
 /**
  * Creates a project for the wrapped *.ver (version file).
@@ -65,8 +60,7 @@ public class MetricEngine extends Observable implements Observer
      * @param outputFileName The path to output metric data to.
      * @param numThreads The number of threads to use when processing.
      */
-	public MetricEngine(String inputFileName, String outputFileName,
-			int numThreads, boolean showProcessing)
+	public MetricEngine(String inputFileName, String outputFileName, int numThreads, boolean showProcessing)
 	{
 		this.inputFileName = inputFileName;
 		this.outputFilename = outputFileName;
@@ -90,8 +84,7 @@ public class MetricEngine extends Observable implements Observer
      * 
      * @param showProcessing Whether or not to display processing information.
      */
-	public MetricEngine(String inputFileName, String outputFilename,
-			boolean showProcessing)
+	public MetricEngine(String inputFileName, String outputFilename, boolean showProcessing)
 	{
 		this(inputFileName, outputFilename, 1, showProcessing);
 	}
@@ -122,13 +115,11 @@ public class MetricEngine extends Observable implements Observer
 			{
 				StringBuffer buffer = new StringBuffer();
 				buffer.append("(Load time: " + getLoadTime() / 1000 + "s) ");
-				buffer.append("(Extract time: " + getExtractTime() / 1000
-						+ "s) ");
+				buffer.append("(Extract time: " + getExtractTime() / 1000 + "s) ");
 				// buffer.append("(Pre-Processing time: " + getProcessTime()
 				// / 1000 + "s)\n ");
 				buffer.append("Processing: " + h.getVersions().size() + " ");
-				buffer.append(h.get(History.NAME) + " version(s), "
-						+ mbProcessed);
+				buffer.append(h.get(History.NAME) + " version(s), " + mbProcessed);
 				buffer.append("MB in " + (endTime - startTime) / 1000.0);
 				buffer.append("s");
 				logger.log(Level.ALL, buffer.toString());
@@ -166,9 +157,7 @@ public class MetricEngine extends Observable implements Observer
 				// store the first word as the shortName
 				int spacePos = productName.indexOf(" ");
 				if (spacePos > 0)
-					this.shortName = productName.substring(
-							0,
-							productName.indexOf(" ")).trim();
+					this.shortName = productName.substring(0, productName.indexOf(" ")).trim();
 				else
 					this.shortName = productName;
 			}
@@ -208,8 +197,7 @@ public class MetricEngine extends Observable implements Observer
 		File versionFile = new File(inputFileName);
 		for (int i = 0; i < numThreads; i++)
 		{
-			VersionExtractor extractor = new VersionExtractor(
-					"VersionExtractor-" + (i + 1), inputQueue, outputQueue,
+			VersionExtractor extractor = new VersionExtractor("VersionExtractor-" + (i + 1), inputQueue, outputQueue,
 					versionFile.getParent());
 			extractor.addObserver(this);
 			extractor.start();
@@ -220,8 +208,7 @@ public class MetricEngine extends Observable implements Observer
 	private void startPersister() throws InterruptedException
 	{
 		// Persist to disk as we process.
-		versionPersister = new VersionPersister("VersionPersister",
-				outputQueue, dataFolder);
+		versionPersister = new VersionPersister("VersionPersister", outputQueue, dataFolder);
 		versionPersister.start();
 
 		// Wait for persister to finish...
@@ -232,8 +219,7 @@ public class MetricEngine extends Observable implements Observer
 		}
 	}
 
-	public void performPostProcessing(HistoryMetricData hmd,
-			VersionPersister persister) throws InterruptedException
+	public void performPostProcessing(HistoryMetricData hmd, VersionPersister persister) throws InterruptedException
 	{
 		versionPostProcessor = new VersionPostProcessor(hmd, outputQueue);
 		versionPostProcessor.addObserver(this);
@@ -276,8 +262,7 @@ public class MetricEngine extends Observable implements Observer
 		startPersister();
 
 		// Need to use maximal data loading for post procesing.
-		HistoryMetricData hmd = new HistoryMetricData(productName, history,
-				LoadType.MAXIMAL);
+		HistoryMetricData hmd = new HistoryMetricData(productName, history, LoadType.MAXIMAL);
 		hmd.setSimpleMetric(History.VERSIONS, numVersions);
 
 		// Don't stop persister, but reset it so we can use it again to
@@ -402,8 +387,7 @@ public class MetricEngine extends Observable implements Observer
 		// Stop and cleanup post-processor.
 		if (versionPostProcessor != null)
 			versionPersister.interrupt();
-		
-		
+
 		versionPersister = null;
 		versionPostProcessor = null;
 		versionExtractors.clear();

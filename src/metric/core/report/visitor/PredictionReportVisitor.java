@@ -99,27 +99,24 @@ public class PredictionReportVisitor extends Report
 		ArrayList<String[]> rows = getPredictions(hmd, fields);
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				StringUtils.asStrings(heading), rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(StringUtils.asStrings(heading), rd.description);
 		et.addRows(rows);
 		et.setColumnPadding(1);
 		et.setDisplayTitle(true);
 		setTable(et);
 	}
 
-	public ArrayList<String[]> getPredictions(HistoryMetricData hmd,
-			String[] fields) throws ReportException
+	public ArrayList<String[]> getPredictions(HistoryMetricData hmd, String[] fields) throws ReportException
 	{
 		if (hmd.versions.size() < 2)
 		{
-			throw new ReportException(
-					"Insufficient versions to compute predictions");
+			throw new ReportException("Insufficient versions to compute predictions");
 		}
 		ArrayList<String[]> rows = new ArrayList<String[]>();
 		for (int i = 2; i <= hmd.versions.size(); i++)
 		{
-			VersionMetricData v1 = hmd.getVersion(i-1);
-			updateProgress(i-1, hmd.getVersions().size(), v1);
+			VersionMetricData v1 = hmd.getVersion(i - 1);
+			updateProgress(i - 1, hmd.getVersions().size(), v1);
 			VersionMetricData v2 = hmd.getVersion(i);
 			updateProgress(i, hmd.getVersions().size(), v2);
 

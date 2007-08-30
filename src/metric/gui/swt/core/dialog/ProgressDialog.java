@@ -46,18 +46,15 @@ public class ProgressDialog
 
 		message = new Label(shell, SWT.NONE);
 		message.setText("Padding to keep some space before packing composite");
-		message.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true,
-				false));
+		message.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
 
 		pb = new ProgressBar(shell, SWT.NONE);
 		pb.setMaximum(max);
 		pb.setMaximum(0);
-		pb.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, false,
-				false));
+		pb.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, false, false));
 
 		lineLabel = new Label(shell, SWT.HORIZONTAL | SWT.SEPARATOR);
-		lineLabel.setLayoutData(new GridData(GridData.FILL, GridData.CENTER,
-				false, false));
+		lineLabel.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, false, false));
 
 		Composite bottomComposite = new Composite(shell, SWT.NONE);
 		bottomComposite.setLayout(new GridLayout(4, false));
@@ -68,7 +65,7 @@ public class ProgressDialog
 		GridData gd = new GridData();
 		gd.horizontalAlignment = GridData.BEGINNING;
 		statusLabel.setLayoutData(new GridData());
-		
+
 		this.waitMsg = new Label(bottomComposite, SWT.NONE);
 		this.waitMsg.setText(waitMsg);
 		GridData extraGridData = new GridData();
@@ -137,7 +134,7 @@ public class ProgressDialog
 		};
 		Display.getDefault().syncExec(updateProgress);
 	}
-	
+
 	/**
      * This should be run if the calling thread is not the event dispatcher (GUI
      * Thread). This allows another worker thread to ask the progress panel to

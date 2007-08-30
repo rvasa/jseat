@@ -1,25 +1,17 @@
 package metric.core.model;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import metric.core.exception.ConversionException;
 import metric.core.exception.ReportException;
-import metric.core.persistence.CSVConverter;
 import metric.core.persistence.DataLoaderFactory;
 import metric.core.persistence.DataLoadingStrategy;
-import metric.core.persistence.MetricDataConverter;
 import metric.core.report.visitor.ReportVisitor;
 import metric.core.vocabulary.History;
 import metric.core.vocabulary.LoadType;
-import metric.core.vocabulary.SerializeType;
-import metric.core.vocabulary.Version;
 
 /**
  * History - The set of versions that make up a systems evolution history.<b/>
@@ -101,8 +93,8 @@ public class HistoryMetricData extends MetricData<History>
 	}
 
 	/**
-     * The path of the version matching the specified version. It first assumes an
-     * absolute version number, if this is not found it will try to retrieve
+     * The path of the version matching the specified version. It first assumes
+     * an absolute version number, if this is not found it will try to retrieve
      * the relative position of the requested version in the history data set.
      * 
      * @param version The version to retrieve (absolute or relative)
@@ -117,8 +109,8 @@ public class HistoryMetricData extends MetricData<History>
 	}
 
 	/**
-     * The name of the version matching the specified version. It first assumes an
-     * absolute version number, if this is not found it will try to retrieve
+     * The name of the version matching the specified version. It first assumes
+     * an absolute version number, if this is not found it will try to retrieve
      * the relative position of the requested version in the history data set.
      * 
      * @param version The version to retrieve (absolute or relative)
@@ -153,8 +145,8 @@ public class HistoryMetricData extends MetricData<History>
 
 	/**
      * Returns the version matching the specified version. It first assumes an
-     * absolute version number, if this is not found it will try to retrieve
-     * the relative position of the requested version in the history data set.
+     * absolute version number, if this is not found it will try to retrieve the
+     * relative position of the requested version in the history data set.
      * 
      * @param version The version to retrieve (absolute or relative)
      * @return The VersionMetricData

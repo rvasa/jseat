@@ -9,9 +9,7 @@ import metric.core.util.SimpleWorkTimer;
 
 public interface MetricDataStrategy
 {
-	public void to(VersionMetricData md, BufferedWriter bw,
-			SimpleWorkTimer workTimer) throws ConversionException;
+	public void to(VersionMetricData md, BufferedWriter bw, SimpleWorkTimer workTimer) throws ConversionException;
 
-	public VersionMetricData from(BufferedReader br,
-			SimpleWorkTimer workTimer) throws ConversionException;
+	public VersionMetricData from(BufferedReader br, SimpleWorkTimer workTimer) throws ConversionException;
 }

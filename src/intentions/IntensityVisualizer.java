@@ -18,9 +18,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * Demonstrates using the <code>ModificationIntensityReportVisitor</code>
- * with the <code>ColourMapDecorator</code> to provide a hot/cold
- * visualization of change and its respective intensity.
+ * Demonstrates using the <code>ModificationIntensityReportVisitor</code> with
+ * the <code>ColourMapDecorator</code> to provide a hot/cold visualization of
+ * change and its respective intensity.
  * 
  * @author Joshua Hayes,Swinburne University (ICT),2007
  */
@@ -29,8 +29,7 @@ public class IntensityVisualizer
 	private static final String PROJECT_NAME = "groovy";
 
 	// Path to output metric model data to.
-	private static final String OUTPUT_LOCATION = "B:/workspace/builds/"
-			+ PROJECT_NAME + "/" + PROJECT_NAME;
+	private static final String OUTPUT_LOCATION = "B:/workspace/builds/" + PROJECT_NAME + "/" + PROJECT_NAME;
 
 	public static void main(String[] args)
 	{
@@ -44,7 +43,8 @@ public class IntensityVisualizer
 		try
 		{
 			// Create a new MetricEngine.
-			MetricEngine me = new MetricEngine(OUTPUT_LOCATION + JSeatFileType.VERSION.toString(), "testProjecT", 3, true);
+			MetricEngine me = new MetricEngine(OUTPUT_LOCATION + JSeatFileType.VERSION.toString(), "testProjecT", 3,
+					true);
 			// Process model data.
 			HistoryMetricData hmd = me.process();
 
@@ -53,7 +53,8 @@ public class IntensityVisualizer
 			ModificationIntensityReportVisitor rv = (ModificationIntensityReportVisitor) ReportFactory
 					.getReport(report);
 
-			// Create a text decorator, heatmap decorator, coolmap decorator and hybridmap decorator
+			// Create a text decorator, heatmap decorator, coolmap decorator and
+            // hybridmap decorator
 			ReportDecorator textDecorator = new TextDecorator(rv);
 			ReportDecorator coolDecorator = new ColourMapDecorator(rv, shell, IntensityStyle.CoolMap);
 			ReportDecorator heatDecorator = new ColourMapDecorator(rv, shell2, IntensityStyle.HeatMap);
@@ -68,8 +69,7 @@ public class IntensityVisualizer
 
 			// Have model accept report.
 			hmd.accept(compositeDecorator);
-			
-			
+
 			// Standard event loop for our 3 shells.
 			shell.open();
 			shell2.open();

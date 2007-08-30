@@ -1,6 +1,5 @@
 package metric.core.util;
 
-
 public class DateUtils
 {
 	public static int toDays(long baseline, long time)
@@ -8,14 +7,14 @@ public class DateUtils
 		long diff = time - baseline;
 		return toDays(diff);
 	}
-	
+
 	private static int toDays(long time)
 	{
-		return (int)(time/(1000 * 60 * 60 * 24));
+		return (int) (time / (1000 * 60 * 60 * 24));
 	}
-	
-	private static int toWeeks(long time)
-	{
-		return (int)(time/(1000 * 60 * 60 * 24 * 7));
-	}
+
+	// private static int toWeeks(long time)
+	// {
+	// return (int) (time / (1000 * 60 * 60 * 24 * 7));
+	//	}
 }

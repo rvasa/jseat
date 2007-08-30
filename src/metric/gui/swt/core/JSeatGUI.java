@@ -9,7 +9,6 @@ import java.util.Properties;
 
 import metric.core.exception.ReportException;
 import metric.core.model.HistoryMetricData;
-import metric.core.model.VersionMetricData;
 import metric.core.report.Report;
 import metric.core.report.decorator.ReportDecorator;
 import metric.core.report.visitor.ReportVisitor;
@@ -35,7 +34,7 @@ import org.eclipse.swt.widgets.Shell;
 
 public abstract class JSeatGUI implements Observer
 {
-	private List versionList;
+//	private List versionList;
 	private ProgressDialog reportProgressDialog;
 	protected Shell shell;
 	protected HashMap<GUI, String> properties;
@@ -43,8 +42,7 @@ public abstract class JSeatGUI implements Observer
 	protected Composite mainComposite, navComposite;
 	protected Group mainGroup, navGroup;
 
-	public JSeatGUI(Shell shell, String title, String configFile)
-			throws IOException
+	public JSeatGUI(Shell shell, String title, String configFile) throws IOException
 	{
 
 		this.shell = shell;
@@ -55,19 +53,9 @@ public abstract class JSeatGUI implements Observer
 		SashForm sashForm = new SashForm(shell, SWT.HORIZONTAL);
 		sashForm.setLayout(new FillLayout());
 
-		navGroup = SWTFactory.createGroup(
-				sashForm,
-				SWT.NONE,
-				"",
-				new FillLayout(SWT.VERTICAL),
-				null);
+		navGroup = SWTFactory.createGroup(sashForm, SWT.NONE, "", new FillLayout(SWT.VERTICAL), null);
 
-		mainGroup = SWTFactory.createGroup(
-				sashForm,
-				SWT.NONE,
-				"",
-				new FillLayout(SWT.VERTICAL),
-				null);
+		mainGroup = SWTFactory.createGroup(sashForm, SWT.NONE, "", new FillLayout(SWT.VERTICAL), null);
 
 		navComposite = new Composite(navGroup, SWT.NONE);
 		navComposite.setLayout(new FillLayout(SWT.VERTICAL));
@@ -113,14 +101,10 @@ public abstract class JSeatGUI implements Observer
 
 		properties = new HashMap<GUI, String>();
 
-		properties.put(GUI.DEFAULT_REPORT_DIR, (String) prop
-				.get(GUI.DEFAULT_REPORT_DIR.toString()));
-		properties.put(GUI.DEFAULT_VERSION_DIR, (String) prop
-				.get(GUI.DEFAULT_VERSION_DIR.toString()));
-		properties.put(GUI.DEFAULT_REPORTSET, (String) prop
-				.get(GUI.DEFAULT_REPORTSET.toString()));
-		properties.put(GUI.CONCURRENT_VER_THREADS, (String) prop
-				.get(GUI.CONCURRENT_VER_THREADS.toString()));
+		properties.put(GUI.DEFAULT_REPORT_DIR, (String) prop.get(GUI.DEFAULT_REPORT_DIR.toString()));
+		properties.put(GUI.DEFAULT_VERSION_DIR, (String) prop.get(GUI.DEFAULT_VERSION_DIR.toString()));
+		properties.put(GUI.DEFAULT_REPORTSET, (String) prop.get(GUI.DEFAULT_REPORTSET.toString()));
+		properties.put(GUI.CONCURRENT_VER_THREADS, (String) prop.get(GUI.CONCURRENT_VER_THREADS.toString()));
 	}
 
 	/**
@@ -152,8 +136,7 @@ public abstract class JSeatGUI implements Observer
 				{
 					// Free data.
 					// freeData();
-					ThreadedProjectBuilder tpb = new ThreadedProjectBuilder(
-							getVersionList(), selected);
+					ThreadedProjectBuilder tpb = new ThreadedProjectBuilder(getVersionList(), selected);
 					tpb.start();
 				}
 			} else if (event.getSource() == menu.getFileNewItem())
@@ -161,13 +144,12 @@ public abstract class JSeatGUI implements Observer
 				int numThreads = 1;
 				try
 				{
-					numThreads = Integer.parseInt(properties
-						.get(GUI.CONCURRENT_VER_THREADS));
-				}catch (NumberFormatException e)
-				{ 
+					numThreads = Integer.parseInt(properties.get(GUI.CONCURRENT_VER_THREADS));
+				} catch (NumberFormatException e)
+				{
 					e.printStackTrace();
 				} // Handle, just use 1 thread if bad input.
-					
+
 				NewProjectDialog npd = new NewProjectDialog(getVersionList(), numThreads);
 				npd.open();
 				SWTFactory.centerDialog(shell, npd.getShell());
@@ -187,12 +169,10 @@ public abstract class JSeatGUI implements Observer
 	 * @param hmd The History to run the report on.
 	 * @throws ReportException
      */
-	void execute(ReportVisitor rv, HistoryMetricData hmd)
-			throws ReportException
+	void execute(ReportVisitor rv, HistoryMetricData hmd) throws ReportException
 	{
 		rv.addObserver(this);
-		reportProgressDialog = new ProgressDialog("Analyzing Version(s)",
-				"Please Wait...", 100);
+		reportProgressDialog = new ProgressDialog("Analyzing Version(s)", "Please Wait...", 100);
 		SWTFactory.centerDialog(shell, reportProgressDialog.getShell());
 		reportProgressDialog.open();
 
@@ -212,8 +192,8 @@ public abstract class JSeatGUI implements Observer
 	 * @param hmd The History to run the report on.
 	 * @throws ReportException
      */
-	public void execute(final ReportDecorator rd, HistoryMetricData hmd,
-			final Composite display) throws ReportException
+	public void execute(final ReportDecorator rd, HistoryMetricData hmd, final Composite display)
+			throws ReportException
 	{
 		if (rd != null && hmd != null)
 		{

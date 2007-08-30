@@ -21,8 +21,7 @@ public class EnumTableTest extends TestCase
 
 	public void setUp()
 	{
-		Enum[] headings = { Version.RSN, Version.ID, ClassMetric.FAN_OUT_COUNT,
-				ClassMetric.AGE };
+		Enum[] headings = { Version.RSN, Version.ID, ClassMetric.FAN_OUT_COUNT, ClassMetric.AGE };
 
 		// Create new enum table.
 		et = new EnumTable(headings, "LAYER FREQUENCY DISPLAY", 3);

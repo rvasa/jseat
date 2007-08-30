@@ -10,8 +10,7 @@ public class ReportDefinitionRepositoryTest extends TestCase
 
 	public void testParseDefinition()
 	{
-		String line = "1,CloneReportVisitor,some description,fan_out_count,2,true,"
-				+ "instability";
+		String line = "1,CloneReportVisitor,some description,fan_out_count,2,true," + "instability";
 
 		ReportDefinition md = null;
 		try
@@ -28,8 +27,7 @@ public class ReportDefinitionRepositoryTest extends TestCase
 	public void testParseDefinitionWithArrayArgs()
 	{
 		String line = "1,CloneReportVisitor,some description,fan_out_count,2,true,"
-				+ "[1,instability,something_else,true],some_other_arg,"
-				+ "other_arg,[modified,instability]";
+				+ "[1,instability,something_else,true],some_other_arg," + "other_arg,[modified,instability]";
 		ReportDefinition md = null;
 		try
 		{

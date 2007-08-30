@@ -59,52 +59,24 @@ public class NewProjectDialog implements SelectionListener, Observer
 
 		Composite nameComposite = SWTFactory.centerComposite(shell, SWT.NONE);
 		SWTFactory.createLabel(nameComposite, SWT.NONE, "Project Name: ");
-		projectNameText = SWTFactory.createText(
-				nameComposite,
-				SWT.NONE,
-				PADDING,
-				null);
+		projectNameText = SWTFactory.createText(nameComposite, SWT.NONE, PADDING, null);
 
 		// Project input
 		Composite inputComposite = SWTFactory.centerComposite(shell, SWT.NONE);
 		SWTFactory.createLabel(inputComposite, SWT.NONE, "Project Input: ");
-		projectInputText = SWTFactory.createText(
-				inputComposite,
-				SWT.NONE,
-				PADDING,
-				null);
-		inputBrowse = SWTFactory.createButton(
-				inputComposite,
-				SWT.NONE,
-				"Browse",
-				this);
+		projectInputText = SWTFactory.createText(inputComposite, SWT.NONE, PADDING, null);
+		inputBrowse = SWTFactory.createButton(inputComposite, SWT.NONE, "Browse", this);
 
 		// Project output
 		Composite outputComposite = SWTFactory.centerComposite(shell, SWT.NONE);
 		SWTFactory.createLabel(outputComposite, SWT.NONE, "Project File: ");
-		projectOutputText = SWTFactory.createText(
-				outputComposite,
-				SWT.NONE,
-				PADDING,
-				null);
-		outputBrowse = SWTFactory.createButton(
-				outputComposite,
-				SWT.NONE,
-				"Browse",
-				this);
+		projectOutputText = SWTFactory.createText(outputComposite, SWT.NONE, PADDING, null);
+		outputBrowse = SWTFactory.createButton(outputComposite, SWT.NONE, "Browse", this);
 
 		// Decision
 		Composite actionComposite = SWTFactory.centerComposite(shell, SWT.NONE);
-		okButton = SWTFactory.createButton(
-				actionComposite,
-				SWT.NONE,
-				"Ok",
-				this);
-		cancelButton = SWTFactory.createButton(
-				actionComposite,
-				SWT.NONE,
-				"Cancel",
-				this);
+		okButton = SWTFactory.createButton(actionComposite, SWT.NONE, "Ok", this);
+		cancelButton = SWTFactory.createButton(actionComposite, SWT.NONE, "Cancel", this);
 
 		shell.pack();
 
@@ -112,12 +84,12 @@ public class NewProjectDialog implements SelectionListener, Observer
 		projectInputText.setText("");
 		projectOutputText.setText("");
 		projectNameText.setText("");
-//		 projectInputText.setText("B:\\workspace\\builds\\groovy\\groovy.ver");
-//		 projectOutputText.setText("D:\\MyGroovyProject\\TestGroovy.jpf");
-//		 projectNameText.setText("TestGroovy");
+		// projectInputText.setText("B:\\workspace\\builds\\groovy\\groovy.ver");
+		// projectOutputText.setText("D:\\MyGroovyProject\\TestGroovy.jpf");
+		// projectNameText.setText("TestGroovy");
 
 		// Setup verification and modification rules for the project name and
-        // project output. This keeps them synchronized.
+		// project output. This keeps them synchronized.
 		final ModifyListener projectNameModifyListener = setupProjectNameModifyListener();
 		projectNameText.addModifyListener(projectNameModifyListener);
 
@@ -125,8 +97,7 @@ public class NewProjectDialog implements SelectionListener, Observer
 		setupProjectOutputModifyListener(projectNameModifyListener);
 	}
 
-	private void setupProjectOutputModifyListener(
-			final ModifyListener projectNameModifyListener)
+	private void setupProjectOutputModifyListener(final ModifyListener projectNameModifyListener)
 	{
 		projectOutputText.addModifyListener(new ModifyListener()
 		{
@@ -134,23 +105,17 @@ public class NewProjectDialog implements SelectionListener, Observer
 			public void modifyText(ModifyEvent event)
 			{
 				// Offset the file separate index by 1 to skip past the \.
-				int startIndex = projectOutputText.getText().lastIndexOf(
-						File.separator) + 1;
-				int endIndex = projectOutputText.getText().indexOf(
-						JSeatFileType.PROJECT.toString());
+				int startIndex = projectOutputText.getText().lastIndexOf(File.separator) + 1;
+				int endIndex = projectOutputText.getText().indexOf(JSeatFileType.PROJECT.toString());
 				if (endIndex > 0)
 				{
-					String filename = projectOutputText.getText().substring(
-							startIndex,
-							endIndex);
+					String filename = projectOutputText.getText().substring(startIndex, endIndex);
 
 					// Remove update listener whilst we change project name to
 					// stop a nasty cyclic stack overflow :)
-					projectNameText
-							.removeModifyListener(projectNameModifyListener);
+					projectNameText.removeModifyListener(projectNameModifyListener);
 					projectNameText.setText(filename);
-					projectNameText
-							.addModifyListener(projectNameModifyListener);
+					projectNameText.addModifyListener(projectNameModifyListener);
 				}
 			}
 		});
@@ -173,11 +138,8 @@ public class NewProjectDialog implements SelectionListener, Observer
 						event.doit = false;
 				} else
 				{
-					String start = filename.subSequence(0, event.start)
-							.toString();
-					String end = filename.subSequence(
-							event.end,
-							filename.length()).toString();
+					String start = filename.subSequence(0, event.start).toString();
+					String end = filename.subSequence(event.end, filename.length()).toString();
 					filename = start + event.text + end;
 					if (filename.indexOf(JSeatFileType.PROJECT.toString()) == -1)
 						event.doit = false;
@@ -200,15 +162,13 @@ public class NewProjectDialog implements SelectionListener, Observer
 				// Is empty, so set to project name for now.
 				if (projectOutputText.getText().indexOf(File.separator) == -1)
 				{
-					projectOutputText.setText(projectNameText.getText()
-							+ JSeatFileType.PROJECT.toString());
+					projectOutputText.setText(projectNameText.getText() + JSeatFileType.PROJECT.toString());
 				} else
 				// User has already selected a output file and is changing
 				// project name.
 				{
 					File tmp = new File(projectOutputText.getText());
-					String newFileName = tmp.getParent() + File.separator
-							+ projectNameText.getText()
+					String newFileName = tmp.getParent() + File.separator + projectNameText.getText()
 							+ JSeatFileType.PROJECT.toString();
 					projectOutputText.setText(newFileName);
 				}
@@ -265,14 +225,12 @@ public class NewProjectDialog implements SelectionListener, Observer
 		} else if (event.getSource() == okButton)
 		{
 			// Begin creating new project.
-			tpb = new ThreadedProjectBuilder(versions,
-					projectInputText.getText(), projectOutputText.getText(),
+			tpb = new ThreadedProjectBuilder(versions, projectInputText.getText(), projectOutputText.getText(),
 					concurrentVerThreads);
 			tpb.addObserver(this);
 
 			// Open a progress dialog.
-			progressDialog = new ProgressDialog("Creating new project",
-					"Please Wait...", 100);
+			progressDialog = new ProgressDialog("Creating new project", "Please Wait...", 100);
 			SWTFactory.centerDialog(shell, progressDialog.getShell());
 			progressDialog.getCancelButton().addSelectionListener(this);
 			progressDialog.open();

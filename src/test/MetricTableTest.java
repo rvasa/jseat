@@ -22,13 +22,12 @@ public class MetricTableTest extends TestCase
 
 	public void setUp()
 	{
-		Enum[] headings = { Version.RSN, Version.ID, ClassMetric.FAN_OUT_COUNT,
-				ClassMetric.AGE };
+		Enum[] headings = { Version.RSN, Version.ID, ClassMetric.FAN_OUT_COUNT, ClassMetric.AGE };
 
 		// Create new variable enum table.
 		et = new MetricTable<Enum, Object>(headings, "LAYER FREQUENCY DISPLAY");
 
-		Object[] row1 = { "1.0r1", "a really long row", 4, 5};
+		Object[] row1 = { "1.0r1", "a really long row", 4, 5 };
 		Object[] row2 = { "1.0r2", 2, 8 + "", 10 + "f" };
 		Object[] row3 = { "1.0r3", 3, "a really long row", 15 };
 
@@ -81,7 +80,7 @@ public class MetricTableTest extends TestCase
 		et.setDisplayTitle(false);
 		System.out.println(et);
 	}
-	
+
 	public void testIterableRows()
 	{
 		System.out.println("\nTesting iterable over rows.");
@@ -94,7 +93,7 @@ public class MetricTableTest extends TestCase
 			System.out.println();
 		}
 	}
-	
+
 	public void testColumnIterator()
 	{
 		System.out.println("\nTesting column iterator.");

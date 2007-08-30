@@ -9,14 +9,14 @@ import org.eclipse.swt.widgets.Shell;
 public class JSeatFactory
 {
 	private static JSeatFactory factory;
-	
+
 	public static JSeatFactory getInstance()
 	{
 		if (factory == null)
 			factory = new JSeatFactory();
 		return factory;
 	}
-	
+
 	public OpenDialog getJSeatOpenDialog(Shell shell, JSeatFileType type, String title, String filterPath)
 	{
 		String[] exts = { type.getExtension() };
@@ -25,8 +25,9 @@ public class JSeatFactory
 		od.setTitle(title);
 		return od;
 	}
-	
-	public OpenDialog getJSeatOpenDialog(Shell shell, JSeatFileType type, String title, String filterPath, String filename)
+
+	public OpenDialog getJSeatOpenDialog(Shell shell, JSeatFileType type, String title, String filterPath,
+			String filename)
 	{
 		String[] exts = { type.getExtension() };
 		String[] names = { type.getExtensionName() };
@@ -35,7 +36,7 @@ public class JSeatFactory
 		od.setFileName(filename);
 		return od;
 	}
-	
+
 	public SaveDialog getJSeatSaveDialog(Shell shell, JSeatFileType type, String title, String filterPath)
 	{
 		String[] exts = { type.getExtension() };
@@ -44,8 +45,9 @@ public class JSeatFactory
 		sd.setTitle("Save Project");
 		return sd;
 	}
-	
-	public SaveDialog getJSeatSaveDialog(Shell shell, JSeatFileType type, String title, String filterPath, String filename)
+
+	public SaveDialog getJSeatSaveDialog(Shell shell, JSeatFileType type, String title, String filterPath,
+			String filename)
 	{
 		String[] exts = { type.getExtension() };
 		String[] names = { type.getExtensionName() };

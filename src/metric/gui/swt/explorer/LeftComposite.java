@@ -76,25 +76,18 @@ public class LeftComposite extends Composite implements SelectionListener
 	private ArrayList<String[]> processedMetrics;
 
 	private TableHandler tableHandler;
-	private String defaultReport;
 
 	public LeftComposite(Composite parent, int type, String defaultReport)
 	{
 		super(parent, type);
 		// Set layout data.
 		setLayout(new GridLayout());
-		setLayoutData(SWTFactory.createGridData(
-				GridData.FILL_VERTICAL,
-				SWT.DEFAULT,
-				SWT.DEFAULT,
-				SWT.TOP));
+		setLayoutData(SWTFactory.createGridData(GridData.FILL_VERTICAL, SWT.DEFAULT, SWT.DEFAULT, SWT.TOP));
 
 		// this.parent = parent;
 		this.parent = parent;
 		this.processedMetrics = new ArrayList<String[]>();
 		this.tableHandler = new TableHandler();
-		this.logger = logger;
-		this.defaultReport = defaultReport;
 
 		// Version grid data
 		GridData versionGridData = SWTFactory.createGridData(
@@ -102,15 +95,9 @@ public class LeftComposite extends Composite implements SelectionListener
 				parent.getSize().y / 2,
 				SWT.DEFAULT,
 				SWT.TOP);
-		Group versionGroup = SWTFactory.createGroup(
-				this,
-				SWT.NONE,
-				"Versions",
-				new GridLayout(),
-				versionGridData);
+		Group versionGroup = SWTFactory.createGroup(this, SWT.NONE, "Versions", new GridLayout(), versionGridData);
 		// Version list
-		versionList = SWTFactory.createList(versionGroup, SWT.BORDER
-				| SWT.MULTI | SWT.V_SCROLL, versionGridData);
+		versionList = SWTFactory.createList(versionGroup, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL, versionGridData);
 
 		// Report Group
 		GridData reportGroupGridData = new GridData(GridData.FILL_BOTH);
@@ -124,7 +111,7 @@ public class LeftComposite extends Composite implements SelectionListener
 		reportGroup.setBounds(parent.getClientArea());
 
 		// FIXME: This makes sure the entire report section expands to fill
-        // available
+		// available
 		// area as the window is resized. Causes flickering, should investigate.
 		// final Rectangle r = this.getClientArea();
 		// shell.addControlListener(new ControlAdapter()
@@ -142,9 +129,7 @@ public class LeftComposite extends Composite implements SelectionListener
 		reportHeader.setText("Report Type:");
 		reportHeader.setLayoutData(reportHeaderGridData);
 
-		Composite compReportSel = SWTFactory.centerComposite(
-				reportGroup,
-				SWT.NONE);
+		Composite compReportSel = SWTFactory.centerComposite(reportGroup, SWT.NONE);
 		reportSelectionButton = SWTFactory.createCombo(
 				compReportSel,
 				SWT.DROP_DOWN | SWT.READ_ONLY,
@@ -152,16 +137,10 @@ public class LeftComposite extends Composite implements SelectionListener
 				null,
 				new RowData(200, SWT.DEFAULT));
 
-		resetButton = SWTFactory.createButton(
-				compReportSel,
-				SWT.PUSH,
-				"Reset",
-				this);
+		resetButton = SWTFactory.createButton(compReportSel, SWT.PUSH, "Reset", this);
 		resetButton.setLayoutData(new RowData(50, SWT.DEFAULT));
 
-		Composite compReportConfig = SWTFactory.centerComposite(
-				reportGroup,
-				SWT.NONE);
+		Composite compReportConfig = SWTFactory.centerComposite(reportGroup, SWT.NONE);
 		reportConfigButton = SWTFactory.createCombo(
 				compReportConfig,
 				SWT.DROP_DOWN | SWT.READ_ONLY,
@@ -169,15 +148,10 @@ public class LeftComposite extends Composite implements SelectionListener
 				null,
 				new RowData(150, SWT.DEFAULT));
 
-		reportBrowseButton = SWTFactory.createButton(
-				compReportConfig,
-				SWT.PUSH,
-				"Browse",
-				this);
+		reportBrowseButton = SWTFactory.createButton(compReportConfig, SWT.PUSH, "Browse", this);
 
 		// Table
-		table = new Table(reportGroup, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.HIDE_SELECTION);
+		table = new Table(reportGroup, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.HIDE_SELECTION);
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 		table.setToolTipText("Double click to add new entry");
@@ -202,7 +176,7 @@ public class LeftComposite extends Composite implements SelectionListener
 
 		// Attempt to load the default report file specified in the
 		// default configuration file.
-		 loadReportFile(defaultReport);
+		loadReportFile(defaultReport);
 
 		reportSelectionButton.addSelectionListener(this);
 		reportConfigButton.addSelectionListener(this);
@@ -237,8 +211,8 @@ public class LeftComposite extends Composite implements SelectionListener
 		Report rv = null;
 		try
 		{
-			rv = (Report) reportSelectionButton.getData(reportSelectionButton
-					.getItem(reportSelectionButton.getSelectionIndex()));
+			rv = (Report) reportSelectionButton.getData(reportSelectionButton.getItem(reportSelectionButton
+					.getSelectionIndex()));
 		} catch (IllegalArgumentException e)
 		{
 		} // Handle.
@@ -283,8 +257,7 @@ public class LeftComposite extends Composite implements SelectionListener
 			} else if (valueEditor.getEditor() instanceof Text)
 			{
 				Text valueText = (Text) valueEditor.getEditor();
-				h.put(nameCombo.getText(), Integer
-						.parseInt(valueText.getText()));
+				h.put(nameCombo.getText(), Integer.parseInt(valueText.getText()));
 				// For the moment we are only allowing numbers
 				// so we will assume that is what we have.
 			}
@@ -304,7 +277,7 @@ public class LeftComposite extends Composite implements SelectionListener
 		{
 			// String[] filterExt = { JSeatFileType.REPORT.getExtension() };
 			// String[] filterNames = { JSeatFileType.REPORT.getExtensionName()
-            // };
+			// };
 			// String filterPath = parent.getProperty(GUI.DEFAULT_REPORT_DIR);
 
 			// OpenDialog od = new OpenDialog(shell, filterExt, filterNames,
@@ -315,7 +288,7 @@ public class LeftComposite extends Composite implements SelectionListener
 					"Open JSeat Project",
 					null);
 			String selected = od.open();
-			
+
 			if (selected != null)
 			{
 				loadReportFile(selected);
@@ -331,12 +304,10 @@ public class LeftComposite extends Composite implements SelectionListener
 			// modifiable.
 		} else if (event.getSource() == reportConfigButton)
 		{
-			updateReportSelection(event.widget.getData(reportConfigButton
-					.getText()));
+			updateReportSelection(event.widget.getData(reportConfigButton.getText()));
 		} else if (event.getSource() == resetButton)
 		{
-			Report rv = (Report) reportSelectionButton
-					.getData(reportSelectionButton.getText());
+			Report rv = (Report) reportSelectionButton.getData(reportSelectionButton.getText());
 			// Reset report and update table.
 			rv.reset();
 			processedMetrics.clear();
@@ -369,25 +340,16 @@ public class LeftComposite extends Composite implements SelectionListener
 			{
 				if (reportConfigMap.get(name) instanceof Collection)
 				{
-					Collection<String[]> c = (Collection<String[]>) reportConfigMap
-							.get(name);
+					Collection<String[]> c = (Collection<String[]>) reportConfigMap.get(name);
 					for (int i = 0; i < c.size(); i++)
 					{
 						TableItem currentItem = new TableItem(table, SWT.NONE);
-						tableHandler.createRow(
-								table,
-								currentItem,
-								args,
-								StringUtils.indexOf(args, name));
+						tableHandler.createRow(table, currentItem, args, StringUtils.indexOf(args, name));
 					}
 				} else
 				{
 					TableItem currentItem = new TableItem(table, SWT.NONE);
-					tableHandler.createRow(
-							table,
-							currentItem,
-							args,
-							StringUtils.indexOf(args, name));
+					tableHandler.createRow(table, currentItem, args, StringUtils.indexOf(args, name));
 				}
 			}
 		}
@@ -403,8 +365,7 @@ public class LeftComposite extends Composite implements SelectionListener
 			reportSelectionButton.removeAll();
 
 			// Sort definitions
-			LinkedList<ReportDefinition> sorted = new LinkedList<ReportDefinition>(
-					selected.getDefinitions());
+			LinkedList<ReportDefinition> sorted = new LinkedList<ReportDefinition>(selected.getDefinitions());
 			Collections.sort(sorted);
 
 			// Add the current repository and set reports.
@@ -413,8 +374,7 @@ public class LeftComposite extends Composite implements SelectionListener
 				reportSelectionButton.add(def.toString());
 				try
 				{
-					reportSelectionButton.setData(def.toString(), ReportFactory
-							.getReport(def));
+					reportSelectionButton.setData(def.toString(), ReportFactory.getReport(def));
 				} catch (ReportException e)
 				{
 					logger.log(Level.ALL, e.getMessage());
@@ -433,8 +393,7 @@ public class LeftComposite extends Composite implements SelectionListener
      */
 	private void loadReportFile(final String filename)
 	{
-		ThreadedDefinitionProcessor tdp = new ThreadedDefinitionProcessor(
-				reportConfigButton, filename);
+		ThreadedDefinitionProcessor tdp = new ThreadedDefinitionProcessor(reportConfigButton, filename);
 		tdp.start();
 	}
 
@@ -453,14 +412,12 @@ public class LeftComposite extends Composite implements SelectionListener
          */
 		public void mouseDoubleClick(MouseEvent me)
 		{
-			Report rv = (Report) reportSelectionButton
-					.getData(reportSelectionButton
-							.getItem(reportSelectionButton.getSelectionIndex()));
+			Report rv = (Report) reportSelectionButton.getData(reportSelectionButton.getItem(reportSelectionButton
+					.getSelectionIndex()));
 
 			if (rv.getArguments() != null)
 			{
-				String[] nameArgs = new String[rv.getArguments().keySet()
-						.size()];
+				String[] nameArgs = new String[rv.getArguments().keySet().size()];
 				rv.getArguments().keySet().toArray(nameArgs);
 
 				// Some reports may not have specified this.
@@ -496,7 +453,7 @@ public class LeftComposite extends Composite implements SelectionListener
 			CCombo c = (CCombo) event.getSource();
 			String name = c.getText();
 			// Some reports may not have specified this.
-			if (name != null && reportConfigMap != null) 
+			if (name != null && reportConfigMap != null)
 			{
 				TableEditor editor = (TableEditor) c.getData();
 
@@ -520,8 +477,7 @@ public class LeftComposite extends Composite implements SelectionListener
 					} catch (ClassCastException e)
 					{
 						// Is a Collection<String[]>, not String[]
-						Collection<String[]> values = (Collection<String[]>) reportConfigMap
-								.get(name);
+						Collection<String[]> values = (Collection<String[]>) reportConfigMap.get(name);
 						for (String[] strings : values)
 						{
 							if (!processedMetrics.contains(strings))
@@ -548,8 +504,7 @@ public class LeftComposite extends Composite implements SelectionListener
 		{
 			if (editor.getItem().getData("values") != null)
 			{
-				TableEditor te = (TableEditor) editor.getItem().getData(
-						"values");
+				TableEditor te = (TableEditor) editor.getItem().getData("values");
 				te.getEditor().dispose();
 			}
 		}
@@ -561,8 +516,7 @@ public class LeftComposite extends Composite implements SelectionListener
          * Foces a selection event so that the corresponding values field (2nd
          * column) is updated with the appropriate editor.
          */
-		public void createRow(final Table table, final TableItem newItem,
-				Object[] values, int selected)
+		public void createRow(final Table table, final TableItem newItem, Object[] values, int selected)
 		{
 			final CCombo nameCombo = new CCombo(table, SWT.CHECK);
 			nameCombo.addSelectionListener(this);

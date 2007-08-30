@@ -100,8 +100,7 @@ public class CountReportVisitor extends Report
 			rows.add(getRowCounts(vmd, doIsum, doBeta, fields));
 		}
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				getHeading(fields), rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(getHeading(fields), rd.description);
 		et.setColumnPadding(1);
 		et.setDisplayTitle(true);
 		et.addRows(rows);
@@ -112,8 +111,7 @@ public class CountReportVisitor extends Report
 	public void visit(VersionMetricData vmd) throws ReportException
 	{
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				getHeading(fields), rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(getHeading(fields), rd.description);
 		et.setColumnPadding(1);
 		et.addRow(getRowCounts(vmd, doIsum, doBeta, fields));
 		et.setDisplayTitle(true);
@@ -139,8 +137,7 @@ public class CountReportVisitor extends Report
 		return StringUtils.asStrings(heading);
 	}
 
-	protected String[] getRowCounts(VersionMetricData vmd, boolean isum,
-			boolean beta, String[] fields)
+	protected String[] getRowCounts(VersionMetricData vmd, boolean isum, boolean beta, String[] fields)
 	{
 		ArrayList<String> row = new ArrayList<String>();
 		row.add(vmd.get(Version.NAME));

@@ -35,8 +35,7 @@ public class ClassMetricExtractor
 	private Logger logger = Logger.getLogger(getClass().getSimpleName());
 	public static int METHODS_PROCESSED = 0;
 
-	public ClassMetricExtractor(InputData idata, InputDataSet ids)
-			throws IOException
+	public ClassMetricExtractor(InputData idata, InputDataSet ids) throws IOException
 	{
 		ClassReader cr = new ClassReader(idata.getInputStream());
 		classNode = new ClassNode();
@@ -80,19 +79,17 @@ public class ClassMetricExtractor
 			// parent class). Unsure of why this happens.
 			if (!icn.name.equals(classNode.name))
 			{
-				InputData innerStream = ids.getInputData(icn.name
-						+ ".class");
+				InputData innerStream = ids.getInputData(icn.name + ".class");
 				if (innerStream != null)
 				{
 					try
 					{
-						ClassMetricExtractor cme = new ClassMetricExtractor(
-								innerStream, ids);
+						ClassMetricExtractor cme = new ClassMetricExtractor(innerStream, ids);
 						ClassMetricData innerClass = cme.extract();
 
 						// merge inner class metrics with this class.
 						cmd.mergeInnerClass(innerClass);
-						
+
 						// Free up class as it is no longer needed.
 						innerClass.methods = null;
 						innerClass = null;
@@ -127,7 +124,7 @@ public class ClassMetricExtractor
 
 		for (int[] mm : methodMap.values())
 			mergeMethodMetricsWithClass(mm);
-		
+
 		cmd.methods = new MethodMetricMap(methodMap);
 	}
 
@@ -138,69 +135,31 @@ public class ClassMetricExtractor
      */
 	private void mergeMethodMetricsWithClass(int[] mm)
 	{
-		cmd.incrementMetric(
-				ClassMetric.BRANCH_COUNT,
-				mm[MethodMetric.BRANCH_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.CONSTANT_LOAD_COUNT,
-				mm[MethodMetric.CONSTANT_LOAD_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.INCREMENT_OP_COUNT,
-				mm[MethodMetric.INCREMENT_OP_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.ISTORE_COUNT,
-				mm[MethodMetric.ISTORE_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.ILOAD_COUNT,
-				mm[MethodMetric.ILOAD_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.LOCAL_VAR_COUNT,
-				mm[MethodMetric.LOCAL_VAR_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.METHOD_CALL_COUNT,
-				mm[MethodMetric.METHOD_CALL_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.REF_LOAD_OP_COUNT,
-				mm[MethodMetric.REF_LOAD_OP_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.REF_STORE_OP_COUNT,
-				mm[MethodMetric.REF_STORE_OP_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.LOAD_FIELD_COUNT,
-				mm[MethodMetric.LOAD_FIELD_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.STORE_FIELD_COUNT,
-				mm[MethodMetric.STORE_FIELD_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.THROW_COUNT,
-				mm[MethodMetric.THROW_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.TRY_CATCH_BLOCK_COUNT,
-				mm[MethodMetric.TRY_CATCH_BLOCK_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.TYPE_INSN_COUNT,
-				mm[MethodMetric.TYPE_INSN_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.ZERO_OP_INSN_COUNT,
-				mm[MethodMetric.ZERO_OP_INSN_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.BRANCH_COUNT, mm[MethodMetric.BRANCH_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.CONSTANT_LOAD_COUNT, mm[MethodMetric.CONSTANT_LOAD_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.INCREMENT_OP_COUNT, mm[MethodMetric.INCREMENT_OP_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.ISTORE_COUNT, mm[MethodMetric.ISTORE_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.ILOAD_COUNT, mm[MethodMetric.ILOAD_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.LOCAL_VAR_COUNT, mm[MethodMetric.LOCAL_VAR_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.METHOD_CALL_COUNT, mm[MethodMetric.METHOD_CALL_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.REF_LOAD_OP_COUNT, mm[MethodMetric.REF_LOAD_OP_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.REF_STORE_OP_COUNT, mm[MethodMetric.REF_STORE_OP_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.LOAD_FIELD_COUNT, mm[MethodMetric.LOAD_FIELD_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.STORE_FIELD_COUNT, mm[MethodMetric.STORE_FIELD_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.THROW_COUNT, mm[MethodMetric.THROW_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.TRY_CATCH_BLOCK_COUNT, mm[MethodMetric.TRY_CATCH_BLOCK_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.TYPE_INSN_COUNT, mm[MethodMetric.TYPE_INSN_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.ZERO_OP_INSN_COUNT, mm[MethodMetric.ZERO_OP_INSN_COUNT.ordinal()]);
 
-		cmd.incrementMetric(
-				ClassMetric.METHOD_CALL_COUNT,
-				mm[MethodMetric.METHOD_CALL_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.IN_METHOD_CALL_COUNT,
-				mm[MethodMetric.IN_METHOD_CALL_COUNT.ordinal()]);
-		cmd.incrementMetric(
-				ClassMetric.EX_METHOD_CALL_COUNT,
-				mm[MethodMetric.EX_METHOD_CALL_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.METHOD_CALL_COUNT, mm[MethodMetric.METHOD_CALL_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.IN_METHOD_CALL_COUNT, mm[MethodMetric.IN_METHOD_CALL_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.EX_METHOD_CALL_COUNT, mm[MethodMetric.EX_METHOD_CALL_COUNT.ordinal()]);
 
 		if (mm[MethodMetric.SCOPE.ordinal()] == TypeModifier.PUBLIC.ordinal())
 			cmd.incrementMetric(ClassMetric.PUBLIC_METHOD_COUNT);
-		else if (mm[MethodMetric.SCOPE.ordinal()] == TypeModifier.PRIVATE
-				.ordinal())
+		else if (mm[MethodMetric.SCOPE.ordinal()] == TypeModifier.PRIVATE.ordinal())
 			cmd.incrementMetric(ClassMetric.PRIVATE_METHOD_COUNT);
-		else if (mm[MethodMetric.SCOPE.ordinal()] == TypeModifier.PROTECTED
-				.ordinal())
+		else if (mm[MethodMetric.SCOPE.ordinal()] == TypeModifier.PROTECTED.ordinal())
 			cmd.incrementMetric(ClassMetric.PROTECTED_METHOD_COUNT);
 
 		if (mm[MethodMetric.IS_ABSTRACT.ordinal()] == 1)
@@ -275,19 +234,15 @@ public class ClassMetricExtractor
      */
 	private void extractClassMetrics()
 	{
-		cmd.setSimpleMetric(
-				ClassMetric.INNER_CLASS_COUNT,
-				classNode.innerClasses.size());
-		cmd.setSimpleMetric(ClassMetric.INTERFACE_COUNT, classNode.interfaces
-				.size());
+		cmd.setSimpleMetric(ClassMetric.INNER_CLASS_COUNT, classNode.innerClasses.size());
+		cmd.setSimpleMetric(ClassMetric.INTERFACE_COUNT, classNode.interfaces.size());
 		cmd.setSimpleMetric(ClassMetric.FIELD_COUNT, classNode.fields.size());
 		cmd.setSimpleMetric(ClassMetric.METHOD_COUNT, classNode.methods.size());
 
 		cmd.setProperty(ClassMetric.NAME, classNode.name);
-		cmd.setProperty(ClassMetric.SUPER_CLASS_NAME, classNode.superName
-				.trim());
-		
-		//set creation/modification time.
+		cmd.setProperty(ClassMetric.SUPER_CLASS_NAME, classNode.superName.trim());
+
+		// set creation/modification time.
 		// TODO Fix creation date.
 		cmd.lastModified = idata.getLastModifiedTime();
 

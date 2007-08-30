@@ -61,8 +61,7 @@ public class StatUtils
      */
 	public static double[] createRelFreqTable(int range[], int maxValue)
 	{
-		return StatUtils.toRelativeFreqTable(StatUtils.createFreqTable(range,
-				maxValue));
+		return StatUtils.toRelativeFreqTable(StatUtils.createFreqTable(range, maxValue));
 	}
 
 	/**
@@ -132,8 +131,7 @@ public class StatUtils
      * Applies the specified set of constraints to a frequency range, returning
      * a constrained frequency table.
      */
-	public static int[] toConstrainedFreqTable(int[] fRange, int[] cRange,
-			int cMin, int cMax, int max)
+	public static int[] toConstrainedFreqTable(int[] fRange, int[] cRange, int cMin, int cMax, int max)
 	{
 		int[] newFreq = new int[max];
 		for (int i = 0; i < fRange.length; i++)
@@ -177,8 +175,7 @@ public class StatUtils
 		return sum + ", \t" + CSVUtil.toCSVString(freq);
 	}
 
-	public static int scaleDoubleMetric(double metricValue, int scaleMax,
-			double cutOffMax)
+	public static int scaleDoubleMetric(double metricValue, int scaleMax, double cutOffMax)
 	{
 		double mv = metricValue;
 		if (metricValue > cutOffMax)
@@ -189,10 +186,10 @@ public class StatUtils
 
 	public static double calcCorrelation(DoubleArrayList m1, DoubleArrayList m2)
 	{
-		double sdm1 = Descriptive.standardDeviation(Descriptive.variance(m1
-				.size(), Descriptive.sum(m1), Descriptive.sumOfSquares(m1)));
-		double sdm2 = Descriptive.standardDeviation(Descriptive.variance(m2
-				.size(), Descriptive.sum(m2), Descriptive.sumOfSquares(m2)));
+		double sdm1 = Descriptive.standardDeviation(Descriptive.variance(m1.size(), Descriptive.sum(m1), Descriptive
+				.sumOfSquares(m1)));
+		double sdm2 = Descriptive.standardDeviation(Descriptive.variance(m2.size(), Descriptive.sum(m2), Descriptive
+				.sumOfSquares(m2)));
 		return Descriptive.correlation(m1, sdm1, m2, sdm2);
 	}
 }

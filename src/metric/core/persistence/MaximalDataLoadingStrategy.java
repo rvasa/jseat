@@ -1,6 +1,5 @@
 package metric.core.persistence;
 
-import java.io.File;
 import java.io.FileReader;
 import java.util.Map;
 import java.util.logging.Level;
@@ -33,16 +32,14 @@ public class MaximalDataLoadingStrategy implements DataLoadingStrategy
 			String file = versions.get(rsn)[1];
 			// Load up classes.
 			FileReader reader = new FileReader(file + SerializeType.CLASSES.getExt());
-			MetricDataConverter classConverter = new CSVConverter(
-					SerializeType.CLASSES);
+			MetricDataConverter classConverter = new CSVConverter(SerializeType.CLASSES);
 			vmd = classConverter.deSerialize(reader);
 			reader.close();
 			classConverter.close();
 
 			// Load up dependencies.
 			reader = new FileReader(file + SerializeType.DEPENDENCIES.getExt());
-			MetricDataConverter dependencyConverter = new CSVConverter(
-					SerializeType.DEPENDENCIES);
+			MetricDataConverter dependencyConverter = new CSVConverter(SerializeType.DEPENDENCIES);
 			vmdDependencies = dependencyConverter.deSerialize(reader);
 			dependencyConverter.close();
 
@@ -51,8 +48,7 @@ public class MaximalDataLoadingStrategy implements DataLoadingStrategy
 			{
 				try
 				{
-				clazz.dependencies = vmdDependencies.metricData.get(clazz
-						.get(ClassMetric.NAME)).dependencies;
+					clazz.dependencies = vmdDependencies.metricData.get(clazz.get(ClassMetric.NAME)).dependencies;
 				} catch (NullPointerException e)
 				{
 					logger.log(Level.SEVERE, "A series error has occured when trying to de-serialize dependency data");
@@ -82,6 +78,6 @@ public class MaximalDataLoadingStrategy implements DataLoadingStrategy
 	public void remove()
 	{
 		// TODO Auto-generated method stub
-		
+
 	}
 }

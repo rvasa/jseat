@@ -68,8 +68,8 @@ public class MetricReportVisitor extends Report
 		int total = hmd.versions.size();
 		ArrayList<String[]> rows = new ArrayList<String[]>();
 
-		String[] headings = { "name", Version.RSN.toString(), Version.ID.toString(),
-				Version.CLASS_COUNT.toString(), "class_stats" };
+		String[] headings = { "name", Version.RSN.toString(), Version.ID.toString(), Version.CLASS_COUNT.toString(),
+				"class_stats" };
 		for (int i = 1; i <= total; i++)
 		{
 			VersionMetricData vmd = hmd.getVersion(i);
@@ -81,8 +81,7 @@ public class MetricReportVisitor extends Report
 				printMetricHistory(hmd, metricType);
 		}
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				headings, rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(headings, rd.description);
 		et.addRows(rows);
 		et.setColumnPadding(1);
 		et.setDisplayTitle(true);
@@ -99,8 +98,7 @@ public class MetricReportVisitor extends Report
 		ArrayList<String[]> rows = new ArrayList<String[]>();
 		for (ClassMetricData cm : vmd.metricData.values())
 		{
-			String[] row = { vmd.get(Version.NAME),
-					vmd.get(Version.RSN), vmd.get(Version.ID),
+			String[] row = { vmd.get(Version.NAME), vmd.get(Version.RSN), vmd.get(Version.ID),
 					vmd.get(Version.CLASS_COUNT), cm.toString() };
 			rows.add(row);
 		}
@@ -136,17 +134,15 @@ public class MetricReportVisitor extends Report
      * @return A name that contains class name and the metric values for each
      *         version
      */
-	private Map<String, Integer[]> createHistoryMap(HistoryMetricData hmd,
-			String fieldName)
-			// ,
+	private Map<String, Integer[]> createHistoryMap(HistoryMetricData hmd, String fieldName)
+	// ,
 			// String
 			// constraintField,
 			// int
 			// constraintMin,
 			// int
 			// constraintMax)
-			throws IllegalArgumentException, SecurityException,
-			IllegalAccessException, NoSuchFieldException
+			throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException
 	{
 		// TODO: This is not smart enough, as it will not work well when we have
 		// classes that are removed for a version, then come back again.
@@ -167,22 +163,19 @@ public class MetricReportVisitor extends Report
 				}
 
 				// Store the metric value against the version in array
-				historyMap.get(className)[i - 1] = versionMetricMap
-						.get(className);
+				historyMap.get(className)[i - 1] = versionMetricMap.get(className);
 			}
 		}
 		return historyMap;
 	}
 
-	private Map<String, Integer> getMetricMap(VersionMetricData vmd,
-			String fieldName) throws IllegalArgumentException,
+	private Map<String, Integer> getMetricMap(VersionMetricData vmd, String fieldName) throws IllegalArgumentException,
 			SecurityException, IllegalAccessException, NoSuchFieldException
 	{
 		Map<String, Integer> m = new HashMap<String, Integer>();
 		for (ClassMetricData c : vmd.metricData.values())
 		{
-			m.put(c.get(ClassMetric.NAME), c.getSimpleMetric(ClassMetric
-					.parse(fieldName)));
+			m.put(c.get(ClassMetric.NAME), c.getSimpleMetric(ClassMetric.parse(fieldName)));
 		}
 		return m;
 	}
@@ -203,8 +196,8 @@ public class MetricReportVisitor extends Report
 					line += ",";
 			}
 			System.out.println(line.substring(0, line.length()));
-//			buffer.append(line.substring(0, line.length()));
-//			logBuffer();
+			// buffer.append(line.substring(0, line.length()));
+			// logBuffer();
 			// System.out.println(line.substring(0, line.length()));
 		}
 	}

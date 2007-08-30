@@ -26,8 +26,7 @@ public class ConstrainedFreqReportVisitor extends Report
 	private int cMax;
 	private boolean relative;
 
-	public ConstrainedFreqReportVisitor(ReportDefinition md)
-			throws ReportException
+	public ConstrainedFreqReportVisitor(ReportDefinition md) throws ReportException
 	{
 		super(md);
 	}
@@ -56,8 +55,7 @@ public class ConstrainedFreqReportVisitor extends Report
 		h.put("Metric", StringUtils.sort(ClassMetric.toStrings(), metric));
 		h.put("MaxValue", maxValue);
 		h.put("Relative", relative);
-		h.put("ConstraintMetric", StringUtils.sort(ClassMetric.toStrings(),
-				cMetric));
+		h.put("ConstraintMetric", StringUtils.sort(ClassMetric.toStrings(), cMetric));
 		h.put("ConstraintMin", cMin);
 		h.put("ConstraintMax", cMax);
 		return h;
@@ -97,15 +95,13 @@ public class ConstrainedFreqReportVisitor extends Report
 		{
 			VersionMetricData vmd = hmd.getVersion(i);
 
-			String[] row = getConstrainedFreq(vmd, metric, maxValue, relative,
-					cMetric, cMin, cMax);
+			String[] row = getConstrainedFreq(vmd, metric, maxValue, relative, cMetric, cMin, cMax);
 			rows.add(row);
 			updateProgress(i, total, vmd);
 		}
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				getHeading(maxValue), rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(getHeading(maxValue), rd.description);
 
 		et.addRows(rows);
 		et.setDisplayTitle(true);
@@ -115,26 +111,23 @@ public class ConstrainedFreqReportVisitor extends Report
 	@Override
 	public void visit(VersionMetricData vmd) throws ReportException
 	{
-		String[] row = getConstrainedFreq(vmd, metric, maxValue, relative,
-				cMetric, cMin, cMax);
+		String[] row = getConstrainedFreq(vmd, metric, maxValue, relative, cMetric, cMin, cMax);
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				getHeading(maxValue), rd.description);
-		
+		MetricTable<String, String> et = new MetricTable<String, String>(getHeading(maxValue), rd.description);
+
 		et.setDisplayTitle(true);
 		et.addRow(row);
 		setTable(et);
 	}
 
-	public String[] getConstrainedFreq(VersionMetricData vmd, String field,
-			int max, boolean relative, String cField, int cMin, int cMax)
+	public String[] getConstrainedFreq(VersionMetricData vmd, String field, int max, boolean relative, String cField,
+			int cMin, int cMax)
 	{
 		int[] range = vmd.getMetricRange(ClassMetric.parse(field));
 		int[] cRange = vmd.getMetricRange(ClassMetric.parse(cField));
 
-		int[] constrainedFreq = StatUtils.toConstrainedFreqTable(range, cRange,
-				cMin, cMax, max);
+		int[] constrainedFreq = StatUtils.toConstrainedFreqTable(range, cRange, cMin, cMax, max);
 
 		ArrayList<String> row = new ArrayList<String>();
 		row.add(vmd.get(Version.NAME));

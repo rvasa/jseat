@@ -1,26 +1,25 @@
 package metric.core.io;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Calendar;
+
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 /**
- * ZipFileIterator iterates over a Zip/Jar archive giving access to the 
+ * ZipFileIterator iterates over a Zip/Jar archive giving access to the
  * inputstream of the entires in the archive via an iterator
+ * 
  * @author rvasa
  */
 public class ZipFileIterator implements Iterator<ZipEntry>
 {
 	Enumeration<? extends ZipEntry> zipIter = null;
-    ZipFile zipFile;
-    ZipEntry entry;
-    
+	ZipFile zipFile;
+	ZipEntry entry;
+
 	public ZipFileIterator(ZipFile zf)
 	{
-        zipFile = zf;
+		zipFile = zf;
 		zipIter = zf.entries();
 		entry = findNext(); // find the initial entry
 	}
@@ -29,14 +28,14 @@ public class ZipFileIterator implements Iterator<ZipEntry>
 	{
 		return (entry != null); // there is one viable class file
 	}
-	
+
 	private ZipEntry findNext()
 	{
 		while (zipIter.hasMoreElements())
 		{
-            ZipEntry ze = zipIter.nextElement();
+			ZipEntry ze = zipIter.nextElement();
 			if (FileUtil.isClassFile(ze.getName()))
-			    return ze;
+				return ze;
 		}
 		return null;
 	}
