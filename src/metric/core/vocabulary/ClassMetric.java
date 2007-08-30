@@ -47,6 +47,8 @@ public enum ClassMetric {
 	
 	MODIFICATION_STATUS_SINCE_BIRTH,
 	MODIFIED_METRIC_COUNT_SINCE_BIRTH,
+	MODIFIED_METRIC_COUNT,
+	MODIFICATION_FREQUENCY,
 
 	// These are not comparive measures for class equality checks.
 	GUI_DISTANCE, COMPUTED_DISTANCE, DISTANCE_MOVED_SINCE_BIRTH,// used to store distance once computed
