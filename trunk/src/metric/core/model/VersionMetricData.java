@@ -100,8 +100,8 @@ public class VersionMetricData extends MetricData<Version> implements Comparable
 		} catch (Exception e)
 		{
 			e.printStackTrace(); // Something went wrong.
-		} // Format to 3 decimal places
-		return StatUtils.toFixedDecPlaces(ret, 3);
+		} // Format to 4 decimal places
+		return StatUtils.toFixedDecPlaces(ret, 4);
 	}
 
 	public String get(Version prop, Object cm)
@@ -119,9 +119,9 @@ public class VersionMetricData extends MetricData<Version> implements Comparable
 		} catch (Exception e)
 		{
 			e.printStackTrace(); // Something went wrong.
-		} // Format to 3 decimal places
+		} // Format to 4 decimal places
 		// return null;
-		return StatUtils.toFixedDecPlaces(ret, 3);
+		return StatUtils.toFixedDecPlaces(ret, 4);
 	}
 
 	/**
