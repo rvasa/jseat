@@ -155,6 +155,14 @@ public class ClassMetricExtractor
 		cmd.incrementMetric(ClassMetric.METHOD_CALL_COUNT, mm[MethodMetric.METHOD_CALL_COUNT.ordinal()]);
 		cmd.incrementMetric(ClassMetric.IN_METHOD_CALL_COUNT, mm[MethodMetric.IN_METHOD_CALL_COUNT.ordinal()]);
 		cmd.incrementMetric(ClassMetric.EX_METHOD_CALL_COUNT, mm[MethodMetric.EX_METHOD_CALL_COUNT.ordinal()]);
+		
+		cmd.incrementMetric(ClassMetric.TYPE_CONSTRUCTION_COUNT, mm[MethodMetric.TYPE_CONSTRUCTION_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.INSTANCE_OF_COUNT, mm[MethodMetric.INSTANCE_OF_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.CHECK_CAST_COUNT, mm[MethodMetric.CHECK_CAST_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.NEW_COUNT, mm[MethodMetric.NEW_COUNT.ordinal()]);
+		cmd.incrementMetric(ClassMetric.NEW_ARRAY_COUNT, mm[MethodMetric.NEW_ARRAY_COUNT.ordinal()]);
+		
+		
 
 		if (mm[MethodMetric.SCOPE.ordinal()] == TypeModifier.PUBLIC.ordinal())
 			cmd.incrementMetric(ClassMetric.PUBLIC_METHOD_COUNT);

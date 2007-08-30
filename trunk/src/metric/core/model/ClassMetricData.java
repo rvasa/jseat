@@ -8,6 +8,7 @@ import metric.core.report.visitor.ReportVisitor;
 import metric.core.util.StatUtils;
 import metric.core.vocabulary.ClassMetric;
 import metric.core.vocabulary.Evolution;
+import metric.core.vocabulary.MethodMetric;
 
 /**
  * 
@@ -227,6 +228,12 @@ public class ClassMetricData extends MetricData<ClassMetric> implements Comparab
 				.getSimpleMetric(ClassMetric.TRY_CATCH_BLOCK_COUNT));
 		incrementMetric(ClassMetric.TYPE_INSN_COUNT, innerClass.getSimpleMetric(ClassMetric.TYPE_INSN_COUNT));
 		incrementMetric(ClassMetric.ZERO_OP_INSN_COUNT, innerClass.getSimpleMetric(ClassMetric.ZERO_OP_INSN_COUNT));
+		
+		incrementMetric(ClassMetric.TYPE_CONSTRUCTION_COUNT, innerClass.getSimpleMetric(ClassMetric.TYPE_CONSTRUCTION_COUNT));
+		incrementMetric(ClassMetric.INSTANCE_OF_COUNT, innerClass.getSimpleMetric(ClassMetric.INSTANCE_OF_COUNT));
+		incrementMetric(ClassMetric.CHECK_CAST_COUNT, innerClass.getSimpleMetric(ClassMetric.CHECK_CAST_COUNT));
+		incrementMetric(ClassMetric.NEW_COUNT, innerClass.getSimpleMetric(ClassMetric.NEW_COUNT));
+		incrementMetric(ClassMetric.NEW_ARRAY_COUNT, innerClass.getSimpleMetric(ClassMetric.NEW_ARRAY_COUNT));
 
 		// Add inner class dependencies.
 		for (String dep : innerClass.dependencies)
