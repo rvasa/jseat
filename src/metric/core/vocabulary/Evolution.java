@@ -1,7 +1,7 @@
 package metric.core.vocabulary;
 
 public enum Evolution {
-	UNCHANGED(0), MODIFIED(1), DELETED(2), NEW(3);
+	UNCHANGED(0), MODIFIED(1), DELETED(2), NEW(3), NEVER_MODIFIED(0), MODIFIED_AFTER_BIRTH(1), NEW_BORN(2);
 
 	private int value;
 
