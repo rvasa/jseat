@@ -186,7 +186,31 @@ public class ClassMetricData extends MetricData<ClassMetric> implements Comparab
 	{
 		incrementMetric(ClassMetric.INNER_CLASS_COUNT, innerClass.getSimpleMetric(ClassMetric.INNER_CLASS_COUNT));
 		incrementMetric(ClassMetric.INTERFACE_COUNT, innerClass.getSimpleMetric(ClassMetric.INTERFACE_COUNT));
+		incrementMetric(ClassMetric.FIELD_COUNT, innerClass.getSimpleMetric(ClassMetric.FIELD_COUNT));
 		incrementMetric(ClassMetric.METHOD_COUNT, innerClass.getSimpleMetric(ClassMetric.METHOD_COUNT));
+
+		incrementMetric(ClassMetric.PUBLIC_FIELD_COUNT, innerClass.getSimpleMetric(ClassMetric.PUBLIC_FIELD_COUNT));
+		incrementMetric(ClassMetric.PRIVATE_FIELD_COUNT, innerClass.getSimpleMetric(ClassMetric.PRIVATE_FIELD_COUNT));
+		incrementMetric(ClassMetric.PROTECTED_FIELD_COUNT, innerClass
+				.getSimpleMetric(ClassMetric.PROTECTED_FIELD_COUNT));
+
+		incrementMetric(ClassMetric.STATIC_FIELD_COUNT, innerClass.getSimpleMetric(ClassMetric.STATIC_FIELD_COUNT));
+		incrementMetric(ClassMetric.FINAL_FIELD_COUNT, innerClass.getSimpleMetric(ClassMetric.FINAL_FIELD_COUNT));
+
+		incrementMetric(ClassMetric.SYNCHRONIZED_METHOD_COUNT, innerClass
+				.getSimpleMetric(ClassMetric.SYNCHRONIZED_METHOD_COUNT));
+		incrementMetric(ClassMetric.STATIC_METHOD_COUNT, innerClass.getSimpleMetric(ClassMetric.STATIC_METHOD_COUNT));
+		incrementMetric(ClassMetric.FINAL_METHOD_COUNT, innerClass.getSimpleMetric(ClassMetric.FINAL_METHOD_COUNT));
+		incrementMetric(ClassMetric.ABSTRACT_METHOD_COUNT, innerClass
+				.getSimpleMetric(ClassMetric.ABSTRACT_METHOD_COUNT));
+		incrementMetric(ClassMetric.PUBLIC_METHOD_COUNT, innerClass.getSimpleMetric(ClassMetric.PUBLIC_METHOD_COUNT));
+		incrementMetric(ClassMetric.PRIVATE_METHOD_COUNT, innerClass.getSimpleMetric(ClassMetric.PRIVATE_METHOD_COUNT));
+		incrementMetric(ClassMetric.PROTECTED_METHOD_COUNT, innerClass
+				.getSimpleMetric(ClassMetric.PROTECTED_METHOD_COUNT));
+
+		incrementMetric(ClassMetric.METHOD_CALL_COUNT, innerClass.getSimpleMetric(ClassMetric.METHOD_CALL_COUNT));
+		incrementMetric(ClassMetric.IN_METHOD_CALL_COUNT, innerClass.getSimpleMetric(ClassMetric.IN_METHOD_CALL_COUNT));
+		incrementMetric(ClassMetric.EX_METHOD_CALL_COUNT, innerClass.getSimpleMetric(ClassMetric.EX_METHOD_CALL_COUNT));
 
 		incrementMetric(ClassMetric.BRANCH_COUNT, innerClass.getSimpleMetric(ClassMetric.BRANCH_COUNT));
 		incrementMetric(ClassMetric.CONSTANT_LOAD_COUNT, innerClass.getSimpleMetric(ClassMetric.CONSTANT_LOAD_COUNT));
@@ -194,7 +218,6 @@ public class ClassMetricData extends MetricData<ClassMetric> implements Comparab
 		incrementMetric(ClassMetric.ISTORE_COUNT, innerClass.getSimpleMetric(ClassMetric.ISTORE_COUNT));
 		incrementMetric(ClassMetric.ILOAD_COUNT, innerClass.getSimpleMetric(ClassMetric.ILOAD_COUNT));
 		incrementMetric(ClassMetric.LOCAL_VAR_COUNT, innerClass.getSimpleMetric(ClassMetric.LOCAL_VAR_COUNT));
-		incrementMetric(ClassMetric.METHOD_CALL_COUNT, innerClass.getSimpleMetric(ClassMetric.METHOD_CALL_COUNT));
 		incrementMetric(ClassMetric.REF_LOAD_OP_COUNT, innerClass.getSimpleMetric(ClassMetric.REF_LOAD_OP_COUNT));
 		incrementMetric(ClassMetric.REF_STORE_OP_COUNT, innerClass.getSimpleMetric(ClassMetric.REF_STORE_OP_COUNT));
 		incrementMetric(ClassMetric.LOAD_FIELD_COUNT, innerClass.getSimpleMetric(ClassMetric.LOAD_FIELD_COUNT));
@@ -222,10 +245,12 @@ public class ClassMetricData extends MetricData<ClassMetric> implements Comparab
 
 		int[] otherMetrics = other.getMetrics();
 		for (int i = 0; i < ClassMetric.getNumberOfComparativeMetrics(); i++)
+		{
 			if (otherMetrics[i] != getMetrics()[i])
 			{
 				return false;
 			}
+		}
 
 		// TODO Should check fields here
 		// TODO Should check methods here.
