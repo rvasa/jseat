@@ -81,16 +81,20 @@ public class VersionPostProcessor extends Observable
 
 	private void firstPassProcessing(VersionMetricData vmd)
 	{
-		computeGUIClassCount(vmd);
 		computeDependencies(vmd);
-		computeGUIAndIOClasses(vmd);
-		computeHiLowTime(vmd);
+		computeFanIn(vmd);
+		computeInstructionCount(vmd);
 		computeLayers(vmd);
+		computeGUIAndIOClasses(vmd);
+		computeGUIClassCount(vmd);
+		computeHiLowTime(vmd);
 	}
 
 	private void secondPassProcessing(VersionMetricData vmd, VersionMetricData vmd2)
 	{
 		scanAndMarkSurvivors(vmd, vmd2);
+//		updateDistanceMovedSinceBirth(vmd);
+//		updateDistanceMovedSinceBirth(vmd2);
 		updateDeletedClasses(vmd, vmd2);
 	}
 
@@ -103,7 +107,7 @@ public class VersionPostProcessor extends Observable
 	// Check whether this really does need to be of type double.
 	// This should actually be changed to a complex metric and computed
 	// on the fly.
-	private static void computeGUIClassCount(VersionMetricData vmd)
+	private void computeGUIClassCount(VersionMetricData vmd)
 	{
 		double sum = 0.0;
 
@@ -137,27 +141,37 @@ public class VersionPostProcessor extends Observable
 		vmd.hiModifiedTime = max;
 	}
 
-	/**
-     * Should be called only after metric data has been extracted Fanin will be
-     * updated directly on the ClassMetric object Internal Fanout value will
-     * also be calculated and updated
-     */
-	private static void computeDependencies(VersionMetricData vmd)
+	private void computeInstructionCount(VersionMetricData vmd)
 	{
 		for (ClassMetricData cm : vmd.metricData.values())
 		{
 			int storeCount = cm.getSimpleMetric(ClassMetric.ISTORE_COUNT)
 					+ cm.getSimpleMetric(ClassMetric.STORE_FIELD_COUNT)
 					+ cm.getSimpleMetric(ClassMetric.REF_STORE_OP_COUNT);
-
 			cm.setSimpleMetric(ClassMetric.STORE_COUNT, storeCount);
 
 			int loadCount = cm.getSimpleMetric(ClassMetric.ILOAD_COUNT)
 					+ cm.getSimpleMetric(ClassMetric.LOAD_FIELD_COUNT)
 					+ cm.getSimpleMetric(ClassMetric.REF_LOAD_OP_COUNT)
 					+ cm.getSimpleMetric(ClassMetric.CONSTANT_LOAD_COUNT);
-
 			cm.setSimpleMetric(ClassMetric.LOAD_COUNT, loadCount);
+
+			cm
+					.setSimpleMetric(ClassMetric.LOAD_RATIO, (int) (((double) cm
+							.getSimpleMetric(ClassMetric.LOAD_COUNT) / (cm.getSimpleMetric(ClassMetric.LOAD_COUNT) + cm
+							.getSimpleMetric(ClassMetric.STORE_COUNT))) * 10));
+		}
+	}
+
+	/**
+     * Should be called only after metric data has been extracted Fanin will be
+     * updated directly on the ClassMetric object Internal Fanout value will
+     * also be calculated and updated
+     */
+	private void computeDependencies(VersionMetricData vmd)
+	{
+		for (ClassMetricData cm : vmd.metricData.values())
+		{
 			for (String name : cm.dependencies)
 			{
 				if (name.equals(cm))
@@ -170,11 +184,15 @@ public class VersionPostProcessor extends Observable
 				}
 			}
 		}
+	}
 
+	private void computeFanIn(VersionMetricData vmd)
+	{
 		// Set fan-in counts and compute distance
 		for (ClassMetricData cm : vmd.metricData.values())
 		{
 			cm.setSimpleMetric(ClassMetric.FAN_IN_COUNT, cm.users.size());
+
 			cm.setSimpleMetric(ClassMetric.INTERNAL_FAN_OUT_COUNT, cm.internalDeps.size());
 
 			computeDistance(cm); // compute distance
@@ -194,7 +212,7 @@ public class VersionPostProcessor extends Observable
 	}
 
 	/** Flag all classes that depend on a GUI class as GUI as well */
-	private static void computeGUIAndIOClasses(VersionMetricData vmd)
+	private void computeGUIAndIOClasses(VersionMetricData vmd)
 	{
 		Set<String> flagged = vmd.metricData.keySet();
 		while (flagged.size() > 0)
@@ -206,7 +224,7 @@ public class VersionPostProcessor extends Observable
 	}
 
 	/** Computes the layers and instability metrics */
-	private static void computeLayers(VersionMetricData vmd)
+	private void computeLayers(VersionMetricData vmd)
 	{
 		// Now update the fanin and instability value for each class
 		for (ClassMetricData cmd : vmd.metricData.values())
@@ -229,13 +247,10 @@ public class VersionPostProcessor extends Observable
 			else
 				cmd.setSimpleMetric(ClassMetric.LAYER, 4);
 			; // there should be no classes here, hopefully
-
-			// Compute distance for each ClassMetricData
-			// computeDistance(cmd);
 		}
 	}
 
-	private static void computeDistance(ClassMetricData cmd)
+	private void computeDistance(ClassMetricData cmd)
 	{
 		// If not computed then do it.
 		if (cmd.getSimpleMetric(ClassMetric.COMPUTED_DISTANCE) < 0)
@@ -267,7 +282,7 @@ public class VersionPostProcessor extends Observable
 	}
 
 	/** Given an input set, it will iterate over it and flag all users as IO */
-	private static Set<String> flagUsersAsIO(VersionMetricData vmd, Set<String> classNameSet)
+	private Set<String> flagUsersAsIO(VersionMetricData vmd, Set<String> classNameSet)
 	{
 		Set<String> flagged = new HashSet<String>();
 		for (String cn : classNameSet)
@@ -288,7 +303,7 @@ public class VersionPostProcessor extends Observable
 	}
 
 	/** Given an input set, it will iterate over it and flag all users as GUI */
-	private static Set<String> flagUsersAsGUI(VersionMetricData vmd, Set<String> classNameSet)
+	private Set<String> flagUsersAsGUI(VersionMetricData vmd, Set<String> classNameSet)
 	{
 		Set<String> flagged = new HashSet<String>();
 		for (String cn : classNameSet)
@@ -302,11 +317,7 @@ public class VersionPostProcessor extends Observable
 				{
 					if (vmd.metricData.get(userClassName).getSimpleMetric(ClassMetric.GUI_DISTANCE) == 0)
 					{
-						// FIXME - URGENT: double cast to int as interim step in
-						// shitfing to vocab.
-						vmd.metricData.get(userClassName).setSimpleMetric(
-								ClassMetric.GUI_DISTANCE,
-								(int) currGUIDistance / 2);
+						vmd.metricData.get(userClassName).setSimpleMetric(ClassMetric.GUI_DISTANCE, 1);
 						flagged.add(userClassName);
 					}
 				}
@@ -319,7 +330,7 @@ public class VersionPostProcessor extends Observable
      * Updates the age for each Class in every Version. Increments age if the
      * class is an exact match from before
      */
-	private static void scanAndMarkSurvivors(VersionMetricData v1, VersionMetricData v2)
+	private void scanAndMarkSurvivors(VersionMetricData v1, VersionMetricData v2)
 	{
 		// Look ahead at version two classes.
 		for (ClassMetricData cm2 : v2.metricData.values())
@@ -330,8 +341,10 @@ public class VersionPostProcessor extends Observable
 			if (cm1 == null)
 			{
 				cm2.setSimpleMetric(ClassMetric.EVOLUTION_STATUS, Evolution.NEW.getValue());
+				cm2.setSimpleMetric(ClassMetric.MODIFICATION_FREQUENCY, 0);
 				cm2.setSimpleMetric(ClassMetric.BORN_RSN, v2.getSimpleMetric(Version.RSN));
 				cm2.setSimpleMetric(ClassMetric.AGE, 0);
+
 			}
 			// found in previous version
 			else
@@ -345,21 +358,26 @@ public class VersionPostProcessor extends Observable
 					cm2.setSimpleMetric(ClassMetric.EVOLUTION_STATUS, Evolution.UNCHANGED.getValue());
 					cm1.setSimpleMetric(ClassMetric.NEXT_VERSION_STATUS, Evolution.UNCHANGED.getValue());
 					cm2.setSimpleMetric(ClassMetric.EVOLUTION_DISTANCE, Evolution.UNCHANGED.getValue());
+					cm2.setSimpleMetric(ClassMetric.MODIFICATION_FREQUENCY, cm1
+							.getSimpleMetric(ClassMetric.MODIFICATION_FREQUENCY));
+					cm2.setSimpleMetric(ClassMetric.MODIFIED_METRIC_COUNT, 0);
 				} else
 				// found, but it is not an exact match
 				{
 					cm2.setSimpleMetric(ClassMetric.EVOLUTION_STATUS, Evolution.MODIFIED.getValue());
+					cm2.setSimpleMetric(ClassMetric.MODIFICATION_FREQUENCY, cm1
+							.getSimpleMetric(ClassMetric.MODIFICATION_FREQUENCY) + 1);
 					cm1.setSimpleMetric(ClassMetric.IS_MODIFIED, 1);
 					cm2.setSimpleMetric(ClassMetric.AGE, 1);
 					setEvolutionDistanceFrom(cm1, cm2);
+					cm2.setSimpleMetric(ClassMetric.MODIFIED_METRIC_COUNT, computeModifiedMetrics(cm2, cm1));
 					cm1.setSimpleMetric(ClassMetric.NEXT_VERSION_STATUS, Evolution.MODIFIED.getValue());
 				}
 			}
 		}
-
 	}
 
-	private static void updateDeletedClasses(VersionMetricData v1, VersionMetricData v2)
+	private void updateDeletedClasses(VersionMetricData v1, VersionMetricData v2)
 	{
 		// Now look for deleted names and mark them down
 		for (ClassMetricData cm1 : v1.metricData.values())
@@ -374,16 +392,85 @@ public class VersionPostProcessor extends Observable
 	}
 
 	/**
+     * Will go through the entire history and computes this. Assumes
+     * scanAndMarkSurvivors has been called
+     */
+	private void updateDistanceMovedSinceBirth(VersionMetricData vmd)
+	{
+		for (ClassMetricData cm : vmd.metricData.values())
+		{
+			if (cm.getSimpleMetric(ClassMetric.BORN_RSN) == vmd.getSimpleMetric(Version.RSN)) // new
+			// born
+			{
+				cm.setSimpleMetric(ClassMetric.DISTANCE_MOVED_SINCE_BIRTH, 0);
+				cm.setSimpleMetric(ClassMetric.MODIFICATION_STATUS_SINCE_BIRTH, Evolution.NEW_BORN.getValue());
+				continue; // move to the next class
+			}
+
+			if (cm.getSimpleMetric(ClassMetric.BORN_RSN) >= vmd.getSimpleMetric(Version.RSN))
+			{
+				logger.log(Level.WARNING, "Born RSN greater than Version RSN....Something went wrong.");
+				continue; // keep moving
+			}
+
+			// born before current version, get the ancestor
+			// ClassMetricData ancestor =
+			// versions.get(ClassMetric.BORN_RSN).metricData.get(cm.className);
+			ClassMetricData ancestor = null;
+			if (ancestor.isExactMatch(cm))
+			{
+				cm.setSimpleMetric(ClassMetric.MODIFICATION_STATUS_SINCE_BIRTH, Evolution.NEVER_MODIFIED.getValue());
+			} else
+			{
+				setEvolutionDistanceSinceBirth(cm, ancestor);
+
+				cm.setSimpleMetric(ClassMetric.MODIFICATION_STATUS_SINCE_BIRTH, Evolution.MODIFIED_AFTER_BIRTH
+						.getValue());
+				cm.setSimpleMetric(ClassMetric.MODIFIED_METRIC_COUNT_SINCE_BIRTH, computeModifiedMetrics(cm, ancestor));
+			}
+		}
+	}
+
+	public void setEvolutionDistanceSinceBirth(ClassMetricData cm1, ClassMetricData cm2)
+	{
+		double ed = cm1.distanceFrom(cm2);
+		// if (ed > 0) ed += 0.5;
+		// distanceMovedSinceBirth = scaleDoubleMetric(ed, 10, 100);
+		cm1.setSimpleMetric(ClassMetric.DISTANCE_MOVED_SINCE_BIRTH, (int) Math.round(ed));
+		if ((ed > 0) && (cm1.getSimpleMetric(ClassMetric.DISTANCE_MOVED_SINCE_BIRTH) < 1))
+		{
+			cm1.setSimpleMetric(ClassMetric.DISTANCE_MOVED_SINCE_BIRTH, 1);
+		}
+		if (ed == 0)
+		{
+			cm1.setSimpleMetric(ClassMetric.DISTANCE_MOVED_SINCE_BIRTH, 0);
+		}
+	}
+
+	/**
+     * Computes the number of metrics that are different between this class and
+     * cm
+     */
+	private int computeModifiedMetrics(ClassMetricData cm, ClassMetricData cm2)
+	{
+		int mmc = 0; // modified metric count, assume no change
+
+		for (int i = 0; i < ClassMetric.getNumberOfComparativeMetrics(); i++)
+		{
+			if (cm.getMetrics()[i] != cm2.getMetrics()[i])
+			{
+				mmc++;
+			}
+		}
+		return mmc;
+	}
+
+	/**
      * Sets the evolution distance of cm2 to the distance from cm1 to cm2.
      */
-	private static void setEvolutionDistanceFrom(ClassMetricData cm1, ClassMetricData cm2)
+	private void setEvolutionDistanceFrom(ClassMetricData cm1, ClassMetricData cm2)
 	{
-		double ed = cm2.distanceFrom(cm1);
-		double scaleMax = 100.0;
-		double metricMax = 1000.0;
-		if (ed > metricMax)
-			ed = metricMax;
-		double scaledValue = (scaleMax * ed) / metricMax;
-		cm2.setSimpleMetric(ClassMetric.EVOLUTION_DISTANCE, (int) Math.round(scaledValue));
+		double ed = cm1.distanceFrom(cm2);
+		cm1.setSimpleMetric(ClassMetric.EVOLUTION_DISTANCE, StatUtils.scaleDoubleMetric(ed, 100, 1000));
 	}
 }
