@@ -57,8 +57,8 @@
 #-------------------------------------------------------------------
 #			Gini Reports
 #-------------------------------------------------------------------
-70,GiniCoeffReportVisitor,Gini Analysis (Method),40,[method_count,public_method_count,private_method_count,interface_count]
-71,GiniCoeffReportVisitor,Gini Analysis (Branches),200,branch_count
+70,GiniCoeffReportVisitor,Gini Analysis (Method),[method_count,public_method_count,private_method_count,interface_count]
+71,GiniCoeffReportVisitor,Gini Analysis (Branches),branch_count
 #-------------------------------------------------------------------
 #			Clone Reports
 #-------------------------------------------------------------------
