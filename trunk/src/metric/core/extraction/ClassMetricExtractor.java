@@ -26,7 +26,6 @@ import org.objectweb.asm.tree.MethodNode;
 public class ClassMetricExtractor
 {
 	private ClassNode classNode;
-	private ClassMetricData cmd;
 
 	private InputDataSet ids;
 	private InputData idata;
@@ -50,18 +49,20 @@ public class ClassMetricExtractor
 
 	public ClassMetricData extract()
 	{
-		cmd = new ClassMetricData();
+		ClassMetricData cmd = new ClassMetricData();
 
 		// Extract class related metrics.
-		extractClassMetrics();
+		extractClassMetrics(cmd);
+		// Update class statistics.
+		updateClassStats(cmd);
 		// Extract and create method metrics
-		extractMethodMetrics();
+		extractAndMergeMethodMetrics(cmd);
 		// Extract dependencies from fields.
-		extractFieldDependencies();
+		extractFieldDependencies(cmd);
 		// Extract dependencies from methods.
-		extractMethodDependencies();
+		extractMethodDependencies(cmd);
 		// Extract, create and merge inner classes.
-		extractInnerClasses();
+		extractAndMergeInnerClasses(cmd);
 
 		return cmd;
 	}
@@ -69,7 +70,7 @@ public class ClassMetricExtractor
 	/**
      * Extracts and merges inner class data with this class.
      */
-	private void extractInnerClasses()
+	private void extractAndMergeInnerClasses(ClassMetricData cmd)
 	{
 		Iterator it = classNode.innerClasses.iterator();
 		while (it.hasNext())
@@ -115,7 +116,7 @@ public class ClassMetricExtractor
 	/**
      * Extracts and updates MethodMetricData for this classes methods.
      */
-	private void extractMethodMetrics()
+	private void extractAndMergeMethodMetrics(ClassMetricData cmd)
 	{
 		// MethodNode methodNode = (MethodNode) methods.get(i);
 		MethodMetricExtractor mme = new MethodMetricExtractor(classNode);
@@ -123,7 +124,7 @@ public class ClassMetricExtractor
 		HashMap<String, int[]> methodMap = mme.extract();
 
 		for (int[] mm : methodMap.values())
-			mergeMethodMetricsWithClass(mm);
+			mergeMethodMetricsWithClass(cmd, mm);
 
 		cmd.methods = new MethodMetricMap(methodMap);
 	}
@@ -133,7 +134,7 @@ public class ClassMetricExtractor
      * 
      * @param mmd The MethodMetricData.
      */
-	private void mergeMethodMetricsWithClass(int[] mm)
+	private void mergeMethodMetricsWithClass(ClassMetricData cmd, int[] mm)
 	{
 		cmd.incrementMetric(ClassMetric.BRANCH_COUNT, mm[MethodMetric.BRANCH_COUNT.ordinal()]);
 		cmd.incrementMetric(ClassMetric.CONSTANT_LOAD_COUNT, mm[MethodMetric.CONSTANT_LOAD_COUNT.ordinal()]);
@@ -178,7 +179,7 @@ public class ClassMetricExtractor
 	/**
      * Extracts and updates fields dependencies.
      */
-	private void extractFieldDependencies()
+	private void extractFieldDependencies(ClassMetricData cmd)
 	{
 		Iterator<?> iter = classNode.fields.iterator();
 		while (iter.hasNext())
@@ -205,7 +206,7 @@ public class ClassMetricExtractor
 	/**
      * Extracts and updates dependencies from methods.
      */
-	private void extractMethodDependencies()
+	private void extractMethodDependencies(ClassMetricData cmd)
 	{
 		Iterator<?> iter = classNode.methods.iterator();
 		while (iter.hasNext())
@@ -232,7 +233,7 @@ public class ClassMetricExtractor
      * Extracts and updates class related metrics for the current
      * ClassMetricData.
      */
-	private void extractClassMetrics()
+	private void extractClassMetrics(ClassMetricData cmd)
 	{
 		cmd.setSimpleMetric(ClassMetric.INNER_CLASS_COUNT, classNode.innerClasses.size());
 		cmd.setSimpleMetric(ClassMetric.INTERFACE_COUNT, classNode.interfaces.size());
@@ -246,7 +247,7 @@ public class ClassMetricExtractor
 		// TODO Fix creation date.
 		cmd.lastModified = idata.getLastModifiedTime();
 
-		updateClassStats();
+		
 	}
 
 	/**
@@ -254,7 +255,7 @@ public class ClassMetricExtractor
      * or not the class is an exception class, whether it is abstract, an
      * interface etc.
      */
-	private void updateClassStats()
+	private void updateClassStats(ClassMetricData cmd)
 	{
 		// Ignore java.lang.Object
 		if (!cmd.get(ClassMetric.SUPER_CLASS_NAME).equals("java/lang/Object"))
