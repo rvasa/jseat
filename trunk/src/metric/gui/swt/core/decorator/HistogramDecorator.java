@@ -92,23 +92,17 @@ public class HistogramDecorator extends ReportDecorator
 					double value = Double.parseDouble(element);
 					for (int i = 0; i < column.size(); i++)
 					{
-						int startVersion = Integer.valueOf((String) table.get(
-								rowIndex,
-								1));
+						int startVersion = Integer.valueOf((String) table.get(rowIndex, 1));
 						System.out.println("start version " + startVersion);
 						int currentVersion = startVersion;
 						ArrayList<Double> series = new ArrayList<Double>();
-						while (currentVersion == startVersion
-								&& rowIndex != table.getRows())
+						while (currentVersion == startVersion && rowIndex != table.getRows())
 						{
 
-							value = Double
-									.parseDouble((String) column.get(i++));
-							System.out.println("version: " + currentVersion
-									+ " value: " + value);
+							value = Double.parseDouble((String) column.get(i++));
+							System.out.println("version: " + currentVersion + " value: " + value);
 							// Find out what version this for.
-							currentVersion = Integer.valueOf((String) table
-									.get(rowIndex, 1));
+							currentVersion = Integer.valueOf((String) table.get(rowIndex, 1));
 
 							// Add colValue to our dataset and update our
 							// rowIndex.
@@ -116,16 +110,11 @@ public class HistogramDecorator extends ReportDecorator
 							rowIndex++;
 						}
 						// Find out what column we are actually traversing.
-						String colName = (String) table.get(colIndex);
+//						String colName = (String) table.get(colIndex);
 						double[] dSeries = new double[series.size()];
 						for (int j = 0; j < series.size(); j++)
 							dSeries[j] = series.get(j);
-						dataset.addSeries(
-								"RSN" + currentVersion,
-								dSeries,
-								4,
-								1,
-								4);
+						dataset.addSeries("RSN" + currentVersion, dSeries, 4, 1, 4);
 					}
 				} catch (NumberFormatException e)
 				{
@@ -148,8 +137,7 @@ public class HistogramDecorator extends ReportDecorator
      * 
      * @return The chart.
      */
-	private JFreeChart createChart(String title, String domainLabel,
-			String rangeLabel, IntervalXYDataset intervalSet,
+	private JFreeChart createChart(String title, String domainLabel, String rangeLabel, IntervalXYDataset intervalSet,
 			PlotOrientation orientation)
 	{
 

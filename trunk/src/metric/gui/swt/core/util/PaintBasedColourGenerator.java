@@ -17,8 +17,7 @@ public class PaintBasedColourGenerator
      * @param max The number of shades
      * @return The LookupPaintScale
      */
-	public static LookupPaintScale generatePaintScale(IntensityStyle style,
-			int max)
+	public static LookupPaintScale generatePaintScale(IntensityStyle style, int max)
 	{
 		LookupPaintScale ps = new LookupPaintScale(0.000, 1, Color.WHITE);
 		ps.add(0.0, Color.LIGHT_GRAY);
@@ -34,13 +33,11 @@ public class PaintBasedColourGenerator
 			colorIndex -= (colorIndex / max);
 			if (style == IntensityStyle.HeatMap)
 			{
-				ps.add(StatUtils.toFixedDecPlaces(v, 3), new Color(255,
-						colorIndex, colorIndex));
+				ps.add(StatUtils.toFixedDecPlaces(v, 3), new Color(255, colorIndex, colorIndex));
 			} else if (style == IntensityStyle.CoolMap)
 			{
 				int finalCoolValue = 255 - colorIndex;
-				ps.add(StatUtils.toFixedDecPlaces(v, 3), new Color(
-						finalCoolValue, finalCoolValue, 255));
+				ps.add(StatUtils.toFixedDecPlaces(v, 3), new Color(finalCoolValue, finalCoolValue, 255));
 			}
 		}
 		return ps;
@@ -54,8 +51,7 @@ public class PaintBasedColourGenerator
      * @param max The number of values that fall within the upper limit.
      * @return The value to map a color to.
      */
-	private static double getNewColourValue(double upperLimit, double value,
-			double max)
+	private static double getNewColourValue(double upperLimit, double value, double max)
 	{
 		return upperLimit * (value / max);
 	}

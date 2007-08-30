@@ -60,8 +60,7 @@ public class EvolutionReportVisitor extends Report
 		HashMap<String, Object> h = new HashMap<String, Object>();
 
 		String[] constrainedEValues = Evolution.toStrings();
-		h.put(ClassMetric.EVOLUTION.toString(), StringUtils.sort(
-				constrainedEValues, type));
+		h.put(ClassMetric.EVOLUTION.toString(), StringUtils.sort(constrainedEValues, type));
 
 		String[] constrainedValues = ClassMetric.toStrings();
 		h.put("Metric", StringUtils.sortAndExpand(fields, constrainedValues));
@@ -96,16 +95,14 @@ public class EvolutionReportVisitor extends Report
 		for (int i = 1; i <= total; i++)
 		{
 			VersionMetricData vmd = hmd.getVersion(i);
-			ArrayList<String[]> tmpRows = getClassList(vmd, Evolution
-					.parse(type), fields);
+			ArrayList<String[]> tmpRows = getClassList(vmd, Evolution.parse(type), fields);
 			for (String[] row : tmpRows)
 				rows.add(row);
 			updateProgress(i, total, vmd);
 		}
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				getHeading(fields), rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(getHeading(fields), rd.description);
 		et.addRows(rows);
 		et.setDisplayTitle(true);
 		setTable(et);
@@ -114,27 +111,23 @@ public class EvolutionReportVisitor extends Report
 	public void visit(VersionMetricData vmd) throws ReportException
 	{
 
-		ArrayList<String[]> rows = getClassList(vmd, Evolution.parse(type),
-				fields);
+		ArrayList<String[]> rows = getClassList(vmd, Evolution.parse(type), fields);
 		updateProgress(1, 1, vmd);
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				getHeading(fields), rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(getHeading(fields), rd.description);
 		et.addRows(rows);
 		et.setDisplayTitle(true);
 		setTable(et);
 	}
 
-	public ArrayList<String[]> getClassList(VersionMetricData vmd,
-			Evolution field, String[] fields)
+	public ArrayList<String[]> getClassList(VersionMetricData vmd, Evolution field, String[] fields)
 	{
 		int numRows = vmd.metricData.values().size();
 		ArrayList<String[]> rows = new ArrayList<String[]>(numRows);
 		for (ClassMetricData cm : vmd.metricData.values())
 		{
-			if (cm.getSimpleMetric(ClassMetric.NEXT_VERSION_STATUS) == field
-					.getValue())
+			if (cm.getSimpleMetric(ClassMetric.NEXT_VERSION_STATUS) == field.getValue())
 			{
 				ArrayList<String> tmpRow = new ArrayList<String>();
 				tmpRow.add(vmd.get(Version.NAME));

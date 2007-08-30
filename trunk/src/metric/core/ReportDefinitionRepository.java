@@ -34,8 +34,7 @@ public class ReportDefinitionRepository
 
 	private static int lastTableIndex;
 
-	private static Logger logger = Logger
-			.getLogger(ReportDefinitionRepository.class.getSimpleName());
+	private static Logger logger = Logger.getLogger(ReportDefinitionRepository.class.getSimpleName());
 
 	private String shortname;
 
@@ -55,7 +54,7 @@ public class ReportDefinitionRepository
      * proessing the specified configuration file.
      * 
      * @param filename The file from which to create a repository.
-	 * @throws MalformedReportDefinition 
+     * @throws MalformedReportDefinition
      */
 	public ReportDefinitionRepository(String filename)
 	{
@@ -114,15 +113,14 @@ public class ReportDefinitionRepository
      * @return The ReportDefinition.
      * @throws MalformedReportDefinition
      */
-	public static ReportDefinition parseDefinition(String line)
-			throws MalformedReportDefinition
+	public static ReportDefinition parseDefinition(String line) throws MalformedReportDefinition
 	{
 		// TODO replace this with a proper regular expression.
 		// Will remove a lot of the extra processing on arguments
 		// below.
 		String[] tokens = line.split(",");
 
-		 lastTableIndex = Integer.parseInt(tokens[0]);
+		lastTableIndex = Integer.parseInt(tokens[0]);
 
 		String visitorName = tokens[1]; // , metricMethod = tokens[2];
 		String description = tokens[2];
@@ -153,8 +151,7 @@ public class ReportDefinitionRepository
 					bunchedParams = new ArrayList<Class>();
 
 					// Strip '[' on first array arg.
-					tmp = getArgAndParam(tokens[i].substring(1, tokens[i]
-							.length()));
+					tmp = getArgAndParam(tokens[i].substring(1, tokens[i].length()));
 					// Add to bunch/group collections.
 					bunchedParams.add((Class) tmp[0]);
 					bunchedArgs.add(tmp[1]);
@@ -169,8 +166,7 @@ public class ReportDefinitionRepository
 					}
 					// Strip ']' on last array arg and add to bunch/group
 					// collections.
-					tmp = getArgAndParam(tokens[i].substring(0, tokens[i]
-							.length() - 1));
+					tmp = getArgAndParam(tokens[i].substring(0, tokens[i].length() - 1));
 					bunchedParams.add((Class) tmp[0]);
 					bunchedArgs.add(tmp[1]);
 					i++;
@@ -186,13 +182,11 @@ public class ReportDefinitionRepository
 		}
 
 		checkArgValidity(args);
-		ReportDefinition md = new ReportDefinition(visitorName, description,
-				params.toArray(), args.toArray());
+		ReportDefinition md = new ReportDefinition(visitorName, description, params.toArray(), args.toArray());
 		return md;
 	}
 
-	private static void checkArgValidity(ArrayList<Object> args)
-			throws MalformedReportDefinition
+	private static void checkArgValidity(ArrayList<Object> args) throws MalformedReportDefinition
 	{
 		for (Object arg : args)
 		{
@@ -203,17 +197,14 @@ public class ReportDefinitionRepository
 				{
 					// TODO: Move error message.
 					if (!ReportDefinitionRepository.isValidVocabulary(string))
-						throw new MalformedReportDefinition(
-								"The specified string: " + string
-										+ ", does not appear to be valid.");
+						throw new MalformedReportDefinition("The specified string: " + string
+								+ ", does not appear to be valid.");
 				}
 			} else if (arg instanceof String)
 			{
-				if (!ReportDefinitionRepository.isValidVocabulary(arg
-						.toString()))
-					throw new MalformedReportDefinition(
-							"The specified string: " + arg
-									+ ", does not appear to be valid.");
+				if (!ReportDefinitionRepository.isValidVocabulary(arg.toString()))
+					throw new MalformedReportDefinition("The specified string: " + arg
+							+ ", does not appear to be valid.");
 			}
 		}
 	}

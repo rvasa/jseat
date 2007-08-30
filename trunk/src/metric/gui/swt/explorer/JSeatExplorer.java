@@ -2,14 +2,12 @@ package metric.gui.swt.explorer;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 import metric.core.exception.ReportException;
 import metric.core.model.HistoryMetricData;
 import metric.core.report.Report;
 import metric.core.report.decorator.ReportDecorator;
 import metric.core.report.decorator.TextDecorator;
-import metric.core.util.logging.LogOrganiser;
 import metric.gui.swt.core.JSeatGUI;
 import metric.gui.swt.core.vocabulary.GUI;
 
@@ -26,15 +24,14 @@ public class JSeatExplorer extends JSeatGUI implements SelectionListener
 {
 	private static final String TITLE = "JSeat Explorer";
 	private static final String CONFIG = "jseat.conf";
-	
+
 	private CenterComposite cc;
 	private LeftComposite lc;
 
-	public JSeatExplorer(Shell shell, String title, String configFile)
-			throws IOException
+	public JSeatExplorer(Shell shell, String title, String configFile) throws IOException
 	{
 		super(shell, title, configFile);
-		
+
 		// The left composite holds version and reporting components.
 		lc = new LeftComposite(navComposite, SWT.BORDER, properties.get(GUI.DEFAULT_REPORTSET));
 
@@ -56,8 +53,7 @@ public class JSeatExplorer extends JSeatGUI implements SelectionListener
 	{
 		Display display = new Display();
 		Shell shell = new Shell(display);
-		final JSeatExplorer jseat = new JSeatExplorer(shell, TITLE,
-				CONFIG);
+		final JSeatExplorer jseat = new JSeatExplorer(shell, TITLE, CONFIG);
 
 		shell.addListener(SWT.Close, new Listener()
 		{
@@ -93,7 +89,7 @@ public class JSeatExplorer extends JSeatGUI implements SelectionListener
 
 			// TODO: Use TextDecorator by default for now.
 			ReportDecorator rd = new TextDecorator(rv);
-			
+
 			if (hmd != null && rv != null)
 			{
 				if (customArgs != null)

@@ -17,10 +17,12 @@ public class FileUtil
 		return fileName.endsWith(".jar"); // || fileName.endsWith(".zip")));
 	}
 
-	/** Checks if the input is a class file
-	 * @param cf the input to check.
-	 * @return
-	 */
+	/**
+     * Checks if the input is a class file
+     * 
+     * @param cf the input to check.
+     * @return
+     */
 	public static boolean isClassFile(String cf)
 	{
 		if (cf == null)
@@ -28,7 +30,7 @@ public class FileUtil
 		else
 			return (cf.endsWith(".class"));
 	}
-	
+
 	public static boolean isInnerClassFile(String cf)
 	{
 		if (cf == null)
@@ -39,11 +41,11 @@ public class FileUtil
 
 	/**
      * Accepts valid directory, picks up all JAR, .class and ZIP files
+     * 
      * @param dirName if valid dir. will process, else will do nothing
      * @param recursive when true will process directory tree recursively
      */
-	public static Set<File> getFiles(String dirName, boolean recursive)
-			throws IOException
+	public static Set<File> getFiles(String dirName, boolean recursive) throws IOException
 	{
 		Set<File> fileList = new HashSet<File>();
 		File dir = getFileHandle(dirName);

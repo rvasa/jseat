@@ -21,8 +21,7 @@ public class SaveDialog
 		fd.setText(TITLE);
 	}
 
-	public SaveDialog(Shell shell, String[] filterExtensions,
-			String[] filterNames, String filterPath)
+	public SaveDialog(Shell shell, String[] filterExtensions, String[] filterNames, String filterPath)
 	{
 		this(shell);
 		if (filterExtensions != null)

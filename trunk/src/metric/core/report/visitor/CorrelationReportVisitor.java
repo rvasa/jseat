@@ -59,8 +59,7 @@ public class CorrelationReportVisitor extends Report
 	public HashMap<String, Object> getArguments()
 	{
 		HashMap<String, Object> h = new HashMap<String, Object>();
-		h.put("BaseMetric", StringUtils.sort(ClassMetric.toStrings(),
-				baseMetric));
+		h.put("BaseMetric", StringUtils.sort(ClassMetric.toStrings(), baseMetric));
 
 		String[] constrainedValues = ClassMetric.toStrings();
 		h.put("Metric", StringUtils.sortAndExpand(fields, constrainedValues));
@@ -93,8 +92,7 @@ public class CorrelationReportVisitor extends Report
 		rows = getRowCorrelations(hmd, baseMetric, fields);
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				getHeading(fields), rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(getHeading(fields), rd.description);
 		et.addRows(rows);
 		et.setDisplayTitle(true);
 		setTable(et);
@@ -114,12 +112,11 @@ public class CorrelationReportVisitor extends Report
 		return StringUtils.asStrings(heading);
 	}
 
-	private ArrayList<String[]> getRowCorrelations(HistoryMetricData hmd,
-			String baseMetric, String[] otherMetrics) throws ReportException
+	private ArrayList<String[]> getRowCorrelations(HistoryMetricData hmd, String baseMetric, String[] otherMetrics)
+			throws ReportException
 	{
 		if (hmd.versions.size() < 2)
-			throw new ReportException(
-					"Insufficient number of versions for correlation.");
+			throw new ReportException("Insufficient number of versions for correlation.");
 		updateProgress(1, hmd.versions.size(), hmd.getVersion(1));
 		ArrayList<String[]> rows = new ArrayList<String[]>();
 		for (int i = 2; i <= hmd.versions.size(); i++)
@@ -129,8 +126,7 @@ public class CorrelationReportVisitor extends Report
 			ArrayList<String> row = new ArrayList<String>();
 			try
 			{
-				double[] correls = correlation(v,
-						ClassMetric.parse(baseMetric), otherMetrics);
+				double[] correls = correlation(v, ClassMetric.parse(baseMetric), otherMetrics);
 				row.add(v.get(Version.NAME));
 				row.add(v.get(Version.RSN));
 				row.add(v.get(Version.ID));
@@ -148,8 +144,7 @@ public class CorrelationReportVisitor extends Report
 	}
 
 	/** Correlate survivors with instability metric and others as needed */
-	public double[] correlation(VersionMetricData vmd, ClassMetric baseMetric,
-			String[] otherMetrics) throws Exception
+	public double[] correlation(VersionMetricData vmd, ClassMetric baseMetric, String[] otherMetrics) throws Exception
 	{
 		double[] correls = new double[otherMetrics.length];
 		for (int i = 0; i < otherMetrics.length; i++)

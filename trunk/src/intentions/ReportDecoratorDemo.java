@@ -58,37 +58,29 @@ public class ReportDecoratorDemo
 
 			// The ReportFactory returns the Corect ReportVisitor for the
 			// specified definition.
-			ReportVisitor modifiedClassesReport = (ReportVisitor) ReportFactory
-					.getReport(report);
-			ReportVisitor predictionReport = (ReportVisitor) ReportFactory
-					.getReport(pReport);
+			ReportVisitor modifiedClassesReport = (ReportVisitor) ReportFactory.getReport(report);
+			ReportVisitor predictionReport = (ReportVisitor) ReportFactory.getReport(pReport);
 
 			// Create a basic text decorator, bar chart decorator and line
 			// decorator.
 			ReportDecorator textDecorator = new TextDecorator(predictionReport);
 
-			ReportDecorator barDecorator = new BarChartDecorator(
-					predictionReport, shell);
+			ReportDecorator barDecorator = new BarChartDecorator(predictionReport, shell);
 
-			ReportDecorator lineDecorator = new LineChartDecorator(
-					predictionReport, shell);
+			ReportDecorator lineDecorator = new LineChartDecorator(predictionReport, shell);
 			// Put them in a composite decorator.
-			CompositeReportDecorator crd1 = new CompositeReportDecorator(
-					predictionReport);
+			CompositeReportDecorator crd1 = new CompositeReportDecorator(predictionReport);
 			crd1.add(textDecorator);
 			crd1.add(barDecorator);
 			crd1.add(lineDecorator);
 
 			// Create a basic text decorator, bar chart decorator and line
 			// decorator.
-			ReportDecorator barDecorator2 = new BarChartDecorator(
-					modifiedClassesReport, shell2);
+			ReportDecorator barDecorator2 = new BarChartDecorator(modifiedClassesReport, shell2);
 
-			ReportDecorator lineDecorator2 = new LineChartDecorator(
-					modifiedClassesReport, shell2);
+			ReportDecorator lineDecorator2 = new LineChartDecorator(modifiedClassesReport, shell2);
 			// Put them in a composite decorator.
-			CompositeReportDecorator crd2 = new CompositeReportDecorator(
-					modifiedClassesReport);
+			CompositeReportDecorator crd2 = new CompositeReportDecorator(modifiedClassesReport);
 			crd2.add(textDecorator);
 			crd2.add(barDecorator2);
 			crd2.add(lineDecorator2);

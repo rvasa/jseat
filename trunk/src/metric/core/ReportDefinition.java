@@ -25,8 +25,7 @@ public class ReportDefinition implements Comparable<ReportDefinition>
      * @param params An array of types matching args
      * @param args An array of arguments
      */
-	public ReportDefinition(String className, String description,
-			Object[] params, Object[] args)
+	public ReportDefinition(String className, String description, Object[] params, Object[] args)
 	{
 		this.className = className;
 		this.description = description;

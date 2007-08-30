@@ -89,8 +89,7 @@ public class FreqReportVisitor extends Report
 		}
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				headings, rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(headings, rd.description);
 		et.setColumnPadding(1);
 		et.addRows(rows);
 		et.setDisplayTitle(true);
@@ -104,8 +103,7 @@ public class FreqReportVisitor extends Report
 		String[] row = getFreqRow(vmd, metric, maxValue, relative);
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				headings, rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(headings, rd.description);
 		et.setColumnPadding(1);
 		et.addRow(row);
 		et.setDisplayTitle(true);
@@ -115,25 +113,17 @@ public class FreqReportVisitor extends Report
 	/**
      * Computes frequency and relative frequency.
      */
-	public String[] getFreqRow(VersionMetricData vmd, String field,
-			int maxValue, boolean relative)
+	public String[] getFreqRow(VersionMetricData vmd, String field, int maxValue, boolean relative)
 	{
 		int[] range = vmd.getMetricRange(ClassMetric.parse(field));
 		int[] freqTable = StatUtils.createFreqTable(range, maxValue);
 		if (relative)
 		{
-			return new String[] {
-					vmd.get(Version.NAME),
-					vmd.get(Version.RSN),
-					vmd.get(Version.ID),
-					vmd.get(Version.CLASS_COUNT),
-					CSVUtil.toCSVString(StatUtils
-							.toRelativeFreqTable(freqTable)) };
+			return new String[] { vmd.get(Version.NAME), vmd.get(Version.RSN), vmd.get(Version.ID),
+					vmd.get(Version.CLASS_COUNT), CSVUtil.toCSVString(StatUtils.toRelativeFreqTable(freqTable)) };
 		} else
-			return new String[] { vmd.get(Version.NAME),
-					vmd.get(Version.RSN), vmd.get(Version.ID),
-					vmd.get(Version.CLASS_COUNT),
-					CSVUtil.toCSVString(freqTable, true) };
+			return new String[] { vmd.get(Version.NAME), vmd.get(Version.RSN), vmd.get(Version.ID),
+					vmd.get(Version.CLASS_COUNT), CSVUtil.toCSVString(freqTable, true) };
 	}
 
 }

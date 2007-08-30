@@ -14,9 +14,7 @@ import metric.gui.swt.core.decorator.BarChartDecorator;
 import metric.gui.swt.core.decorator.ColourMapDecorator;
 import metric.gui.swt.core.decorator.LineChartDecorator;
 import metric.gui.swt.core.decorator.ColourMapDecorator.IntensityStyle;
-import metric.gui.swt.core.threading.ThreadedReporter;
 import metric.gui.swt.core.util.SWTFactory;
-import metric.gui.swt.visualizer.Visualization;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;

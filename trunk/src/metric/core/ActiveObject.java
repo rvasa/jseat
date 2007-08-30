@@ -41,10 +41,10 @@ public abstract class ActiveObject<T> extends Observable implements Runnable
 
 	public void stop() throws InterruptedException
 	{
-		Thread t;
+		// Thread t;
 		synchronized (lock)
 		{
-			t = thread;
+			// t = thread;
 			stopRequested = true;
 			Interrupt(); // Interrupt the current thread.
 		}

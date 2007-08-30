@@ -25,6 +25,7 @@ public class ThreadedProjectBuilder extends Thread
 	private HistoryMetricData hmd;
 	private List versionList;
 	private Project project;
+
 	/**
      * 
      * @param versionList The List where all <code>VersionMetricData</code>
@@ -36,17 +37,16 @@ public class ThreadedProjectBuilder extends Thread
 	{
 		this.versionList = versionList;
 		setName("ProjectBuilderThread");
-		
+
 		project = new Project(projectInput);
 	}
 
-	public ThreadedProjectBuilder(List versions, String projectInput,
-			String projectOutput, int concurrentVerThreads)
+	public ThreadedProjectBuilder(List versions, String projectInput, String projectOutput, int concurrentVerThreads)
 	{
 		this.versionList = versions;
 		project = new Project(projectInput, projectOutput, concurrentVerThreads);
 	}
-	
+
 	public void addObserver(Observer observer)
 	{
 		project.addObserver(observer);
@@ -94,8 +94,7 @@ public class ThreadedProjectBuilder extends Thread
 					for (Entry<Integer, String> version : c)
 					{
 						versionList.add(version.getValue());
-						versionList.setData(version.getValue(), version
-								.getKey());
+						versionList.setData(version.getValue(), version.getKey());
 					}
 				}
 			};

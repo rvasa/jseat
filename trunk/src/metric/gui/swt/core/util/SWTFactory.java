@@ -25,10 +25,11 @@ import org.eclipse.swt.widgets.Widget;
 public class SWTFactory
 {
 	/**
-	 * Centers the child shell in the parent shell.
-	 * @param parent the parent shell.
-	 * @param child the child shell.
-	 */
+     * Centers the child shell in the parent shell.
+     * 
+     * @param parent the parent shell.
+     * @param child the child shell.
+     */
 	public static void centerDialog(Shell parent, Shell child)
 	{
 		Rectangle parentSize = parent.getBounds();
@@ -40,7 +41,7 @@ public class SWTFactory
 
 		child.setLocation(x, y);
 	}
-	
+
 	public static void hookDisposeLisener(Widget parent, final Widget widget)
 	{
 		parent.addDisposeListener(new DisposeListener()
@@ -50,10 +51,10 @@ public class SWTFactory
 			{
 				widget.dispose();
 			}
-			
+
 		});
 	}
-	
+
 	public static Button createButton(Composite parent, int type, String text, SelectionListener listener)
 	{
 		Button b = new Button(parent, type);
@@ -62,14 +63,14 @@ public class SWTFactory
 			b.addSelectionListener(listener);
 		return b;
 	}
-	
+
 	public static Label createLabel(Composite parent, int type, String text)
 	{
 		Label l = new Label(parent, type);
 		l.setText(text);
 		return l;
 	}
-	
+
 	public static Group createGroup(Composite parent, int type, String text, Layout layout, Object layoutData)
 	{
 		Group g = new Group(parent, type);
@@ -80,7 +81,7 @@ public class SWTFactory
 		g.setText(text);
 		return g;
 	}
-	
+
 	public static Text createText(Composite parent, int type, String text, Object layoutData)
 	{
 		Text t = new Text(parent, type);
@@ -89,7 +90,7 @@ public class SWTFactory
 		t.setText(text);
 		return t;
 	}
-	
+
 	public static List createList(Composite parent, int type, Object layoutData)
 	{
 		List l = new List(parent, type);
@@ -97,7 +98,7 @@ public class SWTFactory
 			l.setLayoutData(layoutData);
 		return l;
 	}
-	
+
 	public static Combo createCombo(Composite parent, int type, int visibleItems, Layout layout, Object layoutData)
 	{
 		Combo c = new Combo(parent, type);
@@ -108,7 +109,7 @@ public class SWTFactory
 			c.setLayoutData(layoutData);
 		return c;
 	}
-	
+
 	public static GridData createGridData(int type, int heightHint, int widthHint, int verticalAlign)
 	{
 		GridData gd = new GridData(type);
@@ -117,15 +118,15 @@ public class SWTFactory
 		gd.verticalAlignment = verticalAlign;
 		return gd;
 	}
-	
+
 	public static Composite centerComposite(Composite parent, int type)
 	{
 		Composite cComp = new Composite(parent, type);
 		cComp.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
 		RowLayout rowLayout = new RowLayout();
 		rowLayout.justify = true;
-//		rowLayout.pack = true;
-//		rowLayout.fill = true;
+		// rowLayout.pack = true;
+		// rowLayout.fill = true;
 		cComp.setLayout(rowLayout);
 		return cComp;
 	}

@@ -57,8 +57,7 @@ public class GreekReportVisitor extends Report
 		HashMap<String, Object> h = new HashMap<String, Object>();
 		// Constrain 'type' field and sort the value specified in the
 		// ReportDefinition to the front.
-		String[] constrainedType = { Version.ALPHA.toString(),
-				Version.BETA.toString() };
+		String[] constrainedType = { Version.ALPHA.toString(), Version.BETA.toString() };
 		h.put("Type", StringUtils.sort(constrainedType, type));
 
 		String[] constrainedValues = ClassMetric.toStrings();
@@ -100,8 +99,7 @@ public class GreekReportVisitor extends Report
 		}
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				getHeading(fields), rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(getHeading(fields), rd.description);
 		et.addRows(rows);
 		et.setDisplayTitle(true);
 		setTable(et);
@@ -116,8 +114,7 @@ public class GreekReportVisitor extends Report
 
 		updateProgress(1, 1, vmd);
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				getHeading(fields), rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(getHeading(fields), rd.description);
 		et.addRows(rows);
 		et.setDisplayTitle(true);
 		setTable(et);
@@ -136,9 +133,9 @@ public class GreekReportVisitor extends Report
 
 		return StringUtils.asStrings(heading);
 		// Setup final heading array to add to table.
-//		String[] headings = new String[heading.size()];
-//		heading.toArray(headings);
-//		return headings;
+		// String[] headings = new String[heading.size()];
+		// heading.toArray(headings);
+		// return headings;
 	}
 
 	public String[] getRow(VersionMetricData vmd, Version type, String[] fields)

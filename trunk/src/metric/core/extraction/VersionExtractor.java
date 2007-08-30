@@ -7,16 +7,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import metric.core.ActiveObject;
-import metric.core.model.ClassMetricData;
-import metric.core.model.VersionMetricData;
 import metric.core.io.InputData;
 import metric.core.io.InputDataSet;
+import metric.core.model.ClassMetricData;
+import metric.core.model.VersionMetricData;
 import metric.core.util.logging.LogOrganiser;
 import metric.core.vocabulary.ClassMetric;
 import metric.gui.swt.core.threading.ProcessingReport;
 
-public class VersionExtractor extends ActiveObject<String> implements
-		ProcessingReport
+public class VersionExtractor extends ActiveObject<String> implements ProcessingReport
 {
 	private Logger logger = Logger.getLogger(getClass().getSimpleName());
 	private BlockingQueue<String> versionNames;
@@ -27,8 +26,8 @@ public class VersionExtractor extends ActiveObject<String> implements
 	private static int totalProcessed;
 	private static int uniqueProcessed;
 
-	public VersionExtractor(String name, BlockingQueue<String> versionNames,
-			BlockingQueue<VersionMetricData> versions, String versionPath)
+	public VersionExtractor(String name, BlockingQueue<String> versionNames, BlockingQueue<VersionMetricData> versions,
+			String versionPath)
 	{
 		super(name);
 		this.versionNames = versionNames;
@@ -44,29 +43,26 @@ public class VersionExtractor extends ActiveObject<String> implements
 		if (toDo != null)
 		{
 			String msg = "Extracting - " + toDo;
-			
+
 			synchronized (processingLock)
 			{
 				totalProcessed++;
 				uniqueProcessed++;
 			}
-			
 
 			String[] cols = toDo.split(",");
 
 			int rsn = Integer.parseInt(cols[0].trim());
 			String versionId = cols[1];
-			String jarFileName = new File(versionPath, cols[2].trim())
-					.toString();
+			String jarFileName = new File(versionPath, cols[2].trim()).toString();
 
-			InputDataSet input = new InputDataSet(jarFileName, versionId, rsn,
-					productName, cols[3]);
+			InputDataSet input = new InputDataSet(jarFileName, versionId, rsn, productName, cols[3]);
 
 			try
 			{
 				/** Add input data from either a JAR file or a directory */
 				if ((new File(jarFileName)).isDirectory())
-					input.addInputDir(jarFileName, true); // recursive 
+					input.addInputDir(jarFileName, true); // recursive
 				else
 					input.addInputFile(jarFileName);
 			} catch (IOException e)
@@ -85,8 +81,7 @@ public class VersionExtractor extends ActiveObject<String> implements
 
 	private VersionMetricData createVersion(InputDataSet input)
 	{
-		VersionMetricData vmd = new VersionMetricData(input.RSN,
-				input.versionId, input.shortName);
+		VersionMetricData vmd = new VersionMetricData(input.RSN, input.versionId, input.shortName);
 
 		if (input.size() == 0)
 			return null; // nothing to extract from
@@ -104,8 +99,7 @@ public class VersionExtractor extends ActiveObject<String> implements
 			try
 			{
 				// For each InputData (class file), create ClassMetricData.
-				ClassMetricExtractor cme = new ClassMetricExtractor(idata,
-						input);
+				ClassMetricExtractor cme = new ClassMetricExtractor(idata, input);
 				// Create a new ClassMetricData
 				ClassMetricData cmd = cme.extract();
 				cmd.setProperty(ClassMetric.PRODUCT_NAME, vmd.shortName);
@@ -148,9 +142,7 @@ public class VersionExtractor extends ActiveObject<String> implements
 			return versionNames.take();
 		} catch (InterruptedException e)
 		{
-			logger.log(
-					Level.WARNING,
-					"Interrupted. Getting ready to finish up.");
+			logger.log(Level.WARNING, "Interrupted. Getting ready to finish up.");
 			return null;
 		}
 	}

@@ -12,7 +12,7 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
 {
 	// The name of the product or project this metric data belongs to.
 	// This is necessary so that when looking at a particular version for
-    // instance,
+	// instance,
 	// you can still tell what product it belongs to.
 	public String shortName;
 
@@ -26,23 +26,21 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
 	protected HashMap<T, Method> complexMetrics;
 
 	// Should be used to store all class related dependencies
-//	protected HashMap<T, List<String>> dependencies;
+	// protected HashMap<T, List<String>> dependencies;
 
 	public MetricData()
 	{
 		properties = new HashMap<T, String>();
-		
+
 		complexMetrics = new HashMap<T, Method>();
 
 		if (getClass() == HistoryMetricData.class)
 		{
 			metrics = new int[History.getNumberOfMetrics()];
-		}
-		else if (getClass() == VersionMetricData.class)
+		} else if (getClass() == VersionMetricData.class)
 		{
 			metrics = new int[Version.getNumberOfMetrics()];
-		}
-		else if (getClass() == ClassMetricData.class)
+		} else if (getClass() == ClassMetricData.class)
 		{
 			metrics = new int[ClassMetric.getNumberOfMetrics()];
 		}
@@ -58,12 +56,10 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
 		if (prop.getDeclaringClass() == History.class)
 		{
 			metricPos = History.getNumberOfMetrics();
-		}
-		else if (prop.getDeclaringClass() == Version.class)
+		} else if (prop.getDeclaringClass() == Version.class)
 		{
 			metricPos = Version.getNumberOfMetrics();
-		}
-		else if (prop.getDeclaringClass() == ClassMetric.class)
+		} else if (prop.getDeclaringClass() == ClassMetric.class)
 		{
 			metricPos = ClassMetric.getNumberOfMetrics();
 		}
@@ -72,8 +68,8 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
 		{
 			return String.valueOf(metrics[prop.ordinal()]);
 		}
-//		if (simpleMetrics.containsKey(prop))
-//			return String.valueOf(simpleMetrics.get(prop));
+		// if (simpleMetrics.containsKey(prop))
+		// return String.valueOf(simpleMetrics.get(prop));
 		else if (properties.containsKey(prop))
 		{
 			return properties.get(prop);
@@ -90,12 +86,13 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
 	{
 		return metrics[prop.ordinal()];
 	}
-	
+
 	/**
-	 * Sets the specified property to the specified value
-	 * @param prop The property type to set.
-	 * @param property The property value to set it to.
-	 */
+     * Sets the specified property to the specified value
+     * 
+     * @param prop The property type to set.
+     * @param property The property value to set it to.
+     */
 	public void setProperty(T prop, String property)
 	{
 		properties.put(prop, property);
@@ -103,6 +100,7 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
 
 	/**
      * Sets the value of the specified metric.
+     * 
      * @param prop The metric to set
      * @param value The value to set it to.
      */
@@ -113,6 +111,7 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
 
 	/**
      * Increments the specified metric.
+     * 
      * @param metric The metric to increment.
      */
 	public void incrementMetric(T metric)
@@ -122,6 +121,7 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
 
 	/**
      * Increments the specified metric by the specified amount.
+     * 
      * @param metric The metric to increment.
      * @param toAdd The amount to increment the metric by.
      */
@@ -132,15 +132,22 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
 
 	/**
      * Decrements the specified metric.
+     * 
      * @param metric The metric to decrement.
      */
 	public void decrementMetric(T metric)
 	{
 		metrics[metric.ordinal()]--;
 	}
-	
-	public final int[] getMetrics() { return metrics; };
-	
-	public final HashMap<T, String> getProperties() { return properties; }; 
-	
+
+	public final int[] getMetrics()
+	{
+		return metrics;
+	};
+
+	public final HashMap<T, String> getProperties()
+	{
+		return properties;
+	};
+
 }

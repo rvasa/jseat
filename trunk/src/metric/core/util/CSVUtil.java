@@ -41,8 +41,8 @@ public class CSVUtil
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> String toCSVString(Set entrySet, char delim,
-			boolean includeZeroSets, HashMap<T, Integer> exclusionList)
+	public static <T> String toCSVString(Set entrySet, char delim, boolean includeZeroSets,
+			HashMap<T, Integer> exclusionList)
 	{
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("[");
@@ -61,8 +61,7 @@ public class CSVUtil
 					buffer.append(value);
 					buffer.append(delim);
 				} else if (exclusionList.containsKey(key)
-						&& ((exclusionList.get(key) == value) || (exclusionList
-								.get(key) != -1)))
+						&& ((exclusionList.get(key) == value) || (exclusionList.get(key) != -1)))
 				{
 					buffer.append(key);
 					buffer.append("=");
@@ -78,8 +77,7 @@ public class CSVUtil
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> String toCSVString(Set entrySet, char delim,
-			boolean includeZeroSets)
+	public static <T> String toCSVString(Set entrySet, char delim, boolean includeZeroSets)
 	{
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("{");
@@ -104,8 +102,7 @@ public class CSVUtil
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T, K> String toCSVString(Set entrySet, char delim,
-			HashMap<T, String> exclusionList)
+	public static <T, K> String toCSVString(Set entrySet, char delim, HashMap<T, String> exclusionList)
 	{
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("{");
@@ -122,8 +119,7 @@ public class CSVUtil
 				buffer.append(value);
 				buffer.append(delim);
 			} else if (exclusionList.containsKey(key)
-					&& ((!exclusionList.get(key).equals(value) || (exclusionList
-							.get(key).equals("")))))
+					&& ((!exclusionList.get(key).equals(value) || (exclusionList.get(key).equals("")))))
 			{
 				buffer.append(key);
 				buffer.append("=");
@@ -156,8 +152,7 @@ public class CSVUtil
 			if (spaceSeparated)
 				sb.append(" ");
 		}
-		return sb.toString().trim()
-				.substring(0, sb.toString().lastIndexOf(','));
+		return sb.toString().trim().substring(0, sb.toString().lastIndexOf(','));
 	}
 
 	@SuppressWarnings("unchecked")

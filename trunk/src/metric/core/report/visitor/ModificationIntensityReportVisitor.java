@@ -9,7 +9,6 @@ import metric.core.model.ClassMetricData;
 import metric.core.model.HistoryMetricData;
 import metric.core.model.VersionMetricData;
 import metric.core.report.Report;
-import metric.core.util.CSVUtil;
 import metric.core.util.MetricTable;
 import metric.core.util.StatUtils;
 import metric.core.util.StringUtils;
@@ -20,8 +19,7 @@ import metric.core.vocabulary.Version;
 public class ModificationIntensityReportVisitor extends Report
 {
 
-	public ModificationIntensityReportVisitor(ReportDefinition rd)
-			throws ReportException
+	public ModificationIntensityReportVisitor(ReportDefinition rd) throws ReportException
 	{
 		super(rd);
 	}
@@ -58,7 +56,7 @@ public class ModificationIntensityReportVisitor extends Report
 		for (int i = 1; i <= versions; i++)
 		{
 			VersionMetricData next = hmd.getVersion(i);
-//			System.out.println(prev + " " + next);
+			// System.out.println(prev + " " + next);
 			double[] tmp = changeFactor(prev, next, versions);
 			String[] newTmp = new String[tmp.length];
 			for (int j = 0; j < tmp.length; j++)
@@ -70,8 +68,7 @@ public class ModificationIntensityReportVisitor extends Report
 		}
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				getHeading(versions), rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(getHeading(versions), rd.description);
 		et.setColumnPadding(1);
 		et.setDisplayTitle(true);
 		et.addRows(rows);
@@ -87,8 +84,7 @@ public class ModificationIntensityReportVisitor extends Report
 		return StringUtils.asStrings(heading);
 	}
 
-	private double[] changeFactor(VersionMetricData v1, VersionMetricData v2,
-			int totalVersions)
+	private double[] changeFactor(VersionMetricData v1, VersionMetricData v2, int totalVersions)
 	{
 		int numClasses = v1.metricData.size();
 		double[] intensityRange = new double[totalVersions];
@@ -100,21 +96,17 @@ public class ModificationIntensityReportVisitor extends Report
 
 		for (ClassMetricData cm : v1.metricData.values())
 		{
-			if (cm.getSimpleMetric(ClassMetric.NEXT_VERSION_STATUS) == Evolution.MODIFIED
-					.getValue())
+			if (cm.getSimpleMetric(ClassMetric.NEXT_VERSION_STATUS) == Evolution.MODIFIED.getValue())
 			{
 				int changeNum = 0;
-				if (cm.getSimpleMetric(ClassMetric.FAN_IN_COUNT) != v2.metricData
-						.get(cm.get(ClassMetric.NAME)).getSimpleMetric(
-								ClassMetric.FAN_IN_COUNT))
+				if (cm.getSimpleMetric(ClassMetric.FAN_IN_COUNT) != v2.metricData.get(cm.get(ClassMetric.NAME))
+						.getSimpleMetric(ClassMetric.FAN_IN_COUNT))
 					changeNum++;
-				if (cm.getSimpleMetric(ClassMetric.FAN_OUT_COUNT) != v2.metricData
-						.get(cm.get(ClassMetric.NAME)).getSimpleMetric(
-								ClassMetric.FAN_OUT_COUNT))
+				if (cm.getSimpleMetric(ClassMetric.FAN_OUT_COUNT) != v2.metricData.get(cm.get(ClassMetric.NAME))
+						.getSimpleMetric(ClassMetric.FAN_OUT_COUNT))
 					changeNum++;
-				if (cm.getSimpleMetric(ClassMetric.BRANCH_COUNT) != v2.metricData
-						.get(cm.get(ClassMetric.NAME)).getSimpleMetric(
-								ClassMetric.BRANCH_COUNT))
+				if (cm.getSimpleMetric(ClassMetric.BRANCH_COUNT) != v2.metricData.get(cm.get(ClassMetric.NAME))
+						.getSimpleMetric(ClassMetric.BRANCH_COUNT))
 					changeNum++;
 				if (changeNum > 0)
 				{
@@ -137,23 +129,17 @@ public class ModificationIntensityReportVisitor extends Report
 		{
 			case 1:
 			{
-				tmp = StatUtils.toFixedDecPlaces(
-						((double) (1d / numClasses) * 0.33),
-						3);
+				tmp = StatUtils.toFixedDecPlaces(((double) (1d / numClasses) * 0.33), 3);
 				break;
 			}
 			case 2:
 			{
-				tmp = StatUtils.toFixedDecPlaces(
-						((double) (1d / numClasses) * 0.66),
-						3);
+				tmp = StatUtils.toFixedDecPlaces(((double) (1d / numClasses) * 0.66), 3);
 				break;
 			}
 			case 3:
 			{
-				tmp = StatUtils.toFixedDecPlaces(
-						((double) (1d / numClasses) * 0.99),
-						3);
+				tmp = StatUtils.toFixedDecPlaces(((double) (1d / numClasses) * 0.99), 3);
 				break;
 			}
 			default:

@@ -18,17 +18,13 @@ import metric.core.model.VersionMetricData;
  */
 public interface MetricDataConverter
 {
-	public void serialize(VersionMetricData component, String path)
-			throws ConversionException;
+	public void serialize(VersionMetricData component, String path) throws ConversionException;
 
-	public String serialize(VersionMetricData component)
-			throws ConversionException;
+	public String serialize(VersionMetricData component) throws ConversionException;
 
-	public VersionMetricData deSerialize(String data)
-			throws ConversionException;
+	public VersionMetricData deSerialize(String data) throws ConversionException;
 
-	public VersionMetricData deSerialize(Reader data)
-			throws ConversionException;
+	public VersionMetricData deSerialize(Reader data) throws ConversionException;
 
 	public String getFileExtension();
 

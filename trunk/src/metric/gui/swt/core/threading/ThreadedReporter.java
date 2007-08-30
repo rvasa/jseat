@@ -25,20 +25,20 @@ public class ThreadedReporter extends Thread
 		running = true;
 		lock = new Object();
 	}
-	
+
 	public boolean isRunning() throws InterruptedException
 	{
-		synchronized (lock) {
+		synchronized (lock)
+		{
 			while (running)
 			{
 				yield();
 				Thread.sleep(100);
 			}
 		}
-		
-		
+
 		return true;
-		
+
 	}
 
 	@Override

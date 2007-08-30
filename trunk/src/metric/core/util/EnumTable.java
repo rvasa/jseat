@@ -65,6 +65,7 @@ public class EnumTable
 
 	/**
      * Sets the amount of space to pad between columns.
+     * 
      * @param padding the amount of pads.
      */
 	public void setColumnPadding(int padding)
@@ -75,6 +76,7 @@ public class EnumTable
 	/**
      * Sets the heading for each column of the table, specified by the inputted
      * headings.
+     * 
      * @param headings the array of Enum's to use as headings.
      */
 	public void setHeadings(Enum[] headings)
@@ -86,6 +88,7 @@ public class EnumTable
 
 	/**
      * Sets whether or not headings should be bolded (capitalised)
+     * 
      * @param boldHeadings true or false.
      */
 	public void setUpperCaseHeadings(boolean value)
@@ -96,6 +99,7 @@ public class EnumTable
 
 	/**
      * Sets the alignment mode used to lay out the table.
+     * 
      * @param alignment Alignment.LEFT, Alignment.CENTER or Alignment.RIGHT.
      */
 	public void setAlignment(Alignment alignment)
@@ -115,6 +119,7 @@ public class EnumTable
 
 	/**
      * Add's the collection of rows to the table.
+     * 
      * @param rows to add.
      */
 	public void addRows(Collection<String[]> rows)
@@ -127,6 +132,7 @@ public class EnumTable
 
 	/**
      * Add's a row to the table.
+     * 
      * @param row the row of data to add.
      */
 	public void addRow(Object[] row)
@@ -136,6 +142,7 @@ public class EnumTable
 
 	/**
      * Add's the specified array of data (typically a row) to the table.
+     * 
      * @param toPop the array of objects to add.
      */
 	private void populateRow(Object[] toPop)
@@ -150,6 +157,7 @@ public class EnumTable
 	/**
      * Converts the headings in the table (always the first row) to upperCase if
      * upperCaseHeadings is true. Otherwise, just sets the headings.
+     * 
      * @param upperCaseHeadings whether or not to capitalize headings.
      */
 	private void updateHeadings(boolean upperCaseHeadings)
@@ -208,6 +216,7 @@ public class EnumTable
 
 	/**
      * Calculates the width of each column according to the largest value.
+     * 
      * @return an array of values corresponding to the maximum width for each
      *         column.
      */
@@ -271,24 +280,25 @@ public class EnumTable
 					try
 					{
 						element = table[r][c].toString();
-						
+
 						// Bold headings?
 						if (r == 0 && upperCaseHeadings)
 							element = table[r][c].toUpperCase();
 					} catch (NullPointerException e)
 					{
 					} // handle
-					
+
 					try
 					{
-					if (enableSmartCast && r > 1 && c > 1)
-						NumberFormat.getIntegerInstance().format(element);
-					}catch (IllegalArgumentException e){}
-//						doSmartCast(element);
+						if (enableSmartCast && r > 1 && c > 1)
+							NumberFormat.getIntegerInstance().format(element);
+					} catch (IllegalArgumentException e)
+					{
+					}
+					// doSmartCast(element);
 
 					if (element.length() < maxElementWidth[c])
-						buffer.append(pad(element, maxElementWidth[c]
-								- element.length()));
+						buffer.append(pad(element, maxElementWidth[c] - element.length()));
 					else
 						buffer.append(element);
 				}
@@ -302,6 +312,7 @@ public class EnumTable
 
 	/**
      * Strategy used to right justify text in a table cell.
+     * 
      * @author Joshua Hayes
      */
 	public class RightAlignStrategy extends BasicAlignment
@@ -318,6 +329,7 @@ public class EnumTable
 	}
 	/**
      * Strategy used to align left justify text in a table cell.
+     * 
      * @author Joshua Hayes
      */
 	public class LeftAlignStrategy extends BasicAlignment
@@ -334,6 +346,7 @@ public class EnumTable
 	}
 	/**
      * Strategy used to align center text in table cells.
+     * 
      * @author Joshua Hayes
      */
 	public class CenterAlignStrategy extends BasicAlignment
@@ -371,6 +384,7 @@ public class EnumTable
      * E.g. A table which was constructed with 10 rows but only had 8 rows added
      * to it, will remove the last two rows instead of printing empty rows is
      * table compacting is enabled.
+     * 
      * @return the compactTable
      */
 	public final boolean isCompactTable()
@@ -383,6 +397,7 @@ public class EnumTable
      * invoked. E.g. A table which was constructed with 10 rows but only had 8
      * rows added to it, will remove the last two rows instead of printing empty
      * rows is table compacting is enabled.
+     * 
      * @param compactTable whether or not to compact the table
      */
 	public final void setCompactTable(boolean compactTable)
@@ -407,16 +422,16 @@ public class EnumTable
 	}
 
 	/**
-	 * @return the enableSmartCast
-	 */
+     * @return the enableSmartCast
+     */
 	public final boolean isEnableSmartCast()
 	{
 		return enableSmartCast;
 	}
 
 	/**
-	 * @param enableSmartCast the enableSmartCast to set
-	 */
+     * @param enableSmartCast the enableSmartCast to set
+     */
 	public final void setEnableSmartCast(boolean enableSmartCast)
 	{
 		this.enableSmartCast = enableSmartCast;

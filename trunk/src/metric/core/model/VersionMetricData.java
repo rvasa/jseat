@@ -15,22 +15,20 @@ import metric.core.vocabulary.Version;
  * 
  * @author Joshua Hayes,Swinburne University (ICT),2007, rvasa
  */
-public class VersionMetricData extends MetricData<Version> implements
-		Comparable<VersionMetricData>
+public class VersionMetricData extends MetricData<Version> implements Comparable<VersionMetricData>
 {
 	private VersionStatsUtil vsu;
 
 	public static boolean showProcessing = true;
 	public HashMap<String, ClassMetricData> metricData;
-	
+
 	public long lowModifiedTime, hiModifiedTime;
-	
 
 	public VersionMetricData()
 	{
 		metricData = new HashMap<String, ClassMetricData>();
 		vsu = new VersionStatsUtil();
-		
+
 		// Initialise complex metric mappings.
 		try
 		{
@@ -63,34 +61,27 @@ public class VersionMetricData extends MetricData<Version> implements
      * <code>VersionStatsUtil</code> to the get() and getComplexMetric()
      * interface of this VersionMetricData. This allows any type of complex
      * metric to be invoked through the same get methods.
-	 * @throws NoSuchMethodException 
-	 * @throws SecurityException 
+     * 
+     * @throws NoSuchMethodException
+     * @throws SecurityException
      */
 	public void initComplexMetricMappings() throws SecurityException, NoSuchMethodException
 	{
 		Class[] cmArg = { ClassMetric.class };
-		complexMetrics.put(Version.ALPHA, VersionStatsUtil.class.getMethod(
-				"getAlpha",
-				cmArg));
-		complexMetrics.put(Version.BETA, VersionStatsUtil.class.getMethod(
-				"getBeta",
-				cmArg));
+		complexMetrics.put(Version.ALPHA, VersionStatsUtil.class.getMethod("getAlpha", cmArg));
+		complexMetrics.put(Version.BETA, VersionStatsUtil.class.getMethod("getBeta", cmArg));
 
-		complexMetrics.put(Version.ISUM, VersionStatsUtil.class.getMethod(
-				"getISum",
-				cmArg));
+		complexMetrics.put(Version.ISUM, VersionStatsUtil.class.getMethod("getISum", cmArg));
 
 		Class[] relArg = { VersionMetricData.class };
-		complexMetrics.put(Version.RELATIVE_SIZE_CHANGE, VersionStatsUtil.class
-				.getMethod("getRelativeSizeChange", relArg));
+		complexMetrics.put(Version.RELATIVE_SIZE_CHANGE, VersionStatsUtil.class.getMethod(
+				"getRelativeSizeChange",
+				relArg));
 
 		Class[] predArg = { ClassMetric.class, VersionMetricData.class };
-		complexMetrics.put(Version.PRED, VersionStatsUtil.class.getMethod(
-				"getPred",
-				predArg));
+		complexMetrics.put(Version.PRED, VersionStatsUtil.class.getMethod("getPred", predArg));
 
-		complexMetrics.put(Version.PRED_ERROR, VersionStatsUtil.class
-				.getMethod("getPredErr", predArg));
+		complexMetrics.put(Version.PRED_ERROR, VersionStatsUtil.class.getMethod("getPredErr", predArg));
 
 	}
 
@@ -206,7 +197,7 @@ public class VersionMetricData extends MetricData<Version> implements
 	{
 		return get(Version.NAME) + "-" + get(Version.ID);
 	}
-	
+
 	public void accept(ReportVisitor visitor) throws ReportException
 	{
 		visitor.visit(this);
@@ -241,8 +232,7 @@ public class VersionMetricData extends MetricData<Version> implements
          */
 		public double getAlpha(ClassMetric metric)
 		{
-			return (double) getISum(metric)
-					/ getSimpleMetric(Version.CLASS_COUNT);
+			return (double) getISum(metric) / getSimpleMetric(Version.CLASS_COUNT);
 		}
 
 		/**
@@ -253,8 +243,7 @@ public class VersionMetricData extends MetricData<Version> implements
          */
 		public double getBeta(ClassMetric metric)
 		{
-			return Math.log(getISum(metric))
-					/ Math.log(getSimpleMetric(Version.CLASS_COUNT));
+			return Math.log(getISum(metric)) / Math.log(getSimpleMetric(Version.CLASS_COUNT));
 		}
 
 		/**
@@ -302,8 +291,7 @@ public class VersionMetricData extends MetricData<Version> implements
          */
 		public double getPred(ClassMetric metric, VersionMetricData prev)
 		{
-			return Math.pow(getSimpleMetric(Version.CLASS_COUNT), prev
-					.getComplexMetric(Version.BETA, metric));
+			return Math.pow(getSimpleMetric(Version.CLASS_COUNT), prev.getComplexMetric(Version.BETA, metric));
 		}
 
 		/**
@@ -316,16 +304,14 @@ public class VersionMetricData extends MetricData<Version> implements
          */
 		public double getPredErr(ClassMetric metric, VersionMetricData prev)
 		{
-			return StatUtils.getRelativeChange(
-					(int) vsu.getISum(metric),
-					(int) getPred(metric, prev));
+			return StatUtils.getRelativeChange((int) vsu.getISum(metric), (int) getPred(metric, prev));
 		}
-		
+
 		public double getChronology(Object metric, VersionMetricData prev)
 		{
 			if (metric == Version.RSN)
 			{
-			} 
+			}
 			return getSimpleMetric(Version.RSN);
 		}
 	}

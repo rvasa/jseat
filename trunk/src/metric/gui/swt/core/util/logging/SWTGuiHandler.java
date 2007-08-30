@@ -3,10 +3,8 @@ package metric.gui.swt.core.util.logging;
 import java.util.LinkedList;
 import java.util.Observer;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import metric.core.vocabulary.Version;
 import metric.gui.swt.core.vocabulary.GUI;
 
 import org.eclipse.swt.widgets.Display;
@@ -56,8 +54,7 @@ public class SWTGuiHandler extends Handler
 		// Default status code for now.
 		int statusCode = GUI.REQ_OAREA_UPDATE.getValue(); // default
 
-		LogEvent le = new LogEvent(log.getLoggerName(), s, log.getParameters(),
-				statusCode);
+		LogEvent le = new LogEvent(log.getLoggerName(), s, log.getParameters(), statusCode);
 		events.add(le);
 		flush(); // default autoflush for now.
 	}

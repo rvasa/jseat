@@ -92,8 +92,7 @@ public class SurvivorReportVisitor extends Report
 	}
 
 	/** Calculates the number of classes that did not change between versions */
-	public void printSurvivors(HistoryMetricData hmd, int survivorThreshold,
-			boolean relative)
+	public void printSurvivors(HistoryMetricData hmd, int survivorThreshold, boolean relative)
 	{
 		if (hmd.versions.size() < 2)
 			return;
@@ -101,39 +100,31 @@ public class SurvivorReportVisitor extends Report
 		ArrayList<String[]> rows = new ArrayList<String[]>(numRows);
 		for (int i = 2; i <= hmd.versions.size(); i++)
 		{
-			VersionMetricData v1 = hmd.getVersion(i-1);
-			updateProgress(i-1, hmd.getVersions().size(), v1);
+			VersionMetricData v1 = hmd.getVersion(i - 1);
+			updateProgress(i - 1, hmd.getVersions().size(), v1);
 			VersionMetricData v2 = hmd.getVersion(i);
 			updateProgress(i, hmd.getVersions().size(), v2);
 
-			int count = ((Set<String>) getSurvivorClassNames(v2, true, 1))
-					.size();
+			int count = ((Set<String>) getSurvivorClassNames(v2, true, 1)).size();
 
 			// double survivors = (double) count
 			// / v2.getMetric(Version.CLASS_COUNT);
 
-			String[] row = {
-					v1.get(Version.NAME),
-					v1.get(Version.RSN) + "-" + v2.get(Version.RSN),
-					v1.get(Version.ID),
-					v1.get(Version.CLASS_COUNT),
-					v2.get(Version.ID),
-					v2.get(Version.CLASS_COUNT),
-					getSurvivorNumber(count, v2.getSimpleMetric(Version.CLASS_COUNT),
-							relative) };
+			String[] row = { v1.get(Version.NAME), v1.get(Version.RSN) + "-" + v2.get(Version.RSN), v1.get(Version.ID),
+					v1.get(Version.CLASS_COUNT), v2.get(Version.ID), v2.get(Version.CLASS_COUNT),
+					getSurvivorNumber(count, v2.getSimpleMetric(Version.CLASS_COUNT), relative) };
 			// count + "", StatUtils.toFixedDecPlaces(survivors, 3) + "" };
 
 			rows.add(row);
 		}
 
 		// Setup headings.
-		Enum[] headings = { Version.NAME, Version.RSN, Version.ID,
-				Version.CLASS_COUNT, Version.ID, Version.CLASS_COUNT,
-				Reporting.SURVIVORS };
+		Enum[] headings = { Version.NAME, Version.RSN, Version.ID, Version.CLASS_COUNT, Version.ID,
+				Version.CLASS_COUNT, Reporting.SURVIVORS };
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				StringUtils.asStrings(headings), rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(StringUtils.asStrings(headings),
+				rd.description);
 		et.addRows(rows);
 		et.setColumnPadding(1);
 		et.setDisplayTitle(true);
@@ -141,8 +132,7 @@ public class SurvivorReportVisitor extends Report
 	}
 
 	/** Calculates the number of classes that did not change between versions */
-	public void printSurvivorsFromBirth(HistoryMetricData hmd,
-			int survivorThreshold, boolean relative)
+	public void printSurvivorsFromBirth(HistoryMetricData hmd, int survivorThreshold, boolean relative)
 	{
 		if (hmd.versions.size() < 2)
 			return;
@@ -154,31 +144,25 @@ public class SurvivorReportVisitor extends Report
 			VersionMetricData v2 = hmd.getVersion(i);
 			updateProgress(i, hmd.getVersions().size(), v2);
 
-			int count = ((Set<String>) getSurvivorClassNames(v2, true,
-					survivorThreshold)).size();
+			int count = ((Set<String>) getSurvivorClassNames(v2, true, survivorThreshold)).size();
 
 			// double survivors = (double) count
 			// / v2.getMetric(Version.CLASS_COUNT);
 
-			String[] row = {
-					v2.get(Version.NAME),
-					v2.get(Version.RSN),
-					v2.get(Version.ID),
+			String[] row = { v2.get(Version.NAME), v2.get(Version.RSN), v2.get(Version.ID),
 					v2.get(Version.CLASS_COUNT),
-					getSurvivorNumber(count, v2.getSimpleMetric(Version.CLASS_COUNT),
-							relative) };
+					getSurvivorNumber(count, v2.getSimpleMetric(Version.CLASS_COUNT), relative) };
 			// count + "", StatUtils.toFixedDecPlaces(survivors, 3) + "" };
 
 			rows.add(row);
 		}
 
 		// Setup headings.
-		Enum[] headings = { Version.NAME, Version.RSN, Version.ID,
-				Version.CLASS_COUNT, Reporting.SURVIVORS };
+		Enum[] headings = { Version.NAME, Version.RSN, Version.ID, Version.CLASS_COUNT, Reporting.SURVIVORS };
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				StringUtils.asStrings(headings), rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(StringUtils.asStrings(headings),
+				rd.description);
 		et.addRows(rows);
 		et.setColumnPadding(1);
 		et.setDisplayTitle(true);
@@ -187,8 +171,7 @@ public class SurvivorReportVisitor extends Report
 
 	/** If it has an age >= threshold, than it is a survivor */
 	// TODO update to make more useful.
-	public Set<String> getSurvivorClassNames(VersionMetricData vmd,
-			boolean silent, int threshold)
+	public Set<String> getSurvivorClassNames(VersionMetricData vmd, boolean silent, int threshold)
 	{
 		Set<String> survivors = new HashSet<String>();
 		for (ClassMetricData cm : vmd.metricData.values())

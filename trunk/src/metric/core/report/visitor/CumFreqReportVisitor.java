@@ -82,8 +82,7 @@ public class CumFreqReportVisitor extends Report
 		}
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				headings, rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(headings, rd.description);
 		et.setColumnPadding(2);
 		et.addRows(rows);
 		et.setDisplayTitle(true);
@@ -95,23 +94,20 @@ public class CumFreqReportVisitor extends Report
 		String[] row = getCumFreqRow(vmd, maxValue, metric);
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				headings, rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(headings, rd.description);
 		et.setColumnPadding(2);
 		et.addRow(row);
 		setTable(et);
 	}
 
-	private String[] getCumFreqRow(VersionMetricData vmd, int maxValue,
-			String field)
+	private String[] getCumFreqRow(VersionMetricData vmd, int maxValue, String field)
 	{
 		int[] range = vmd.getMetricRange(ClassMetric.parse(field));
 		int[] freqTable = StatUtils.createFreqTable(range, maxValue);
 		double[] cumlTable = StatUtils.toCummulFreqTable(freqTable);
 
-		String[] row = { vmd.get(Version.NAME), vmd.get(Version.RSN),
-				vmd.get(Version.ID), vmd.get(Version.CLASS_COUNT),
-				CSVUtil.toCSVString(cumlTable) };
+		String[] row = { vmd.get(Version.NAME), vmd.get(Version.RSN), vmd.get(Version.ID),
+				vmd.get(Version.CLASS_COUNT), CSVUtil.toCSVString(cumlTable) };
 		return row;
 	}
 }

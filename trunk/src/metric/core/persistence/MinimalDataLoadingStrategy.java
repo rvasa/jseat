@@ -3,13 +3,11 @@ package metric.core.persistence;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import metric.core.exception.ConversionException;
 import metric.core.model.VersionMetricData;
 import metric.core.vocabulary.SerializeType;
-import metric.core.vocabulary.Version;
 
 public class MinimalDataLoadingStrategy implements DataLoadingStrategy
 {
@@ -29,15 +27,10 @@ public class MinimalDataLoadingStrategy implements DataLoadingStrategy
 		try
 		{
 			reader = new FileReader(filename);
-			MetricDataConverter converter = new CSVConverter(
-					SerializeType.CLASSES);
+			MetricDataConverter converter = new CSVConverter(SerializeType.CLASSES);
 			vmd = converter.deSerialize(reader);
 			converter.close();
 			reader.close();
-//			System.out
-//					.println("Minimal data loader returning "
-//							+ vmd.get(Version.NAME) + " size: "
-//							+ vmd.metricData.size());
 		} catch (FileNotFoundException e)
 		{
 			e.printStackTrace();

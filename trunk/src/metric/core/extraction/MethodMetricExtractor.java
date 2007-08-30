@@ -29,8 +29,8 @@ public class MethodMetricExtractor
 	}
 
 	/**
-     * @return Extracts and returns a HashMap of Methods
-     *         for the current <code>ClassNode</code>.
+     * @return Extracts and returns a HashMap of Methods for the current
+     *         <code>ClassNode</code>.
      */
 	public HashMap<String, int[]> extract()
 	{
@@ -40,7 +40,7 @@ public class MethodMetricExtractor
 		{
 			MethodNode methodNode = (MethodNode) methods.get(i);
 			int[] methodMetrics = new int[MethodMetric.values().length];
-			
+
 			methodMetrics[MethodMetric.LOCAL_VAR_COUNT.ordinal()] = methodNode.maxLocals;
 
 			// Update method scope.
@@ -73,8 +73,7 @@ public class MethodMetricExtractor
 			mm[MethodMetric.SCOPE.ordinal()] = TypeModifier.PRIVATE.ordinal();
 		else if ((methodNode.access & Opcodes.ACC_PROTECTED) != 0)
 			mm[MethodMetric.SCOPE.ordinal()] = TypeModifier.PROTECTED.ordinal();
-		else if (((methodNode.access & Opcodes.ACC_PUBLIC) != 0)
-				&& ((classNode.access & Opcodes.ACC_PUBLIC) != 0))
+		else if (((methodNode.access & Opcodes.ACC_PUBLIC) != 0) && ((classNode.access & Opcodes.ACC_PUBLIC) != 0))
 			mm[MethodMetric.SCOPE.ordinal()] = TypeModifier.PUBLIC.ordinal();
 	}
 
@@ -85,8 +84,7 @@ public class MethodMetricExtractor
      * @param methodNode The MethodNode.
      * @param mmd The MethodMetricData.
      */
-	private void extractAndUpdateTypeModifiers(MethodNode methodNode,
-			int[] mm)
+	private void extractAndUpdateTypeModifiers(MethodNode methodNode, int[] mm)
 	{
 		if ((methodNode.access & Opcodes.ACC_ABSTRACT) != 0)
 			mm[MethodMetric.IS_ABSTRACT.ordinal()] = 1;
@@ -113,8 +111,7 @@ public class MethodMetricExtractor
 			Object insn = methodNode.instructions.get(i);
 			// Have it accept our visitors and update the provided
 			// MethodMetricData.
-			((AbstractInsnNode) insn)
-					.accept(getVariableInstructionVisitor(mm));
+			((AbstractInsnNode) insn).accept(getVariableInstructionVisitor(mm));
 			// Try/Catch blocks.
 			((AbstractInsnNode) insn).accept(getTryCatchBlockVisitor(mm));
 			// Fields.
@@ -138,8 +135,7 @@ public class MethodMetricExtractor
      * @param mmd The MethodMetricData that should be updated.
      * @return The TraceMethodVisitor.
      */
-	private TraceMethodVisitor getVariableInstructionVisitor(
-			final int[] mm)
+	private TraceMethodVisitor getVariableInstructionVisitor(final int[] mm)
 	{
 		TraceMethodVisitor mv = new TraceMethodVisitor()
 		{
@@ -172,13 +168,11 @@ public class MethodMetricExtractor
      * @param mmd The MethodMetricData that should be updated.
      * @return The TraceMethodVisitor.
      */
-	private TraceMethodVisitor getTryCatchBlockVisitor(
-			final int[] mm)
+	private TraceMethodVisitor getTryCatchBlockVisitor(final int[] mm)
 	{
 		TraceMethodVisitor mv = new TraceMethodVisitor()
 		{
-			public void visitTryCatchBlock(Label start, Label end,
-					Label handler, String type)
+			public void visitTryCatchBlock(Label start, Label end, Label handler, String type)
 			{
 				mm[MethodMetric.TRY_CATCH_BLOCK_COUNT.ordinal()]++;
 			}
@@ -196,14 +190,12 @@ public class MethodMetricExtractor
 	{
 		TraceMethodVisitor mv = new TraceMethodVisitor()
 		{
-			public void visitFieldInsn(int opcode, String owner, String name,
-					String desc)
+			public void visitFieldInsn(int opcode, String owner, String name, String desc)
 			{
 				if (opcode == Opcodes.PUTFIELD || opcode == Opcodes.PUTSTATIC)
 				{
 					mm[MethodMetric.STORE_FIELD_COUNT.ordinal()]++;
-				} else if (opcode == Opcodes.GETFIELD
-						|| opcode == Opcodes.GETSTATIC)
+				} else if (opcode == Opcodes.GETFIELD || opcode == Opcodes.GETSTATIC)
 				{
 					mm[MethodMetric.LOAD_FIELD_COUNT.ordinal()]++;
 				}
@@ -247,8 +239,7 @@ public class MethodMetricExtractor
      * @param mmd The MethodMetricData that should be updated.
      * @return The TraceMethodVisitor.
      */
-	private TraceMethodVisitor getJumpInstructionVisitor(
-			final int[] mm)
+	private TraceMethodVisitor getJumpInstructionVisitor(final int[] mm)
 	{
 		TraceMethodVisitor mv = new TraceMethodVisitor()
 		{
@@ -273,14 +264,12 @@ public class MethodMetricExtractor
 	{
 		TraceMethodVisitor mv = new TraceMethodVisitor()
 		{
-			public void visitLookupSwitchInsn(Label dflt, int[] keys,
-					Label[] labels)
+			public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels)
 			{
 				mm[MethodMetric.BRANCH_COUNT.ordinal()] += labels.length;
 			}
 
-			public void visitTableSwitchInsn(int min, int max, Label dflt,
-					Label[] labels)
+			public void visitTableSwitchInsn(int min, int max, Label dflt, Label[] labels)
 			{
 				mm[MethodMetric.BRANCH_COUNT.ordinal()] += labels.length;
 			}
@@ -315,8 +304,7 @@ public class MethodMetricExtractor
 	{
 		TraceMethodVisitor mv = new TraceMethodVisitor()
 		{
-			public void visitMethodInsn(int opcode, String owner, String n,
-					String d)
+			public void visitMethodInsn(int opcode, String owner, String n, String d)
 			{
 				mm[MethodMetric.METHOD_CALL_COUNT.ordinal()]++;
 				if (owner.equals(classNode.name))

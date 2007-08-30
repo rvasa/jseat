@@ -45,8 +45,11 @@ public class BarChartDecorator extends ReportDecorator
 		if (cc == null || cc.isDisposed())
 		{
 			CategoryDataset dataset = createDataset();
-			JFreeChart chart = createChart(decoratedReport.getTable()
-					.getTitle(), Version.RSN.toString(), "Value", dataset);
+			JFreeChart chart = createChart(
+					decoratedReport.getTable().getTitle(),
+					Version.RSN.toString(),
+					"Value",
+					dataset);
 			cc = new ChartComposite(composite, SWT.NONE, chart);
 		} else
 		{
@@ -94,14 +97,12 @@ public class BarChartDecorator extends ReportDecorator
 			}
 		} catch (IndexOutOfBoundsException e)
 		{
-			System.err.println("SOMETHING BROKE!!! - THIS SHOULD NOT HAPPEN\n"
-					+ e.getMessage());
+			System.err.println("SOMETHING BROKE!!! - THIS SHOULD NOT HAPPEN\n" + e.getMessage());
 		} // handle. SHOULD NOT HAPPEN.
 		return dataset;
 	}
 
-	private void iterateOverColumn(DefaultCategoryDataset dataset,
-			MetricTable table, ArrayList column, int colIndex)
+	private void iterateOverColumn(DefaultCategoryDataset dataset, MetricTable table, ArrayList column, int colIndex)
 	{
 		String element = (String) column.get(0);
 		try
@@ -120,8 +121,7 @@ public class BarChartDecorator extends ReportDecorator
 
 				try
 				{
-					dataset.incrementValue(value, colName, String
-							.valueOf(version));
+					dataset.incrementValue(value, colName, String.valueOf(version));
 				} catch (UnknownKeyException e)
 				{
 					dataset.addValue(value, colName, String.valueOf(version));
@@ -140,8 +140,7 @@ public class BarChartDecorator extends ReportDecorator
      * 
      * @return The chart.
      */
-	protected JFreeChart createChart(String title, String domainLabel,
-			String rangeLabel, CategoryDataset dataset)
+	protected JFreeChart createChart(String title, String domainLabel, String rangeLabel, CategoryDataset dataset)
 	{
 
 		// create the chart...

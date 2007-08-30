@@ -98,15 +98,12 @@ public class GiniCoeffReportVisitor extends Report
 		}
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				getHeading(fields), rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(getHeading(fields), rd.description);
 		et.addRows(rows);
 		et.setColumnPadding(2);
 		et.setDisplayTitle(true);
 		setTable(et);
 	}
-	
-	
 
 	@Override
 	public void visit(VersionMetricData vmd) throws ReportException
@@ -114,8 +111,7 @@ public class GiniCoeffReportVisitor extends Report
 		String[] row = getGiniCoeffRow(vmd, maxValue, fields);
 
 		// Create and set table.
-		MetricTable<String, String> et = new MetricTable<String, String>(
-				getHeading(fields), rd.description);
+		MetricTable<String, String> et = new MetricTable<String, String>(getHeading(fields), rd.description);
 		et.addRow(row);
 		et.setColumnPadding(2);
 		et.setDisplayTitle(true);
@@ -133,14 +129,13 @@ public class GiniCoeffReportVisitor extends Report
 			heading.add(ClassMetric.parse(str).toString());
 
 		// Setup final heading array to add to table.
-//		Object[] headings = new Object[heading.size()];
-//		heading.toArray(
-//				headings);
+		// Object[] headings = new Object[heading.size()];
+		// heading.toArray(
+		// headings);
 		return StringUtils.asStrings(heading);
 	}
 
-	public String[] getGiniCoeffRow(VersionMetricData vmd, int maxValue,
-			String[] fields)
+	public String[] getGiniCoeffRow(VersionMetricData vmd, int maxValue, String[] fields)
 	{
 		ArrayList<String> tmpRow = new ArrayList<String>();
 		tmpRow.add(vmd.get(Version.NAME));
@@ -148,16 +143,13 @@ public class GiniCoeffReportVisitor extends Report
 		tmpRow.add(vmd.get(Version.ID));
 
 		for (String metric : fields)
-			tmpRow.add(StatUtils.toFixedDecPlaces(getGiniCoeff(vmd, metric,
-					maxValue), 3)
-					+ "");
+			tmpRow.add(StatUtils.toFixedDecPlaces(getGiniCoeff(vmd, metric, maxValue), 3) + "");
 		String[] row = new String[tmpRow.size()];
 		tmpRow.toArray(row);
 		return row;
 	}
 
-	private double getGiniCoeff(VersionMetricData vmd, String field,
-			int maxValue)
+	private double getGiniCoeff(VersionMetricData vmd, String field, int maxValue)
 	{
 		int[] data = vmd.getMetricRange(ClassMetric.parse(field));
 		data = StatUtils.createFreqTable(data, maxValue);
@@ -172,8 +164,7 @@ public class GiniCoeffReportVisitor extends Report
 			{
 				if (i == j)
 					continue;
-				relVars += (Math.abs(d.get(i) - d.get(j)))
-						/ Descriptive.mean(d);
+				relVars += (Math.abs(d.get(i) - d.get(j))) / Descriptive.mean(d);
 			}
 		}
 		return (relVars / (2 * Math.pow(d.size(), 2)));

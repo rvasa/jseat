@@ -31,8 +31,7 @@ public class LineChartDecorator extends BarChartDecorator
      * 
      * @return The chart.
      */
-	protected JFreeChart createChart(String title, String domainLabel,
-			String rangeLabel, CategoryDataset dataset)
+	protected JFreeChart createChart(String title, String domainLabel, String rangeLabel, CategoryDataset dataset)
 	{
 
 		// create the chart...

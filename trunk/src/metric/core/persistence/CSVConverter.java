@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +31,6 @@ public class CSVConverter extends Observable implements MetricDataConverter
 
 	private long storeTime, loadTime;
 	protected int completion;
-	private char delim = ',';
 	private SimpleWorkTimer workTimer;
 	private SerializeType type;
 	private MetricDataStrategy conversionStrategy;
@@ -59,14 +57,12 @@ public class CSVConverter extends Observable implements MetricDataConverter
 			br.close();
 	}
 
-	public VersionMetricData deSerialize(String data)
-			throws ConversionException
+	public VersionMetricData deSerialize(String data) throws ConversionException
 	{
 		throw new ConversionException("Not yet implemented...");
 	}
 
-	public VersionMetricData deSerialize(Reader data)
-			throws ConversionException
+	public VersionMetricData deSerialize(Reader data) throws ConversionException
 	{
 		workTimer = new SimpleWorkTimer();
 		workTimer.start();
@@ -78,8 +74,7 @@ public class CSVConverter extends Observable implements MetricDataConverter
 		return vmd;
 	}
 
-	public void serialize(VersionMetricData md, String path)
-			throws ConversionException
+	public void serialize(VersionMetricData md, String path) throws ConversionException
 	{
 		workTimer = new SimpleWorkTimer();
 		workTimer.start();
@@ -137,8 +132,7 @@ public class CSVConverter extends Observable implements MetricDataConverter
 			this.type = type;
 		}
 
-		public void to(VersionMetricData md, BufferedWriter bw,
-				SimpleWorkTimer workTimer) throws ConversionException
+		public void to(VersionMetricData md, BufferedWriter bw, SimpleWorkTimer workTimer) throws ConversionException
 		{
 			if (md.getClass() != VersionMetricData.class)
 				throw new ConversionException();
@@ -167,8 +161,7 @@ public class CSVConverter extends Observable implements MetricDataConverter
 			}
 		}
 
-		public VersionMetricData from(BufferedReader br,
-				SimpleWorkTimer workTimer) throws ConversionException
+		public VersionMetricData from(BufferedReader br, SimpleWorkTimer workTimer) throws ConversionException
 		{
 			TextFile file = new TextFile(br);
 			Iterator<String> it = file.iterator();
@@ -191,15 +184,14 @@ public class CSVConverter extends Observable implements MetricDataConverter
 					{
 						classDataToRead(line, vmd);
 					}
-				}
-				catch (Exception e)
+				} catch (Exception e)
 				{
 					e.printStackTrace();
 					System.out.println("bad line: " + line);
 					System.exit(1);
 				}
 			}
-			
+
 			return vmd;
 		}
 
@@ -224,8 +216,7 @@ public class CSVConverter extends Observable implements MetricDataConverter
 
 		protected abstract void classDataToWrite(ClassMetricData cmd);
 
-		protected abstract void classDataToRead(String line,
-				VersionMetricData vmd);
+		protected abstract void classDataToRead(String line, VersionMetricData vmd);
 	}
 
 	// -----------------------------------------------------------------------
@@ -255,7 +246,7 @@ public class CSVConverter extends Observable implements MetricDataConverter
 
 		@Override
 		protected void classDataToRead(String line, VersionMetricData vmd)
-		{			
+		{
 			String[] toks = line.split(",");
 			String classname = toks[0];
 			String superClassname = toks[1];
@@ -264,8 +255,7 @@ public class CSVConverter extends Observable implements MetricDataConverter
 			{
 				metrics[i - 2] = Integer.parseInt(toks[i]);
 			}
-			ClassMetricData cmd = new ClassMetricData(vmd.get(Version.NAME),
-					metrics);
+			ClassMetricData cmd = new ClassMetricData(vmd.get(Version.NAME), metrics);
 			cmd.setProperty(ClassMetric.NAME, classname);
 			cmd.setProperty(ClassMetric.SUPER_CLASS_NAME, superClassname);
 			vmd.addClass(cmd);
@@ -298,8 +288,7 @@ public class CSVConverter extends Observable implements MetricDataConverter
 			{
 				HashMap<String, int[]> methods = cmd.methods.methods();
 				Set<Entry<String, int[]>> entrySet = methods.entrySet();
-				Iterator<Entry<String, int[]>> methodIterator = entrySet
-						.iterator();
+				Iterator<Entry<String, int[]>> methodIterator = entrySet.iterator();
 				while (methodIterator.hasNext())
 				{
 					Entry<String, int[]> entry = methodIterator.next();
