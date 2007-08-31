@@ -14,8 +14,9 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.util.TraceMethodVisitor;
 
 /**
- * Extracts and returns a list of<code>MethodMetricData</code> objects for
- * the specified ClassNode.
+ * Extracts and returns a map of extracted methods for the specified ClassNode.
+ * Each method name is associated with an int[] that represents the metrics
+ * extracted for that method.
  * 
  * @author Joshua Hayes,Swinburne University (ICT),2007
  */
@@ -216,19 +217,21 @@ public class MethodMetricExtractor
 		{
 			public void visitTypeInsn(int opcode, String desc)
 			{
-            	if (opcode == Opcodes.INSTANCEOF) mm[MethodMetric.INSTANCE_OF_COUNT.ordinal()]++;
-            	if (opcode == Opcodes.CHECKCAST) mm[MethodMetric.CHECK_CAST_COUNT.ordinal()]++;
-            	if (opcode == Opcodes.NEW)
-            	{
-            		mm[MethodMetric.NEW_COUNT.ordinal()]++;
-            		mm[MethodMetric.TYPE_CONSTRUCTION_COUNT.ordinal()]++;
-            	}
-            	if (opcode == Opcodes.ANEWARRAY)
-            	{
-            		mm[MethodMetric.NEW_ARRAY_COUNT.ordinal()]++;
-            		mm[MethodMetric.TYPE_CONSTRUCTION_COUNT.ordinal()]++;
-            	}
-            	
+				if (opcode == Opcodes.INSTANCEOF)
+					mm[MethodMetric.INSTANCE_OF_COUNT.ordinal()]++;
+				if (opcode == Opcodes.CHECKCAST)
+					mm[MethodMetric.CHECK_CAST_COUNT.ordinal()]++;
+				if (opcode == Opcodes.NEW)
+				{
+					mm[MethodMetric.NEW_COUNT.ordinal()]++;
+					mm[MethodMetric.TYPE_CONSTRUCTION_COUNT.ordinal()]++;
+				}
+				if (opcode == Opcodes.ANEWARRAY)
+				{
+					mm[MethodMetric.NEW_ARRAY_COUNT.ordinal()]++;
+					mm[MethodMetric.TYPE_CONSTRUCTION_COUNT.ordinal()]++;
+				}
+
 				mm[MethodMetric.TYPE_INSN_COUNT.ordinal()]++;
 			}
 
@@ -328,19 +331,4 @@ public class MethodMetricExtractor
 		};
 		return mv;
 	}
-
-	// public void visitMethodInsn(int opcode, String owner,
-	// String n, String d)
-	// {
-	// cmd.incrementMetric(ClassMetric.METHOD_CALL_COUNT);
-	// mmd.incrementMetric(MethodMetric.METHOD_CALL_COUNT);
-	// if (owner.equals(cmd.get(ClassMetric.NAME)))
-	// cmd
-	// .incrementMetric(ClassMetric.IN_METHOD_CALL_COUNT);
-	// else
-	// cmd
-	// .incrementMetric(ClassMetric.EX_METHOD_CALL_COUNT);
-	// cmd.dependencies.add(owner);
-	// }
-
 }
