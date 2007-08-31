@@ -5,10 +5,11 @@ import java.util.Set;
 
 import metric.core.exception.ReportException;
 import metric.core.report.visitor.ReportVisitor;
+import metric.core.util.MetricUtil;
 import metric.core.util.StatUtils;
 import metric.core.vocabulary.ClassMetric;
 import metric.core.vocabulary.Evolution;
-import metric.core.vocabulary.MethodMetric;
+import metric.core.vocabulary.MetricType;
 
 /**
  * 
@@ -35,76 +36,20 @@ public class ClassMetricData extends MetricData<ClassMetric> implements Comparab
 	{
 		// Dependency related
 		properties.put(ClassMetric.SUPER_CLASS_NAME, "java/lang/Object");
-		setSimpleMetric(ClassMetric.SUPER_CLASS_COUNT, 0);
-		setSimpleMetric(ClassMetric.INTERFACE_COUNT, 0);
-		setSimpleMetric(ClassMetric.FAN_OUT_COUNT, 0);
-		setSimpleMetric(ClassMetric.FAN_IN_COUNT, 0);
-		setSimpleMetric(ClassMetric.INTERNAL_FAN_OUT_COUNT, 0);
-		setSimpleMetric(ClassMetric.BRANCH_COUNT, 0);
-		setSimpleMetric(ClassMetric.NORMALIZED_BRANCH_COUNT, 0);
-		setSimpleMetric(ClassMetric.DATE, 999);
-
-		// Fields
-		setSimpleMetric(ClassMetric.FIELD_COUNT, 0);
-		setSimpleMetric(ClassMetric.PUBLIC_FIELD_COUNT, 0);
-		setSimpleMetric(ClassMetric.PRIVATE_FIELD_COUNT, 0);
-		setSimpleMetric(ClassMetric.PROTECTED_FIELD_COUNT, 0);
-		setSimpleMetric(ClassMetric.STATIC_FIELD_COUNT, 0);
-		setSimpleMetric(ClassMetric.FINAL_FIELD_COUNT, 0);
-		setSimpleMetric(ClassMetric.INNER_CLASS_COUNT, 0);
-
-		// Type
-		setSimpleMetric(ClassMetric.IS_IO_CLASS, 0);
-		setSimpleMetric(ClassMetric.IS_INTERFACE, 0);
-		setSimpleMetric(ClassMetric.IS_ABSTRACT, 0);
+		
 		// Public by default.
 		setSimpleMetric(ClassMetric.IS_PUBLIC, 1);
-		setSimpleMetric(ClassMetric.IS_PRIVATE, 1);
-		setSimpleMetric(ClassMetric.IS_PROTECTED, 0);
-		setSimpleMetric(ClassMetric.IS_EXCEPTION, 0);
-
-		// Methods
-		setSimpleMetric(ClassMetric.EX_METHOD_CALL_COUNT, 0);
-		setSimpleMetric(ClassMetric.IN_METHOD_CALL_COUNT, 0);
-		setSimpleMetric(ClassMetric.METHOD_CALL_COUNT, 0);
-		setSimpleMetric(ClassMetric.METHOD_COUNT, 0);
-		setSimpleMetric(ClassMetric.PUBLIC_METHOD_COUNT, 0);
-		setSimpleMetric(ClassMetric.PRIVATE_METHOD_COUNT, 0);
-		setSimpleMetric(ClassMetric.PROTECTED_METHOD_COUNT, 0);
-		setSimpleMetric(ClassMetric.FINAL_METHOD_COUNT, 0);
-		setSimpleMetric(ClassMetric.ABSTRACT_METHOD_COUNT, 0);
-		setSimpleMetric(ClassMetric.STATIC_METHOD_COUNT, 0);
-		setSimpleMetric(ClassMetric.SYNCHRONIZED_METHOD_COUNT, 0);
-
-		setSimpleMetric(ClassMetric.THROW_COUNT, 0);
-		setSimpleMetric(ClassMetric.REF_LOAD_OP_COUNT, 0);
-		setSimpleMetric(ClassMetric.REF_STORE_OP_COUNT, 0);
-		setSimpleMetric(ClassMetric.LOAD_FIELD_COUNT, 0);
-		setSimpleMetric(ClassMetric.STORE_FIELD_COUNT, 0);
-
-		setSimpleMetric(ClassMetric.TRY_CATCH_BLOCK_COUNT, 0);
-		setSimpleMetric(ClassMetric.LOCAL_VAR_COUNT, 0);
-
-		// Instruction counts
-		setSimpleMetric(ClassMetric.CONSTANT_LOAD_COUNT, 0);
-		setSimpleMetric(ClassMetric.INCREMENT_OP_COUNT, 0);
-		setSimpleMetric(ClassMetric.LOAD_COUNT, 0);
-		setSimpleMetric(ClassMetric.STORE_COUNT, 0);
-		setSimpleMetric(ClassMetric.ILOAD_COUNT, 0);
-		setSimpleMetric(ClassMetric.ISTORE_COUNT, 0);
-		setSimpleMetric(ClassMetric.TYPE_INSN_COUNT, 0);
-		setSimpleMetric(ClassMetric.ZERO_OP_INSN_COUNT, 0);
 
 		// Evolution
-		setSimpleMetric(ClassMetric.IS_DELETED, 0);
-		setSimpleMetric(ClassMetric.IS_MODIFIED, 0);
 		setSimpleMetric(ClassMetric.EVOLUTION_STATUS, Evolution.UNCHANGED.getValue());
 		setSimpleMetric(ClassMetric.EVOLUTION_DISTANCE, Evolution.UNCHANGED.getValue());
 		setSimpleMetric(ClassMetric.NEXT_VERSION_STATUS, Evolution.UNCHANGED.getValue());
 
 		// Distance related.
-		setSimpleMetric(ClassMetric.GUI_DISTANCE, 0);
+		setSimpleMetric(ClassMetric.GUI_DISTANCE, -1);
 		setSimpleMetric(ClassMetric.COMPUTED_DISTANCE, -1);
+		setSimpleMetric(ClassMetric.DISTANCE_MOVED_SINCE_BIRTH, -1);
+		setSimpleMetric(ClassMetric.MODIFIED_METRIC_COUNT_SINCE_BIRTH, -1);
 
 		// Start off young
 		setSimpleMetric(ClassMetric.AGE, 1);
@@ -121,37 +66,6 @@ public class ClassMetricData extends MetricData<ClassMetric> implements Comparab
 	{
 		properties.put(ClassMetric.PRODUCT_NAME, productName);
 		this.metrics = metrics;
-	}
-
-	/**
-     * Computes the distance of the class from this. This is used to check how
-     * far a class has evolved or to check if it is in the same neighbourhood.
-     */
-	public double distanceFrom(ClassMetricData cm)
-	{
-		ClassMetric[] metrics = { ClassMetric.BRANCH_COUNT, ClassMetric.SUPER_CLASS_COUNT,
-				ClassMetric.CONSTANT_LOAD_COUNT, ClassMetric.ILOAD_COUNT, ClassMetric.ISTORE_COUNT,
-				ClassMetric.LOAD_FIELD_COUNT, ClassMetric.STORE_FIELD_COUNT, ClassMetric.REF_LOAD_OP_COUNT,
-				ClassMetric.REF_STORE_OP_COUNT, ClassMetric.FAN_OUT_COUNT, ClassMetric.INTERFACE_COUNT,
-				ClassMetric.METHOD_COUNT, ClassMetric.TRY_CATCH_BLOCK_COUNT, ClassMetric.TYPE_INSN_COUNT,
-				ClassMetric.ZERO_OP_INSN_COUNT, ClassMetric.LOCAL_VAR_COUNT, ClassMetric.IN_METHOD_CALL_COUNT,
-				ClassMetric.EX_METHOD_CALL_COUNT, ClassMetric.INTERNAL_FAN_OUT_COUNT, ClassMetric.INCREMENT_OP_COUNT
-
-		};
-		double d = 0.0;
-		for (ClassMetric cmetric : metrics)
-		{
-			try
-			{
-				d += StatUtils.sqr(cm.getSimpleMetric(cmetric) - getSimpleMetric(cmetric));
-				// if (change > 0) modifiedVectors++;
-				// d += change;
-			} catch (Exception e)
-			{
-				e.printStackTrace();
-			} // lets hope it does not get to this
-		}
-		return Math.sqrt(d);
 	}
 
 	/** Checks if it is a clone, i.e. similar to another CM */
@@ -249,19 +163,11 @@ public class ClassMetricData extends MetricData<ClassMetric> implements Comparab
 		ClassMetricData other = (ClassMetricData) o;
 
 		// Compare metrics between other and this class.
-
-		int[] otherMetrics = other.getMetrics();
-		for (int i = 0; i < ClassMetric.getNumberOfComparativeMetrics(); i++)
-		{
-			if (otherMetrics[i] != getMetrics()[i])
-			{
-				return false;
-			}
-		}
+		boolean equal = MetricUtil.equal(getMetrics(), other.getMetrics(), MetricType.COMPARATIVE);
 
 		// TODO Should check fields here
 		// TODO Should check methods here.
-		return true;
+		return equal;
 	}
 
 	// TODO Could probably give a better textual representation of a
