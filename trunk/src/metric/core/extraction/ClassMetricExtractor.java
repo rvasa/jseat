@@ -120,6 +120,7 @@ public class ClassMetricExtractor
 	{
 		// MethodNode methodNode = (MethodNode) methods.get(i);
 		MethodMetricExtractor mme = new MethodMetricExtractor(classNode);
+		
 		// Add the extracted MethodMetricData to the current ClassMetricData
 		HashMap<String, int[]> methodMap = mme.extract();
 
@@ -127,6 +128,13 @@ public class ClassMetricExtractor
 			mergeMethodMetricsWithClass(cmd, mm);
 
 		cmd.methods = new MethodMetricMap(methodMap);
+		
+		// Merge method dependencies if they are not already a dependency.
+		for (String dep : mme.dependencies())
+		{
+			if (cmd.dependencies.contains(dep))
+				cmd.dependencies.add(dep);
+		}
 	}
 
 	/**
