@@ -4,7 +4,8 @@
 The following is a list of supported file types in JSeat
   * Version File (.ver)
   * Report Configuration File (.rep)
-  * CSV Metric Model Data File (.mmd)
-  * XML Metric Model Data File (.xmd)
+  * Class Metric data (.cme)
+  * Method Metric data (.mme)
+  * Dependency data (.dep)
   * JSeat Configuration File (.conf)
-
+  * JSeat Project File (.jpf)
