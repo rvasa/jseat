@@ -11,10 +11,12 @@ import java.util.logging.Logger;
 import metric.core.model.ClassMetricData;
 import metric.core.model.HistoryMetricData;
 import metric.core.model.VersionMetricData;
+import metric.core.util.MetricUtil;
 import metric.core.util.StatUtils;
 import metric.core.util.logging.LogOrganiser;
 import metric.core.vocabulary.ClassMetric;
 import metric.core.vocabulary.Evolution;
+import metric.core.vocabulary.MetricType;
 import metric.core.vocabulary.Version;
 
 public class VersionPostProcessor extends Observable
@@ -336,14 +338,14 @@ public class VersionPostProcessor extends Observable
 		for (ClassMetricData cm2 : v2.metricData.values())
 		{
 			// Assume unchanged
-			cm2.setSimpleMetric(ClassMetric.EVOLUTION_DISTANCE, Evolution.UNCHANGED.getValue());
+			cm2.setSimpleMetric(ClassMetric.EVOLUTION_DISTANCE, Evolution.NEW.getValue());
 			ClassMetricData cm1 = v1.metricData.get(cm2.get(ClassMetric.NAME));
 			if (cm1 == null)
 			{
 				cm2.setSimpleMetric(ClassMetric.EVOLUTION_STATUS, Evolution.NEW.getValue());
 				cm2.setSimpleMetric(ClassMetric.MODIFICATION_FREQUENCY, 0);
 				cm2.setSimpleMetric(ClassMetric.BORN_RSN, v2.getSimpleMetric(Version.RSN));
-				cm2.setSimpleMetric(ClassMetric.AGE, 0);
+				cm2.setSimpleMetric(ClassMetric.AGE, 1);
 
 			}
 			// found in previous version
@@ -433,7 +435,7 @@ public class VersionPostProcessor extends Observable
 
 	public void setEvolutionDistanceSinceBirth(ClassMetricData cm1, ClassMetricData cm2)
 	{
-		double ed = cm1.distanceFrom(cm2);
+		double ed = MetricUtil.distanceFrom(cm1.getMetrics(), cm2.getMetrics(), MetricType.DISTANCE);
 		// if (ed > 0) ed += 0.5;
 		// distanceMovedSinceBirth = scaleDoubleMetric(ed, 10, 100);
 		cm1.setSimpleMetric(ClassMetric.DISTANCE_MOVED_SINCE_BIRTH, (int) Math.round(ed));
@@ -466,11 +468,12 @@ public class VersionPostProcessor extends Observable
 	}
 
 	/**
-     * Sets the evolution distance of cm2 to the distance from cm1 to cm2.
+     * Computes the distance of the class from this. This is used to check how
+     * far a class has evolved or to check if it is in the same neighbourhood.
      */
 	private void setEvolutionDistanceFrom(ClassMetricData cm1, ClassMetricData cm2)
 	{
-		double ed = cm1.distanceFrom(cm2);
+		double ed = MetricUtil.distanceFrom(cm1.getMetrics(), cm2.getMetrics(), MetricType.DISTANCE);
 		cm1.setSimpleMetric(ClassMetric.EVOLUTION_DISTANCE, StatUtils.scaleDoubleMetric(ed, 100, 1000));
 	}
 }
