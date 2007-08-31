@@ -1,7 +1,9 @@
 package metric.core.extraction;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import metric.core.vocabulary.MethodMetric;
 import metric.core.vocabulary.TypeModifier;
@@ -22,10 +24,12 @@ import org.objectweb.asm.util.TraceMethodVisitor;
 public class MethodMetricExtractor
 {
 	private ClassNode classNode;
-
+	private Set<String> dependencies;
+	
 	public MethodMetricExtractor(ClassNode classNode)
 	{
 		this.classNode = classNode;
+		dependencies = new HashSet<String>();
 	}
 
 	/**
@@ -125,7 +129,7 @@ public class MethodMetricExtractor
 			// Type.
 			((AbstractInsnNode) insn).accept(getTypeVisitor(mm));
 			// Methods.
-			((AbstractInsnNode) insn).accept(getMethodVisitor(mm));
+			((AbstractInsnNode) insn).accept(getMethodVisitor(mm, dependencies));
 		}
 	}
 
@@ -300,7 +304,7 @@ public class MethodMetricExtractor
 		return mv;
 	}
 
-	private TraceMethodVisitor getMethodVisitor(final int[] mm)
+	private TraceMethodVisitor getMethodVisitor(final int[] mm, final Set<String> dependencies)
 	{
 		TraceMethodVisitor mv = new TraceMethodVisitor()
 		{
@@ -311,9 +315,15 @@ public class MethodMetricExtractor
 					mm[MethodMetric.IN_METHOD_CALL_COUNT.ordinal()]++;
 				else
 					mm[MethodMetric.EX_METHOD_CALL_COUNT.ordinal()]++;
+				dependencies.add(classNode.name);
 			}
 		};
 		return mv;
+	}
+	
+	public Set<String> dependencies()
+	{
+		return dependencies;
 	}
 
 	// public void visitMethodInsn(int opcode, String owner,
