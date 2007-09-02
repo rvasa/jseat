@@ -47,7 +47,7 @@ public class MetricEngine extends Observable implements Observer
 	private Object workLock;
 	public boolean interrupted;
 
-	private final int NUM_OF_STAGES = 2;
+	private final int NUM_OF_STAGES = 3;
 	private final int numThreads;
 
 	/**
@@ -221,7 +221,7 @@ public class MetricEngine extends Observable implements Observer
 
 	public void performPostProcessing(HistoryMetricData hmd, VersionPersister persister) throws InterruptedException
 	{
-		versionPostProcessor = new VersionPostProcessor(hmd, outputQueue);
+		versionPostProcessor = new VersionPostProcessor(hmd, outputQueue, persister);
 		versionPostProcessor.addObserver(this);
 		versionPostProcessor.process();
 

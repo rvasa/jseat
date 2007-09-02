@@ -25,35 +25,39 @@ public class VersionPostProcessor extends Observable
 	private HistoryMetricData hmd;
 	private int processed;;
 	private BlockingQueue<VersionMetricData> versions;
+	private VersionPersister persister;
 
-	public VersionPostProcessor(HistoryMetricData hmd, BlockingQueue<VersionMetricData> versions)
+	public VersionPostProcessor(HistoryMetricData hmd, BlockingQueue<VersionMetricData> versions,
+			VersionPersister persister)
 	{
 		this.hmd = hmd;
 		this.versions = versions;
 		LogOrganiser.addLogger(logger);
 		logger.setLevel(Level.ALL);
+		this.persister = persister;
 	}
 
 	public void process()
 	{
-		// De-serialize from file.
 
+		// Perform first pass processing.
+		firstPassProcessing();
+		
+		// Cannot perform second pass processing with 1 version.
 		if (hmd.size() == 1)
-		{
-			VersionMetricData vmd = hmd.getVersion(1);
-			firstPassProcessing(vmd);
-			versions.offer(vmd);
-			updateObservers(vmd);
 			return;
-		}
+
+		// Ensure all versions have been properly persisted with first-pass
+		// processing done.
+		synchroniseThreadWithPersister(hmd.size());
+		persister.reset();
+
 		for (int i = 2; i <= hmd.size(); i++)
 		{
 			VersionMetricData vmd = hmd.getVersion(i - 1);
-			// Get next version
 			VersionMetricData vmd2 = hmd.getVersion(i);
-
-			firstPassProcessing(vmd);
-			firstPassProcessing(vmd2);
+			
+			// Perform second pass processing.
 			secondPassProcessing(vmd, vmd2);
 
 			// Notify observers we are post-processing.
@@ -64,11 +68,40 @@ public class VersionPostProcessor extends Observable
 			versions.offer(vmd2);
 			updateObservers(vmd);
 
-			// There isn't anothe version to check this against, so just log it
+			// Must wait for VersionPersister to persist these to disk first so
+			// the correct data is loaded up on the next loop.
+			synchroniseThreadWithPersister(i);
+
+			// There isn't another version to check this against, so just log it
 			// with the post-processing done on it so far.
 			if (i == hmd.size())
 			{
 				updateObservers(vmd2);
+			}
+		}
+	}
+
+	/**
+     * Synchronises the current thread with the VersionPersister by forcing it
+     * to wait until the VersionPersister has persister the specified number of
+     * Versions since the last reset.
+     * 
+     * @param persisterIndex The number of versions that should be persister
+     *            before allowing this thread to continue.
+     */
+	private void synchroniseThreadWithPersister(int persisterIndex)
+	{
+		while (persister.getProcessingDone() != persisterIndex)
+		{
+			try
+			{
+				System.out.println("Finished first pass processing and waiting on persister.");
+				System.out.println("Done: " +persister.getProcessingDone() + " Index: " + persisterIndex);
+				Thread.sleep(100);
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
@@ -81,22 +114,29 @@ public class VersionPostProcessor extends Observable
 		logger.log(Level.ALL, msg);
 	}
 
-	private void firstPassProcessing(VersionMetricData vmd)
+	private void firstPassProcessing()
 	{
-		computeDependencies(vmd);
-		computeFanIn(vmd);
-		computeInstructionCount(vmd);
-		computeLayers(vmd);
-		computeGUIAndIOClasses(vmd);
-		computeGUIClassCount(vmd);
-		computeHiLowTime(vmd);
+		for (int i = 1; i <= hmd.size(); i++)
+		{
+			VersionMetricData vmd = hmd.getVersion(i);
+			computeInstructionCount(vmd);
+			computeDependencies(vmd);
+			computeFanIn(vmd);
+			computeLayers(vmd);
+			computeGUIAndIOClasses(vmd);
+			computeGUIClassCount(vmd);
+			computeHiLowTime(vmd);
+
+			versions.offer(vmd);
+			updateObservers(vmd);
+		}
 	}
 
 	private void secondPassProcessing(VersionMetricData vmd, VersionMetricData vmd2)
 	{
 		scanAndMarkSurvivors(vmd, vmd2);
-//		updateDistanceMovedSinceBirth(vmd);
-//		updateDistanceMovedSinceBirth(vmd2);
+		// updateDistanceMovedSinceBirth(vmd);
+		// updateDistanceMovedSinceBirth(vmd2);
 		updateDeletedClasses(vmd, vmd2);
 	}
 
@@ -194,7 +234,6 @@ public class VersionPostProcessor extends Observable
 		for (ClassMetricData cm : vmd.metricData.values())
 		{
 			cm.setSimpleMetric(ClassMetric.FAN_IN_COUNT, cm.users.size());
-
 			cm.setSimpleMetric(ClassMetric.INTERNAL_FAN_OUT_COUNT, cm.internalDeps.size());
 
 			computeDistance(cm); // compute distance
@@ -352,7 +391,6 @@ public class VersionPostProcessor extends Observable
 			else
 			{
 				cm2.setSimpleMetric(ClassMetric.BORN_RSN, cm1.getSimpleMetric(ClassMetric.BORN_RSN));
-
 				// This class is a survivor.
 				if (cm2.isExactMatch(cm1))
 				{
