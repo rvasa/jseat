@@ -151,7 +151,7 @@ public class ClassMetricData extends MetricData<ClassMetric> implements Comparab
 
 		// Add inner class dependencies.
 		for (String dep : innerClass.dependencies)
-			if (!dependencies.contains(dep))
+			//if (!dependencies.contains(dep))
 				dependencies.add(dep);
 	}
 
