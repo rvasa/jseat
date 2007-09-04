@@ -64,6 +64,8 @@ public class ClassMetricExtractor
 		// Extract, create and merge inner classes.
 		extractAndMergeInnerClasses(cmd);
 
+		cmd.setSimpleMetric(ClassMetric.FAN_OUT_COUNT, cmd.dependencies.size());
+
 		return cmd;
 	}
 
@@ -132,9 +134,11 @@ public class ClassMetricExtractor
 		// Merge method dependencies if they are not already a dependency.
 		for (String dep : mme.dependencies())
 		{
-			if (cmd.dependencies.contains(dep))
+			//if (cmd.dependencies.contains(dep))
 				cmd.dependencies.add(dep);
 		}
+		//for (String s : mme.dependencies()) System.out.print(s);
+		//System.out.println(classNode.name + " " + mme.dependencies());
 	}
 
 	/**
@@ -242,7 +246,6 @@ public class ClassMetricExtractor
 				addDependency(cmd, t);
 			}
 		}
-		cmd.setSimpleMetric(ClassMetric.FAN_OUT_COUNT, cmd.dependencies.size());
 	}
 
 	/**

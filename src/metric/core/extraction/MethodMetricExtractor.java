@@ -315,7 +315,7 @@ public class MethodMetricExtractor
 					mm[MethodMetric.IN_METHOD_CALL_COUNT.ordinal()]++;
 				else
 					mm[MethodMetric.EX_METHOD_CALL_COUNT.ordinal()]++;
-				dependencies.add(classNode.name);
+				dependencies.add(owner);
 			}
 		};
 		return mv;
