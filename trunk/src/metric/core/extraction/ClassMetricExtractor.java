@@ -134,11 +134,10 @@ public class ClassMetricExtractor
 		// Merge method dependencies if they are not already a dependency.
 		for (String dep : mme.dependencies())
 		{
-			//if (cmd.dependencies.contains(dep))
-				cmd.dependencies.add(dep);
+			// This is to make the logic clear.
+			if (dep.equals("java/lang/Object") || dep.equals(cmd.get(ClassMetric.NAME)))
+			{} 	else { cmd.dependencies.add(dep); }
 		}
-		//for (String s : mme.dependencies()) System.out.print(s);
-		//System.out.println(classNode.name + " " + mme.dependencies());
 	}
 
 	/**
@@ -309,7 +308,11 @@ public class ClassMetricExtractor
 		if (t.getSort() == Type.OBJECT)
 		{
 			String depName = t.getInternalName();
-			cmd.dependencies.add(depName);
+			
+			// This is to make the logic clear.
+			if (depName.equals("java/lang/Object") || depName.equals(cmd.get(ClassMetric.NAME)))
+			{} 	else { cmd.dependencies.add(depName); }
+
 			if (depName.startsWith("java/io"))
 				cmd.setSimpleMetric(ClassMetric.IS_IO_CLASS, 1);
 			if (depName.startsWith("java/nio"))
