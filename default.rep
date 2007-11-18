@@ -68,8 +68,10 @@
 #-------------------------------------------------------------------
 90,SurvivorReportVisitor,Survivor Analysis,1,true
 101,DistanceReportVisitor,Distance Analysis (Fan-Out),fan_out_count,30
+102,RawDistanceReportVisitor,Raw Distance Analysis,fan_out_count,30
 999,ModificationIntensityReportVisitor,Modification Intensity Report
 #-------------------------------------------------------------------
 #			Distance Reports
 #-------------------------------------------------------------------
+200,EarthquakeReportVisitor,Earthquake Analysis,true
 #100,DistanceReportVisitor,Distance Analysis (Modified),modified
