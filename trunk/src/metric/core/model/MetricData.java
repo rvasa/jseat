@@ -53,13 +53,13 @@ public abstract class MetricData<T extends Enum<T>> implements VisitableReport
 	public String get(T prop)
 	{
 		int metricPos = -1;
-		if (prop.getDeclaringClass() == History.class)
+		if (prop.getDeclaringClass().equals(History.class))
 		{
 			metricPos = History.getNumberOfMetrics();
-		} else if (prop.getDeclaringClass() == Version.class)
+		} else if (prop.getDeclaringClass().equals(Version.class))
 		{
 			metricPos = Version.getNumberOfMetrics();
-		} else if (prop.getDeclaringClass() == ClassMetric.class)
+		} else if (prop.getDeclaringClass().equals(ClassMetric.class))
 		{
 			metricPos = ClassMetric.getNumberOfMetrics();
 		}
