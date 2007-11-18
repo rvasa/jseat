@@ -47,6 +47,9 @@ public class JSeatExplorer extends JSeatGUI implements SelectionListener
 		// This stuff is required to be setup by JSeatGUI
 		navComposite.setBackgroundMode(SWT.NONE);
 		mainComposite.setBackgroundMode(SWT.NONE);
+		
+		// Override weighting of sash panels.
+		sashForm.setWeights(new int[] { 33, 67 });
 	}
 
 	public static void main(String[] args) throws IOException
