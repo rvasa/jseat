@@ -26,39 +26,27 @@ import org.jfree.experimental.chart.swt.ChartComposite;
  * 
  * @author Joshua Hayes,Swinburne University (ICT),2007
  */
-public class BarChartDecorator extends ReportDecorator
+public class BarChartDecorator extends GraphicalDecorator
 {
-	private Composite composite;
-	private ChartComposite cc;
-
 	public BarChartDecorator(ReportVisitor report, Composite composite)
 	{
+		super(report, composite);
+	}
+	
+	public BarChartDecorator(ReportVisitor report)
+	{
 		super(report);
-		this.composite = composite;
 	}
-
+	
 	@Override
-	public void display()
+	protected JFreeChart createChart()
 	{
-		// Create new chart if this is the first display or was
-		// previously disposed.
-		if (cc == null || cc.isDisposed())
-		{
-			CategoryDataset dataset = createDataset();
-			JFreeChart chart = createChart(
-					decoratedReport.getTable().getTitle(),
-					Version.RSN.toString(),
-					"Value",
-					dataset);
-			cc = new ChartComposite(composite, SWT.NONE, chart);
-		} else
-		{
-		} // Haven't been disposed so don't need to do anything.
-	}
-
-	public void dispose()
-	{
-		cc.dispose();
+		CategoryDataset dataset = createDataset();
+		return createChart(
+				decoratedReport.getTable().getTitle(),
+				Version.RSN.toString(),
+				"Value",
+				dataset);
 	}
 
 	/**
@@ -105,17 +93,24 @@ public class BarChartDecorator extends ReportDecorator
 	private void iterateOverColumn(DefaultCategoryDataset dataset, MetricTable table, ArrayList column, int colIndex)
 	{
 		String element = (String) column.get(0);
+		String stringVer = null;
+		int rowIndex = 0;
 		try
 		{
 			// TODO: This is a hack to test the type of the column
 			// because we currently store as strings.
 			double value = Double.parseDouble(element);
-			int rowIndex = 0;
+
 			for (Object colValue : column)
 			{
-				value = Double.parseDouble((String) colValue);
+				value = Double.parseDouble(String.valueOf(colValue));
+				
 				// Find out what version this for.
-				int version = Integer.valueOf((String) table.get(rowIndex, 1));
+				stringVer = (String) table.get(rowIndex, 1);
+				if (stringVer.indexOf("-") != -1)
+					stringVer = stringVer.substring(0, stringVer.indexOf("-"));
+				
+				int version = Integer.valueOf(stringVer);
 				// Find out what column we are actually traversing.
 				String colName = (String) table.get(colIndex);
 
@@ -130,6 +125,7 @@ public class BarChartDecorator extends ReportDecorator
 			}
 		} catch (NumberFormatException e)
 		{
+			System.out.println("Cant parse: " + (String) table.get(rowIndex, 1));
 		}
 	}
 
@@ -181,5 +177,4 @@ public class BarChartDecorator extends ReportDecorator
 		return chart;
 
 	}
-
 }
