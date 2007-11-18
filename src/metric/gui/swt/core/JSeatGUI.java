@@ -41,6 +41,7 @@ public abstract class JSeatGUI implements Observer
 	protected JSeatMenu menu;
 	protected Composite mainComposite, navComposite;
 	protected Group mainGroup, navGroup;
+	protected SashForm sashForm;
 
 	public JSeatGUI(Shell shell, String title, String configFile) throws IOException
 	{
@@ -50,7 +51,7 @@ public abstract class JSeatGUI implements Observer
 		shell.setText(title);
 		shell.setLayout(new FillLayout());
 
-		SashForm sashForm = new SashForm(shell, SWT.HORIZONTAL);
+		sashForm = new SashForm(shell, SWT.HORIZONTAL);
 		sashForm.setLayout(new FillLayout());
 
 		navGroup = SWTFactory.createGroup(sashForm, SWT.NONE, "", new FillLayout(SWT.VERTICAL), null);

@@ -142,6 +142,21 @@ public class JSeatVisualizer extends JSeatGUI
 			v3.setReport(modifiedClassesReport);
 			v3.setDecorator(lineDecorator);
 			v3.addSelectionListener(mil);
+			
+			
+			// Earthquake bar chart
+			String earthReport = "62,EarthquakeReportVisitor,EarthQuake Frequency Analysis,true";
+
+			ReportVisitor eartquakeReport = (ReportVisitor) ReportFactory
+					.getReport(earthReport);
+
+			ReportDecorator earthBarDecorator = new BarChartDecorator(
+					eartquakeReport, mainComposite);
+			Visualization v4 = new Visualization(visualizationMenu,
+					"Earthquake Frequency BarChart", SWT.NONE);
+			v4.setReport(eartquakeReport);
+			v4.setDecorator(earthBarDecorator);
+			v4.addSelectionListener(mil);
 
 		} catch (ReportException e)
 		{
