@@ -118,11 +118,11 @@ public class DistanceReportVisitor extends Report
 			String[] row = { v1.get(Version.NAME), v1.get(Version.RSN),
 					v1.get(Version.ID), v2.get(Version.RSN),
 					v2.get(Version.ID),
-					String.valueOf(StatUtils.toFixedDecPlaces(rawDistance, 3)),
-					String.valueOf(StatUtils.toFixedDecPlaces(deltaBeta, 3)),
-					String.valueOf(StatUtils.toFixedDecPlaces(relDelta, 3)),
-					String.valueOf(StatUtils.toFixedDecPlaces(histDiff, 3)),
-					String.valueOf(StatUtils.toFixedDecPlaces(histInter, 3)) };
+					String.valueOf(StatUtils.toFixedDecPlaces(rawDistance, 4)),
+					String.valueOf(StatUtils.toFixedDecPlaces(deltaBeta, 4)),
+					String.valueOf(StatUtils.toFixedDecPlaces(relDelta, 4)),
+					String.valueOf(StatUtils.toFixedDecPlaces(histDiff, 4)),
+					String.valueOf(StatUtils.toFixedDecPlaces(histInter, 4)) };
 			rows.add(row);
 		}
 		return rows;
