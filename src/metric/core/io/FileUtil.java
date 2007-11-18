@@ -28,7 +28,7 @@ public class FileUtil
 		if (cf == null)
 			return false;
 		else
-			return (cf.endsWith(".class"));
+			return ((cf.endsWith(".class") && (cf.indexOf("$") == -1)));
 	}
 
 	public static boolean isInnerClassFile(String cf)
