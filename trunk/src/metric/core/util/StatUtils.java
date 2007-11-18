@@ -1,6 +1,8 @@
 package metric.core.util;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import cern.colt.list.DoubleArrayList;
 import cern.jet.stat.Descriptive;
@@ -191,5 +193,13 @@ public class StatUtils
 		double sdm2 = Descriptive.standardDeviation(Descriptive.variance(m2.size(), Descriptive.sum(m2), Descriptive
 				.sumOfSquares(m2)));
 		return Descriptive.correlation(m1, sdm1, m2, sdm2);
+	}
+	
+	public static double calcMedian(double[] values)
+	{
+		DoubleArrayList sorted = new DoubleArrayList();
+		for (double d : values)
+			sorted.add(d);
+		return Descriptive.median(sorted);
 	}
 }
