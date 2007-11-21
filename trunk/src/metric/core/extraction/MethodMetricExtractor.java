@@ -220,6 +220,21 @@ public class MethodMetricExtractor
 		{
 			public void visitTypeInsn(int opcode, String desc)
 			{
+            	if (opcode == Opcodes.INSTANCEOF) {mm[MethodMetric.INSTANCE_OF_COUNT.ordinal()]++;}
+            	if (opcode == Opcodes.CHECKCAST) {mm[MethodMetric.CHECK_CAST_COUNT.ordinal()]++;}
+				
+            	if (opcode == Opcodes.NEW)
+            	{
+            		mm[MethodMetric.TYPE_CONSTRUCTION_COUNT.ordinal()]++;
+            		mm[MethodMetric.NEW_COUNT.ordinal()]++;
+            	}
+
+            	if (opcode == Opcodes.ANEWARRAY)
+            	{
+            		mm[MethodMetric.TYPE_CONSTRUCTION_COUNT.ordinal()]++;
+            		mm[MethodMetric.NEW_ARRAY_COUNT.ordinal()]++;
+            	}
+
 				mm[MethodMetric.TYPE_INSN_COUNT.ordinal()]++;
 			}
 
