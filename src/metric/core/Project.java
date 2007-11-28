@@ -60,6 +60,12 @@ public class Project
 	{
 		this(inputFileName);
 		this.outputFileName = outputFileName;
+		
+		// This will create the parent folder if it does not exist.
+		File f = new File(outputFileName);
+		f = new File( f.getParent());
+		if (!f.exists())
+			f.mkdirs();
 
 		me = new MetricEngine(inputFileName, outputFileName, numThreads, true);
 
