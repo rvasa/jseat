@@ -33,6 +33,11 @@ public class DistanceReportVisitor extends Report
 			Version.ID.toString(), Version.RSN.toString(),
 			Version.ID.toString(), "raw_distance", "beta_delta", "delta_size",
 			"histogram_diff", "histogram_int" };
+	
+	public static ClassMetric[] METRICS = { ClassMetric.METHOD_COUNT, ClassMetric.FAN_OUT_COUNT, ClassMetric.FAN_IN_COUNT,
+			ClassMetric.LOAD_COUNT, ClassMetric.STORE_COUNT, ClassMetric.BRANCH_COUNT, ClassMetric.TYPE_CONSTRUCTION_COUNT,
+			ClassMetric.FIELD_COUNT, ClassMetric.SUPER_CLASS_COUNT, ClassMetric.INNER_CLASS_COUNT };
+
 
 	public DistanceReportVisitor(ReportDefinition m) throws ReportException
 	{
@@ -132,32 +137,15 @@ public class DistanceReportVisitor extends Report
 			VersionMetricData v2)
 	{
 		double d = 0.0;
-		d += StatUtils.sqr(v1.getComplexMetric(
-				Version.ISUM,
-				ClassMetric.METHOD_COUNT)
-				- v2.getComplexMetric(Version.ISUM, ClassMetric.METHOD_COUNT));
-		d += StatUtils.sqr(v1.getComplexMetric(
-				Version.ISUM,
-				ClassMetric.FAN_OUT_COUNT)
-				- v2.getComplexMetric(Version.ISUM, ClassMetric.FAN_OUT_COUNT));
-		d += StatUtils.sqr(v1.getComplexMetric(
-				Version.ISUM,
-				ClassMetric.METHOD_CALL_COUNT)
-				- v2.getComplexMetric(
-						Version.ISUM,
-						ClassMetric.METHOD_CALL_COUNT));
-		d += StatUtils.sqr(v1.getComplexMetric(
-				Version.ISUM,
-				ClassMetric.LOAD_COUNT)
-				- v2.getComplexMetric(Version.ISUM, ClassMetric.LOAD_COUNT));
-		d += StatUtils.sqr(v1.getComplexMetric(
-				Version.ISUM,
-				ClassMetric.STORE_COUNT)
-				- v2.getComplexMetric(Version.ISUM, ClassMetric.STORE_COUNT));
-		d += StatUtils.sqr(v1.getComplexMetric(
-				Version.ISUM,
-				ClassMetric.BRANCH_COUNT)
-				- v2.getComplexMetric(Version.ISUM, ClassMetric.BRANCH_COUNT));
+		
+		for (ClassMetric metric : DistanceReportVisitor.METRICS)
+		{
+			d += StatUtils.sqr(v1.getComplexMetric(
+					Version.ISUM,
+					metric)
+					- v2.getComplexMetric(Version.ISUM, metric));
+		}
+
 		d = Math.sqrt(d); // v.getMetric(Version.CLASS_COUNT);
 		return d;
 	}
