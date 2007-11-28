@@ -33,6 +33,9 @@ public class RawDistanceReportVisitor extends Report
 	private int max;
 
 	private String[] distanceHeading = { "rsn", Version.RSN.toString(), "name", "distance" };
+//	public ClassMetric[] m = { ClassMetric.METHOD_COUNT, ClassMetric.FAN_OUT_COUNT, ClassMetric.FAN_IN_COUNT,
+//			ClassMetric.LOAD_COUNT, ClassMetric.STORE_COUNT, ClassMetric.BRANCH_COUNT, ClassMetric.TYPE_CONSTRUCTION_COUNT,
+//			ClassMetric.FIELD_COUNT, ClassMetric.SUPER_CLASS_COUNT, ClassMetric.INNER_CLASS_COUNT };
 
 	public RawDistanceReportVisitor(ReportDefinition m) throws ReportException
 	{
@@ -115,38 +118,14 @@ public class RawDistanceReportVisitor extends Report
 		for (ClassMetricData cmd : vmd.metricData.values())
 		{
 			if (cmd.getSimpleMetric(ClassMetric.NEXT_VERSION_STATUS) == Evolution.MODIFIED.getValue())
-			{
-				double d = StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(
-						ClassMetric.METHOD_COUNT)
-						- cmd.getSimpleMetric(ClassMetric.METHOD_COUNT));
+			{				
+				double d = 0.0d;
+				for (ClassMetric metric : DistanceReportVisitor.METRICS)
+				{
+					d += StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(metric)
+							- vmd.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(metric));
+				}
 
-				d += StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(
-						ClassMetric.FAN_OUT_COUNT)
-						- cmd.getSimpleMetric(ClassMetric.FAN_OUT_COUNT));
-
-				d += StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(
-						ClassMetric.FAN_IN_COUNT)
-						- cmd.getSimpleMetric(ClassMetric.FAN_IN_COUNT));
-
-				d += StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(
-						ClassMetric.LOAD_COUNT)
-						- cmd.getSimpleMetric(ClassMetric.LOAD_COUNT));
-
-				d += StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(
-						ClassMetric.STORE_COUNT)
-						- cmd.getSimpleMetric(ClassMetric.STORE_COUNT));
-
-				d += StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(
-						ClassMetric.BRANCH_COUNT)
-						- cmd.getSimpleMetric(ClassMetric.BRANCH_COUNT));
-
-				d += StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(
-						ClassMetric.TYPE_CONSTRUCTION_COUNT)
-						- cmd.getSimpleMetric(ClassMetric.TYPE_CONSTRUCTION_COUNT));
-
-				// System.out.println(vmd.get(Version.RSN) + "," +
-                // vmd.get(Version.NAME) + "," + cmd.get(ClassMetric.NAME)
-				// + "," + d);
 				String[] row = { vmd.get(Version.RSN), vmd.get(Version.NAME), cmd.get(ClassMetric.NAME),
 						String.valueOf(d) };
 				tmp.add(row);
@@ -154,32 +133,7 @@ public class RawDistanceReportVisitor extends Report
 		}
 		return tmp;
 	}
-
-	protected double getRawCountDistanceFrom(VersionMetricData vmd1, VersionMetricData vmd2, String className)
-	{
-		double d = StatUtils.sqr(vmd2.metricData.get(className).getSimpleMetric(ClassMetric.METHOD_COUNT)
-				- vmd1.metricData.get(className).getSimpleMetric(ClassMetric.METHOD_COUNT));
-
-		d += StatUtils.sqr(vmd2.metricData.get(className).getSimpleMetric(ClassMetric.FAN_OUT_COUNT)
-				- vmd1.metricData.get(className).getSimpleMetric(ClassMetric.FAN_OUT_COUNT));
-
-		d += StatUtils.sqr(vmd2.metricData.get(className).getSimpleMetric(ClassMetric.FAN_IN_COUNT)
-				- vmd1.metricData.get(className).getSimpleMetric(ClassMetric.FAN_IN_COUNT));
-
-		d += StatUtils.sqr(vmd2.metricData.get(className).getSimpleMetric(ClassMetric.LOAD_COUNT)
-				- vmd1.metricData.get(className).getSimpleMetric(ClassMetric.LOAD_COUNT));
-
-		d += StatUtils.sqr(vmd2.metricData.get(className).getSimpleMetric(ClassMetric.STORE_COUNT)
-				- vmd1.metricData.get(className).getSimpleMetric(ClassMetric.STORE_COUNT));
-
-		d += StatUtils.sqr(vmd2.metricData.get(className).getSimpleMetric(ClassMetric.BRANCH_COUNT)
-				- vmd1.metricData.get(className).getSimpleMetric(ClassMetric.BRANCH_COUNT));
-
-		d += StatUtils.sqr(vmd2.metricData.get(className).getSimpleMetric(ClassMetric.TYPE_CONSTRUCTION_COUNT)
-				- vmd1.metricData.get(className).getSimpleMetric(ClassMetric.TYPE_CONSTRUCTION_COUNT));
-		return d;
-	}
-
+	
 	private void sortClasses(HistoryMetricData hmd, ClassMetric metric, int maxValue)
 	{
 		ArrayList<String[]> rows = new ArrayList<String[]>();
@@ -199,7 +153,12 @@ public class RawDistanceReportVisitor extends Report
 				if (cmd.getSimpleMetric(ClassMetric.NEXT_VERSION_STATUS) == Evolution.MODIFIED.getValue())
 				{
 					// Natural log distance.
-					double dist = getRawCountDistanceFrom(v1, v2, cmd.get(ClassMetric.NAME));
+					double dist = 0.0d;
+					for (ClassMetric theMetric : DistanceReportVisitor.METRICS)
+					{
+						dist += StatUtils.sqr(v2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(theMetric)
+								- v1.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(theMetric));
+					}
 					double nDistance = Math.log(dist);
 					if (nDistance >= 0)
 					{

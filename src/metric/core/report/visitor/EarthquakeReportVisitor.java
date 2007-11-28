@@ -117,58 +117,23 @@ public class EarthquakeReportVisitor extends Report
 		{
 			if (cmd.getSimpleMetric(ClassMetric.NEXT_VERSION_STATUS) == Evolution.MODIFIED.getValue())
 			{
-				double d = StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(
-						ClassMetric.METHOD_COUNT)
-						- cmd.getSimpleMetric(ClassMetric.METHOD_COUNT));
+				double d = 0.0;
+				for (ClassMetric metric : DistanceReportVisitor.METRICS)
+				{
+					d += StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(metric)
+							- vmd.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(metric));
+				}
 
-				d += StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(
-						ClassMetric.FAN_OUT_COUNT)
-						- cmd.getSimpleMetric(ClassMetric.FAN_OUT_COUNT));
-
-				d += StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(
-						ClassMetric.FAN_IN_COUNT)
-						- cmd.getSimpleMetric(ClassMetric.FAN_IN_COUNT));
-
-				d += StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(
-						ClassMetric.LOAD_COUNT)
-						- cmd.getSimpleMetric(ClassMetric.LOAD_COUNT));
-
-				d += StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(
-						ClassMetric.STORE_COUNT)
-						- cmd.getSimpleMetric(ClassMetric.STORE_COUNT));
-
-				d += StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(
-						ClassMetric.BRANCH_COUNT)
-						- cmd.getSimpleMetric(ClassMetric.BRANCH_COUNT));
-
-				d += StatUtils.sqr(vmd2.metricData.get(cmd.get(ClassMetric.NAME)).getSimpleMetric(
-						ClassMetric.TYPE_CONSTRUCTION_COUNT)
-						- cmd.getSimpleMetric(ClassMetric.TYPE_CONSTRUCTION_COUNT));
-
-				
 				updateTable(table, StatUtils.toFixedDecPlaces(d, 2));
 			}
 		}
 		if (relative)
 		{
 			// converts to a percentage. Crude, but works.
-			
-			table.put(TremorMagnitude.MICRO, StatUtils.toFixedDecPlaces(((double)table.get(TremorMagnitude.MICRO)/vmd.metricData.size())*100, 2));
-			table.put(TremorMagnitude.MINOR, StatUtils.toFixedDecPlaces(((double)table.get(TremorMagnitude.MINOR)/vmd.metricData.size())*100, 2));
-			table.put(TremorMagnitude.LIGHT, StatUtils.toFixedDecPlaces(((double)table.get(TremorMagnitude.LIGHT)/vmd.metricData.size())*100, 2));
-			table.put(TremorMagnitude.MODERATE, StatUtils.toFixedDecPlaces(((double)table.get(TremorMagnitude.MODERATE)/vmd.metricData.size())*100, 2));
-			table.put(TremorMagnitude.STRONG, StatUtils.toFixedDecPlaces(((double)table.get(TremorMagnitude.STRONG)/vmd.metricData.size())*100, 2));
-			table.put(TremorMagnitude.MAJOR, StatUtils.toFixedDecPlaces(((double)table.get(TremorMagnitude.MAJOR)/vmd.metricData.size())*100, 2));
-			table.put(TremorMagnitude.GREAT, StatUtils.toFixedDecPlaces(((double)table.get(TremorMagnitude.GREAT)/vmd.metricData.size())*100, 2));
-			table.put(TremorMagnitude.HUGE, StatUtils.toFixedDecPlaces(((double)table.get(TremorMagnitude.HUGE)/vmd.metricData.size())*100, 2));
-			table.put(TremorMagnitude.HUGE2, StatUtils.toFixedDecPlaces(((double)table.get(TremorMagnitude.HUGE2)/vmd.metricData.size())*100, 2));
-			table.put(TremorMagnitude.HUGE3, StatUtils.toFixedDecPlaces(((double)table.get(TremorMagnitude.HUGE3)/vmd.metricData.size())*100, 2));
-			table.put(TremorMagnitude.HUGE4, StatUtils.toFixedDecPlaces(((double)table.get(TremorMagnitude.HUGE4)/vmd.metricData.size())*100, 2));
-			table.put(TremorMagnitude.HUGE5, StatUtils.toFixedDecPlaces(((double)table.get(TremorMagnitude.HUGE5)/vmd.metricData.size())*100, 2));
-			table.put(TremorMagnitude.HUGE6, StatUtils.toFixedDecPlaces(((double)table.get(TremorMagnitude.HUGE6)/vmd.metricData.size())*100, 2));
-			table.put(TremorMagnitude.HUGE7, StatUtils.toFixedDecPlaces(((double)table.get(TremorMagnitude.HUGE7)/vmd.metricData.size())*100, 2));
-			table.put(TremorMagnitude.HUGE8, StatUtils.toFixedDecPlaces(((double)table.get(TremorMagnitude.HUGE8)/vmd.metricData.size())*100, 2));
-			
+			for (TremorMagnitude tm : TremorMagnitude.values())
+			{
+				table.put(tm, StatUtils.toFixedDecPlaces(((double)table.get(tm)/vmd.metricData.size())*100, 2));
+			}
 		}
 		
 		String[] row = { vmd.get(Version.NAME), vmd.get(Version.RSN) + "-" + vmd2.get(Version.RSN), vmd.get(Version.ID), table.get(TremorMagnitude.MICRO).toString(),
