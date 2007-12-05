@@ -3,6 +3,9 @@ package metric.core.util;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import cern.colt.list.DoubleArrayList;
 import cern.jet.stat.Descriptive;
@@ -29,6 +32,27 @@ public class StatUtils
 			e.printStackTrace();
 		} // ignore exception
 		return sum;
+	}
+	
+	public static Map<Integer, Integer> createFreqTable(int[] vals, int[] bins)
+	{
+		LinkedHashMap<Integer, Integer> map = new LinkedHashMap<Integer, Integer>();
+		for (int bin : bins)
+			map.put(bin, 0);
+		
+		for (int val : vals)
+		{
+			for (int bin : bins)
+			{
+				if (val <= bin)
+				{
+					map.put(bin, map.get(bin)+1);
+					break;
+				}
+				
+			}
+		}
+		return map;
 	}
 
 	/**
