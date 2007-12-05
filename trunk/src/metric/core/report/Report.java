@@ -29,7 +29,8 @@ public abstract class Report extends Observable implements ReportVisitor
 	protected ReportDefinition rd;
 	private MetricTable table;
 
-	private int completion;
+	protected int completion;
+	private boolean dataOnly;
 
 	public Report(ReportDefinition rd) throws ReportException
 	{
@@ -154,5 +155,22 @@ public abstract class Report extends Observable implements ReportVisitor
 		} catch (ReportException e)
 		{
 		} // Suppress this one.
+	}
+	
+	/**
+	 * Whether or not this report should only generate data. If this is
+	 * true, headings and textual columns such as name, id etc. will not
+	 * be added to the metric table.
+	 * 
+	 * @param dataOnly
+	 */
+	public void setDataOnly(boolean dataOnly)
+	{
+		this.dataOnly = dataOnly;
+	}
+	
+	public boolean dataOnly()
+	{
+		return dataOnly;
 	}
 }
