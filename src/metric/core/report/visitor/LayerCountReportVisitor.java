@@ -19,7 +19,7 @@ public class LayerCountReportVisitor extends CountReportVisitor
 	}
 
 	@Override
-	public String[] getRowCounts(VersionMetricData vmd, boolean isum,
+	public String[] getRowCounts(VersionMetricData vmd, boolean isum, boolean relIsum,
 			boolean beta, String[] fields)
 	{
 		ArrayList<String> row = new ArrayList<String>();
