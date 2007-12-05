@@ -12,6 +12,7 @@ import metric.core.model.HistoryMetricData;
 import metric.core.model.VersionMetricData;
 import metric.core.report.Report;
 import metric.core.util.MetricTable;
+import metric.core.util.StatUtils;
 import metric.core.util.StringUtils;
 import metric.core.vocabulary.ClassMetric;
 import metric.core.vocabulary.Version;
@@ -27,6 +28,7 @@ public class CountReportVisitor extends Report
 {
 	protected boolean doIsum;
 	protected boolean doBeta;
+	protected boolean doRelIsum;
 	protected String[] fields;
 
 	public CountReportVisitor(ReportDefinition m) throws ReportException
@@ -40,13 +42,14 @@ public class CountReportVisitor extends Report
 		try
 		{
 			doIsum = (Boolean) rd.args[0];
-			doBeta = (Boolean) rd.args[1];
+			doRelIsum = (Boolean) rd.args[1];
+			doBeta = (Boolean) rd.args[2];
 			try
 			{
-				fields = StringUtils.asStrings((Object[]) rd.args[2]);
+				fields = StringUtils.asStrings((Object[]) rd.args[3]);
 			} catch (ClassCastException e)
 			{
-				fields = new String[] { (String) rd.args[2] };
+				fields = new String[] { (String) rd.args[3] };
 			}
 		} catch (ArrayIndexOutOfBoundsException e)
 		{
@@ -59,6 +62,7 @@ public class CountReportVisitor extends Report
 	{
 		HashMap<String, Object> h = new HashMap<String, Object>();
 		h.put("ISum", doIsum);
+		h.put("RelISum", doRelIsum);
 		h.put("Beta", doBeta);
 
 		String[] constrainedValues = ClassMetric.toStrings();
@@ -79,6 +83,8 @@ public class CountReportVisitor extends Report
 				doIsum = (Boolean) e.getValue();
 			else if (e.getKey().equals("Beta"))
 				doBeta = (Boolean) e.getValue();
+			else if (e.getKey().equals("RelISum"))
+				doRelIsum = (Boolean) e.getValue();
 			else if (e.getKey().equals("Metric"))
 			{
 				ArrayList<String> list = (ArrayList<String>) e.getValue();
@@ -97,7 +103,7 @@ public class CountReportVisitor extends Report
 		{
 			VersionMetricData vmd = hmd.getVersion(i);
 			updateProgress(i, total, vmd);
-			rows.add(getRowCounts(vmd, doIsum, doBeta, fields));
+			rows.add(getRowCounts(vmd, doIsum, doRelIsum, doBeta, fields));
 		}
 		// Create and set table.
 		MetricTable<String, String> et = new MetricTable<String, String>(getHeading(fields), rd.description);
@@ -105,6 +111,8 @@ public class CountReportVisitor extends Report
 		et.setDisplayTitle(true);
 		et.addRows(rows);
 		setTable(et);
+		
+		
 	}
 
 	@Override
@@ -113,7 +121,7 @@ public class CountReportVisitor extends Report
 		// Create and set table.
 		MetricTable<String, String> et = new MetricTable<String, String>(getHeading(fields), rd.description);
 		et.setColumnPadding(1);
-		et.addRow(getRowCounts(vmd, doIsum, doBeta, fields));
+		et.addRow(getRowCounts(vmd, doIsum, doRelIsum, doBeta, fields));
 		et.setDisplayTitle(true);
 		setTable(et);
 	}
@@ -129,7 +137,9 @@ public class CountReportVisitor extends Report
 		for (String str : fields)
 		{
 			if (doIsum)
-				heading.add("isum_" + ClassMetric.parse(str));
+				heading.add(str);
+			if (doRelIsum)
+				heading.add(ClassMetric.parse(str)+"%");
 			if (doBeta)
 				heading.add("beta_" + ClassMetric.parse(str));
 		}
@@ -137,18 +147,26 @@ public class CountReportVisitor extends Report
 		return StringUtils.asStrings(heading);
 	}
 
-	protected String[] getRowCounts(VersionMetricData vmd, boolean isum, boolean beta, String[] fields)
+	protected String[] getRowCounts(VersionMetricData vmd, boolean isum, boolean relIsum, boolean beta, String[] fields)
 	{
+		int classCount = vmd.getSimpleMetric(Version.CLASS_COUNT);
 		ArrayList<String> row = new ArrayList<String>();
 		row.add(vmd.get(Version.NAME));
 		row.add(vmd.get(Version.RSN));
 		row.add(vmd.get(Version.ID));
-		row.add(vmd.get(Version.CLASS_COUNT));
+		row.add(String.valueOf(classCount));
 
 		for (String field : fields)
 		{
 			if (isum)
 				row.add(vmd.get(Version.ISUM, ClassMetric.parse(field)));
+			
+			if (relIsum)
+			{
+				double deletes = vmd.getComplexMetric(Version.ISUM, ClassMetric.parse(field));
+				double val = StatUtils.toFixedDecPlaces((deletes/classCount)*100, 3);
+				row.add(String.valueOf(val));
+			}
 			if (beta)
 				row.add(vmd.get(Version.BETA, ClassMetric.parse(field)));
 		}
