@@ -31,6 +31,7 @@ public class PaintBasedColourGenerator
 		{
 			double v = getNewColourValue(0.10, i, max);
 			colorIndex -= (colorIndex / max);
+			System.out.println("colourIndex: " + colorIndex);
 			if (style == IntensityStyle.HeatMap)
 			{
 				ps.add(StatUtils.toFixedDecPlaces(v, 3), new Color(255, colorIndex, colorIndex));
@@ -38,6 +39,31 @@ public class PaintBasedColourGenerator
 			{
 				int finalCoolValue = 255 - colorIndex;
 				ps.add(StatUtils.toFixedDecPlaces(v, 3), new Color(finalCoolValue, finalCoolValue, 255));
+			}
+		}
+		return ps;
+	}
+	
+	public static LookupPaintScale generateEarthquakePaintScale(IntensityStyle style, int max)
+	{
+		LookupPaintScale ps = new LookupPaintScale(0.000, 100, new Color(255,225,225));
+		ps.add(0.0, Color.WHITE);
+
+		int MAX_COLOUR_VALUE = 255;
+		int colorIndex = -1;
+
+		for (int i = 1; i < 100; i+=5) // Add mappings in 5% values
+		{
+			colorIndex = (MAX_COLOUR_VALUE - 25) - (int)(MAX_COLOUR_VALUE*(double)i / 100);
+
+			if (colorIndex > 0)
+			{
+				ps.add((double)i, new Color(MAX_COLOUR_VALUE, colorIndex, colorIndex));
+			}
+			else // wrap around
+			{
+				colorIndex *= -1;
+				ps.add((double)i, new Color(colorIndex, 0, 0));
 			}
 		}
 		return ps;
