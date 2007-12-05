@@ -7,6 +7,7 @@ import metric.core.exception.ReportException;
 import metric.core.model.HistoryMetricData;
 import metric.core.report.ReportFactory;
 import metric.core.report.decorator.ReportDecorator;
+import metric.core.report.visitor.EarthquakeReportVisitor;
 import metric.core.report.visitor.ModificationIntensityReportVisitor;
 import metric.core.report.visitor.ReportVisitor;
 import metric.gui.swt.core.JSeatGUI;
@@ -99,11 +100,14 @@ public class JSeatVisualizer extends JSeatGUI
 		try
 		{
 			// Colour Map Visualization
-			String report = "1,ModificationIntensityReportVisitor,Modification Intensity Report";
-			ModificationIntensityReportVisitor rv;
+//			String report = "1,ModificationIntensityReportVisitor,Modification Intensity Report";
+			String report = "9999,EarthquakeReportVisitor,Earthquake Magnitude Report,true";
+			EarthquakeReportVisitor rv;
 
-			rv = (ModificationIntensityReportVisitor) ReportFactory
+			rv = (EarthquakeReportVisitor) ReportFactory
 					.getReport(report);
+			rv.setDataOnly(true);
+			
 			ReportDecorator heatMapDecorator = new ColourMapDecorator(rv,
 					mainComposite, IntensityStyle.HeatMap);
 			ReportDecorator coolMapDecorator = new ColourMapDecorator(rv,
