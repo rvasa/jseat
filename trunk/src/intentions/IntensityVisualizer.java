@@ -56,19 +56,19 @@ public class IntensityVisualizer
 			// Create a text decorator, heatmap decorator, coolmap decorator and
             // hybridmap decorator
 			ReportDecorator textDecorator = new TextDecorator(rv);
-			ReportDecorator coolDecorator = new ColourMapDecorator(rv, shell, IntensityStyle.CoolMap);
-			ReportDecorator heatDecorator = new ColourMapDecorator(rv, shell2, IntensityStyle.HeatMap);
-			ReportDecorator hybridDecorator = new ColourMapDecorator(rv, shell3, IntensityStyle.HybridMap);
+//			ReportDecorator coolDecorator = new ColourMapDecorator(rv, shell, IntensityStyle.CoolMap);
+//			ReportDecorator heatDecorator = new ColourMapDecorator(rv, shell2, IntensityStyle.HeatMap);
+//			ReportDecorator hybridDecorator = new ColourMapDecorator(rv, shell3, IntensityStyle.HybridMap);
 
 			// Add them all to a composite report decorator.
-			CompositeReportDecorator compositeDecorator = new CompositeReportDecorator(rv);
-			compositeDecorator.add(textDecorator);
-			compositeDecorator.add(coolDecorator);
-			compositeDecorator.add(heatDecorator);
-			compositeDecorator.add(hybridDecorator);
+//			CompositeReportDecorator compositeDecorator = new CompositeReportDecorator(rv);
+//			compositeDecorator.add(textDecorator);
+//			compositeDecorator.add(coolDecorator);
+//			compositeDecorator.add(heatDecorator);
+//			compositeDecorator.add(hybridDecorator);
 
 			// Have model accept report.
-			hmd.accept(compositeDecorator);
+//			hmd.accept(compositeDecorator);
 
 			// Standard event loop for our 3 shells.
 			shell.open();
