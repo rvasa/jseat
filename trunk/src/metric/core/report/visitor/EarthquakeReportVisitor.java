@@ -40,6 +40,13 @@ public class EarthquakeReportVisitor extends Report
 			TremorMagnitude.HUGE5.toString(),TremorMagnitude.HUGE6.toString(),TremorMagnitude.HUGE7.toString(),
 			TremorMagnitude.HUGE8.toString()};
 	
+	private String[] dataOnlyHeading = {TremorMagnitude.MICRO.toString(), TremorMagnitude.MINOR.toString(),
+			TremorMagnitude.LIGHT.toString(),TremorMagnitude.MODERATE.toString(),TremorMagnitude.STRONG.toString(),
+			TremorMagnitude.MAJOR.toString(),TremorMagnitude.GREAT.toString(),TremorMagnitude.HUGE.toString(),
+			TremorMagnitude.HUGE2.toString(),TremorMagnitude.HUGE3.toString(),TremorMagnitude.HUGE4.toString(),
+			TremorMagnitude.HUGE5.toString(),TremorMagnitude.HUGE6.toString(),TremorMagnitude.HUGE7.toString(),
+			TremorMagnitude.HUGE8.toString()};
+	
 	enum TremorMagnitude
 	{
 		MICRO,
@@ -68,10 +75,16 @@ public class EarthquakeReportVisitor extends Report
 	public void visit(HistoryMetricData hmd) throws ReportException
 	{
 		ArrayList<String[]> rows = printDistances(hmd, type, max);
-		MetricTable et = new MetricTable<String, String>(distanceHeading, rd.description);
+		MetricTable et = null;
+		if (!dataOnly())
+			et = new MetricTable<String, String>(distanceHeading, rd.description);
+		else
+			et = new MetricTable<String, String>(dataOnlyHeading, rd.description);
+		
 		et.addRows(rows);
-		et.setDisplayTitle(true);
-//		et.setColumnPadding(2);
+		if (!dataOnly())
+			et.setDisplayTitle(true);
+
 		setTable(et);
 	}
 
@@ -97,22 +110,10 @@ public class EarthquakeReportVisitor extends Report
 	private String[] getDistancesBetweenVersions(VersionMetricData vmd, VersionMetricData vmd2)
 	{
 		HashMap<TremorMagnitude, Double> table = new HashMap<TremorMagnitude, Double>();
-		table.put(TremorMagnitude.MICRO, 0d);
-		table.put(TremorMagnitude.MINOR, 0d);
-		table.put(TremorMagnitude.LIGHT, 0d);
-		table.put(TremorMagnitude.MODERATE, 0d);
-		table.put(TremorMagnitude.STRONG, 0d);
-		table.put(TremorMagnitude.MAJOR, 0d);
-		table.put(TremorMagnitude.GREAT, 0d);
-		table.put(TremorMagnitude.HUGE, 0d);
-		table.put(TremorMagnitude.HUGE2, 0d);
-		table.put(TremorMagnitude.HUGE3, 0d);
-		table.put(TremorMagnitude.HUGE4, 0d);
-		table.put(TremorMagnitude.HUGE5, 0d);
-		table.put(TremorMagnitude.HUGE6, 0d);
-		table.put(TremorMagnitude.HUGE7, 0d);
-		table.put(TremorMagnitude.HUGE8, 0d);
 		
+		for (TremorMagnitude tm : TremorMagnitude.values())
+			table.put(tm, 0d);
+
 		for (ClassMetricData cmd : vmd.metricData.values())
 		{
 			if (cmd.getSimpleMetric(ClassMetric.NEXT_VERSION_STATUS) == Evolution.MODIFIED.getValue())
@@ -136,16 +137,32 @@ public class EarthquakeReportVisitor extends Report
 			}
 		}
 		
-		String[] row = { vmd.get(Version.NAME), vmd.get(Version.RSN) + "-" + vmd2.get(Version.RSN), vmd.get(Version.ID), table.get(TremorMagnitude.MICRO).toString(),
-				table.get(TremorMagnitude.MINOR).toString(),table.get(TremorMagnitude.LIGHT).toString(),
-				table.get(TremorMagnitude.MODERATE).toString(), table.get(TremorMagnitude.STRONG).toString(),
-				table.get(TremorMagnitude.MAJOR).toString(), table.get(TremorMagnitude.GREAT).toString(),
-				table.get(TremorMagnitude.HUGE).toString(), table.get(TremorMagnitude.HUGE2).toString(),
-				table.get(TremorMagnitude.HUGE3).toString(), table.get(TremorMagnitude.HUGE4).toString(),
-				table.get(TremorMagnitude.HUGE5).toString(), table.get(TremorMagnitude.HUGE6).toString(),
-				table.get(TremorMagnitude.HUGE7).toString(), table.get(TremorMagnitude.HUGE8).toString()};
-		
-		return row;
+		if (!dataOnly())
+		{
+			String[] row = { vmd.get(Version.NAME), vmd.get(Version.RSN) + "-" + vmd2.get(Version.RSN), vmd.get(Version.ID), table.get(TremorMagnitude.MICRO).toString(),
+					table.get(TremorMagnitude.MINOR).toString(),table.get(TremorMagnitude.LIGHT).toString(),
+					table.get(TremorMagnitude.MODERATE).toString(), table.get(TremorMagnitude.STRONG).toString(),
+					table.get(TremorMagnitude.MAJOR).toString(), table.get(TremorMagnitude.GREAT).toString(),
+					table.get(TremorMagnitude.HUGE).toString(), table.get(TremorMagnitude.HUGE2).toString(),
+					table.get(TremorMagnitude.HUGE3).toString(), table.get(TremorMagnitude.HUGE4).toString(),
+					table.get(TremorMagnitude.HUGE5).toString(), table.get(TremorMagnitude.HUGE6).toString(),
+					table.get(TremorMagnitude.HUGE7).toString(), table.get(TremorMagnitude.HUGE8).toString()};
+			
+			return row;
+		}
+		else
+		{
+			String[] row = {table.get(TremorMagnitude.MICRO).toString(),
+					table.get(TremorMagnitude.MINOR).toString(),table.get(TremorMagnitude.LIGHT).toString(),
+					table.get(TremorMagnitude.MODERATE).toString(), table.get(TremorMagnitude.STRONG).toString(),
+					table.get(TremorMagnitude.MAJOR).toString(), table.get(TremorMagnitude.GREAT).toString(),
+					table.get(TremorMagnitude.HUGE).toString(), table.get(TremorMagnitude.HUGE2).toString(),
+					table.get(TremorMagnitude.HUGE3).toString(), table.get(TremorMagnitude.HUGE4).toString(),
+					table.get(TremorMagnitude.HUGE5).toString(), table.get(TremorMagnitude.HUGE6).toString(),
+					table.get(TremorMagnitude.HUGE7).toString(), table.get(TremorMagnitude.HUGE8).toString()};
+			
+			return row;
+		}
 	}
 	
 	private void updateTable(HashMap<TremorMagnitude, Double> table, double rawDist)
@@ -165,21 +182,21 @@ public class EarthquakeReportVisitor extends Report
 			table.put(TremorMagnitude.MAJOR, (table.get(TremorMagnitude.MAJOR)+1));
 		else if (logDist > 7.9 && logDist < 8.9)
 			table.put(TremorMagnitude.GREAT, (table.get(TremorMagnitude.GREAT)+1));
-		else if (logDist > 9.0)
+		else if (logDist > 9.0 && logDist < 9.9)
 			table.put(TremorMagnitude.HUGE, (table.get(TremorMagnitude.HUGE)+1));
-		else if (logDist > 10.0)
+		else if (logDist > 10.0  && logDist < 10.9)
 			table.put(TremorMagnitude.HUGE2, (table.get(TremorMagnitude.HUGE2)+1));
-		else if (logDist > 11.0)
+		else if (logDist > 11.0  && logDist < 11.9)
 			table.put(TremorMagnitude.HUGE3, (table.get(TremorMagnitude.HUGE3)+1));
-		else if (logDist > 12.0)
+		else if (logDist > 12.0 && logDist < 12.9)
 			table.put(TremorMagnitude.HUGE4, (table.get(TremorMagnitude.HUGE4)+1));
-		else if (logDist > 13.0)
+		else if (logDist > 13.0 && logDist < 13.9)
 			table.put(TremorMagnitude.HUGE5, (table.get(TremorMagnitude.HUGE5)+1));
-		else if (logDist > 14.0)
+		else if (logDist > 14.0 && logDist < 14.9)
 			table.put(TremorMagnitude.HUGE6, (table.get(TremorMagnitude.HUGE6)+1));
-		else if (logDist > 15.0)
+		else if (logDist > 15.0 && logDist < 15.9)
 			table.put(TremorMagnitude.HUGE7, (table.get(TremorMagnitude.HUGE7)+1));
-		else if (logDist > 16.0)
+		else if (logDist > 16.0 && logDist < 16.9)
 			table.put(TremorMagnitude.HUGE8, (table.get(TremorMagnitude.HUGE8)+1));
 	}
 
