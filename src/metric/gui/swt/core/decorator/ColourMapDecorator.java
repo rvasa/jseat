@@ -3,6 +3,7 @@ package metric.gui.swt.core.decorator;
 import java.awt.Color;
 
 import metric.core.report.decorator.ReportDecorator;
+import metric.core.report.visitor.EarthquakeReportVisitor;
 import metric.core.report.visitor.ModificationIntensityReportVisitor;
 import metric.core.util.MetricTable;
 import metric.gui.swt.core.util.PaintBasedColourGenerator;
@@ -36,7 +37,7 @@ public class ColourMapDecorator extends ReportDecorator
 	private IntensityStyle style;
 	private int noColourShades = 10;
 
-	public ColourMapDecorator(ModificationIntensityReportVisitor report, Composite composite, IntensityStyle style)
+	public ColourMapDecorator(EarthquakeReportVisitor report, Composite composite, IntensityStyle style)
 	{
 		super(report);
 		this.composite = composite;
@@ -54,7 +55,7 @@ public class ColourMapDecorator extends ReportDecorator
 			MetricTable mt = decoratedReport.getTable();
 			XYDataset dataset = createXYZDataset(mt);
 			String title = mt.getTitle() + " (" + style.toString() + ")";
-			JFreeChart chart = createChart(dataset, mt.getCols(), style, title);
+			JFreeChart chart = createChart(dataset, mt.getCols(), mt.getRows(), style, title);
 			chart.setTextAntiAlias(true);
 
 			cc = new ChartComposite(composite, SWT.NONE, chart);
@@ -74,25 +75,27 @@ public class ColourMapDecorator extends ReportDecorator
 	{
 		DefaultXYZDataset dataset = new DefaultXYZDataset();
 
-		int items = mt.getCols();
-		for (int r = 0; r < items; r++)
+		int cols = mt.getCols();
+		int rows = mt.getRows();
+
+		for (int r = 0; r < rows; r++)
 		{
-			double[][] data = new double[3][items];
-			for (int c = 0; c < items; c++)
+			double[][] data = new double[3][cols];
+			for (int c = 0; c < cols; c++)
 			{
-				data[0][c] = r + 1; // row
-				data[1][c] = c + 1; // column
+				data[0][c] = c + 1; // row
+				data[1][c] = r + 1; // column
 				// z value is used to store value.
-				data[2][c] = Double.parseDouble((String) mt.get(c, r));
+				data[2][c] = Double.parseDouble((String) mt.get(r, c));
 			}
 			dataset.addSeries("Series " + r, data);
 		}
 		return dataset;
 	}
 
-	private JFreeChart createChart(XYDataset dataset, int size, IntensityStyle style, String title)
+	private JFreeChart createChart(XYDataset dataset, int xSize, int ySize, IntensityStyle style, String title)
 	{
-		NumberAxis xAxis = new NumberAxis("RSN Born");
+		NumberAxis xAxis = new NumberAxis("Magnitude");
 		NumberAxis yAxis = new NumberAxis("RSN");
 		XYPlot plot = new XYPlot(dataset, xAxis, yAxis, null);
 
@@ -122,8 +125,8 @@ public class ColourMapDecorator extends ReportDecorator
 		plot.setDomainGridlinesVisible(false);
 		plot.setRangeGridlinesVisible(false);
 
-		xAxis.setRangeWithMargins(1, size);
-		yAxis.setRangeWithMargins(1, size);
+		xAxis.setRangeWithMargins(1, xSize);
+		yAxis.setRangeWithMargins(1, ySize);
 		yAxis.setInverted(true);
 		xAxis.setStandardTickUnits(NumberAxis.createStandardTickUnits());
 
@@ -170,7 +173,8 @@ public class ColourMapDecorator extends ReportDecorator
      */
 	private LookupPaintScale getDefaultHeatScale()
 	{
-		LookupPaintScale ps = PaintBasedColourGenerator.generatePaintScale(IntensityStyle.HeatMap, noColourShades);
+//		LookupPaintScale ps = PaintBasedColourGenerator.generatePaintScale(IntensityStyle.HeatMap, noColourShades);
+		LookupPaintScale ps = PaintBasedColourGenerator.generateEarthquakePaintScale(IntensityStyle.HeatMap, 10);
 		return ps;
 	}
 
